@@ -1,0 +1,63 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Build folder
+build/
+
+# LLVM header files
+include/llvm/*
+!include/llvm/.gitkeep
+
+# Temp files
+*~
+
+# Anjuta configure files
+.anjuta*
+*.anjuta
+
+# Visual Studio Code
+.vscode/
+
+# Visual studio
+**/.vs/
+**/msvc/Debug/
+**/msvc/Release/
+*.vcxproj.user
+*.pdb
+
+# SourcePawn deps
+subprojects/sourcepawn/sourcepawn_deps/
+
+# CLion
+.idea/
+cmake-*/

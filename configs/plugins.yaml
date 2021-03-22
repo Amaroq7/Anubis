@@ -1,0 +1,3 @@
+spmod:
+  os: linux
+  path: addons/spmod/dlls/libspmod_mm.so
