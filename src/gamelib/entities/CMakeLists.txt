@@ -1,0 +1,2 @@
+add_subdirectory(cstrike)
+add_subdirectory(valve)
