@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <Common.hpp>
 #include <cinttypes>
 #include <functional>
 
@@ -57,4 +58,12 @@ namespace Metamod::Engine
      * Server command callback.
      */
     using ServerCmdCallback = std::function<void()>;
+    
+    META_STRONG_TYPEDEF(std::int16_t, MsgEntity)
+    META_STRONG_TYPEDEF(float, MsgAngle)
+    META_STRONG_TYPEDEF(float, MsgCoord)
+    META_STRONG_TYPEDEF(std::uint16_t, PrecacheId)
+    META_STRONG_TYPEDEF(std::uint8_t, MsgType)
+    META_STRONG_TYPEDEF_PTR(char, InfoBuffer)
+    META_STRONG_TYPEDEF(std::int32_t, UserID)
 } // namespace SPMod::Engine

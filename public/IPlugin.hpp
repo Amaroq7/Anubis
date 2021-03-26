@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <string_view>
+
 namespace Metamod 
 {
     class IPlugin 
@@ -32,7 +34,5 @@ namespace Metamod
             virtual std::string_view getAuthor() const = 0;
             virtual std::string_view getUrl() const = 0;
             virtual std::string_view getLogTag() const = 0;
-
-
     };
 }

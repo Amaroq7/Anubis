@@ -27,12 +27,29 @@
 namespace Metamod::Engine
 {
     class IEdict;
+    class ICvar;
+    class IGameClient;
+
+    using IPrecacheModelHook = IHook<PrecacheId, std::string_view>;
+    using IPrecacheModelHookRegistry = IHookRegistry<PrecacheId, std::string_view>;
+
+    using IPrecacheSoundHook = IHook<PrecacheId, std::string_view>;
+    using IPrecacheSoundHookRegistry = IHookRegistry<PrecacheId, std::string_view>;
 
     using IChangeLevelHook = IHook<void, std::string_view, std::string_view>;
     using IChangeLevelHookRegistry = IHookRegistry<void, std::string_view, std::string_view>;
 
-    using IMessageBeginHook = IHook<void, MsgDest, std::uint32_t, const float *, IEdict *>;
-    using IMessageBeginHookRegistry = IHookRegistry<void, MsgDest, std::uint32_t, const float *, IEdict *>;
+    using ISrvCmdHook = IHook<void, std::string_view>;
+    using ISrvCmdHookRegistry = IHookRegistry<void, std::string_view>;
+
+    using ISrvExecHook = IHook<void>;
+    using ISrvExecHookRegistry = IHookRegistry<void>;
+
+    using IRegSrvCmdHook = IHook<void, std::string_view, ServerCmdCallback>;
+    using IRegSrvCmdHookRegistry = IHookRegistry<void, std::string_view, ServerCmdCallback>;
+
+    using IMessageBeginHook = IHook<void, MsgDest, MsgType, const float *, IEdict *>;
+    using IMessageBeginHookRegistry = IHookRegistry<void, MsgDest, MsgType, const float *, IEdict *>;
 
     using IMessageEndHook = IHook<void>;
     using IMessageEndHookRegistry = IHookRegistry<void>;
@@ -49,27 +66,62 @@ namespace Metamod::Engine
     using IWriteLongHook = IHook<void, std::int32_t>;
     using IWriteLongHookRegistry = IHookRegistry<void, std::int32_t>;
 
-    using IWriteEntityHook = IHook<void, std::int16_t>;
-    using IWriteEntityHookRegistry = IHookRegistry<void, std::int16_t>;
+    using IWriteEntityHook = IHook<void, MsgEntity>;
+    using IWriteEntityHookRegistry = IHookRegistry<void, MsgEntity>;
 
-    using IWriteAngleHook = IHook<void, float>;
-    using IWriteAngleHookRegistry = IHookRegistry<void, float>;
+    using IWriteAngleHook = IHook<void, MsgAngle>;
+    using IWriteAngleHookRegistry = IHookRegistry<void, MsgAngle>;
 
-    using IWriteCoordHook = IHook<void, float>;
-    using IWriteCoordHookRegistry = IHookRegistry<void, float>;
+    using IWriteCoordHook = IHook<void, MsgCoord>;
+    using IWriteCoordHookRegistry = IHookRegistry<void, MsgCoord>;
 
     using IWriteStringHook = IHook<void, std::string_view>;
     using IWriteStringHookRegistry = IHookRegistry<void, std::string_view>;
 
-    using IRegUserMsgHook = IHook<std::uint8_t, std::string_view, std::uint8_t>;
-    using IRegUserMsgHookRegistry = IHookRegistry<std::uint8_t, std::string_view, std::uint8_t>;
+    using IRegUserMsgHook = IHook<MsgType, std::string_view, std::int16_t>;
+    using IRegUserMsgHookRegistry = IHookRegistry<MsgType, std::string_view, std::int16_t>;
+    
+    using IGetPlayerAuthIDHook = IHook<std::string_view, IEdict *>;
+    using IGetPlayerAuthIDHookRegistry = IHookRegistry<std::string_view, IEdict *>;
+    
+    using IGetPlayerUserIDHook = IHook<UserID, IEdict *>;
+    using IGetPlayerUserIDHookRegistry = IHookRegistry<UserID, IEdict *>;
+
+    using ISVDropClientHook = IHook<void, IGameClient *, bool, std::string_view>;
+    using ISVDropClientHookRegistry = IHookRegistry<void, IGameClient *, bool, std::string_view>;
+
+    using ICvarDirectSetHook = IHook<void, ICvar *, std::string_view>;
+    using ICvarDirectSetHookRegistry = IHookRegistry<void, ICvar *, std::string_view>;
+    
+    using IInfoKeyValueHook = IHook<std::string_view, InfoBuffer, std::string_view>;
+    using IInfoKeyValueHookRegistry = IHookRegistry<std::string_view, InfoBuffer, std::string_view>;
+    
+    using ICmdArgvHook = IHook<std::string_view, std::uint8_t>;
+    using ICmdArgvHookRegistry = IHookRegistry<std::string_view, std::uint8_t>;
+    
+    using ICmdArgsHook = IHook<std::string_view>;
+    using ICmdArgsHookRegistry = IHookRegistry<std::string_view>;
+    
+    using ICmdArgcHook = IHook<std::uint8_t>;
+    using ICmdArgcHookRegistry = IHookRegistry<std::uint8_t>;
+
+    using IRegisterCvarHook = IHook<void, std::string_view, std::string_view>;
+    using IRegisterCvarHookRegistry = IHookRegistry<void, std::string_view, std::string_view>;
+
+    using IGetCvarHook = IHook<ICvar *, std::string_view>;
+    using IGetCvarHookRegistry = IHookRegistry<ICvar *, std::string_view>;
 
     class IHooks
     {
     public:
         virtual ~IHooks() = default;
 
+        virtual IPrecacheModelHookRegistry *precacheModel() = 0;
+        virtual IPrecacheSoundHookRegistry *precacheSound() = 0;
         virtual IChangeLevelHookRegistry *changeLevel() = 0;
+        virtual ISrvCmdHookRegistry *srvCmd() = 0;
+        virtual ISrvExecHookRegistry *srvExec() = 0;
+        virtual IRegSrvCmdHookRegistry *regSrvCmd() = 0;
         virtual IMessageBeginHookRegistry *messageBegin() = 0;
         virtual IMessageEndHookRegistry *messageEnd() = 0;
         virtual IWriteByteHookRegistry *writeByte() = 0;
@@ -81,5 +133,15 @@ namespace Metamod::Engine
         virtual IWriteCoordHookRegistry *writeCoord() = 0;
         virtual IWriteStringHookRegistry *writeString() = 0;
         virtual IRegUserMsgHookRegistry *regUserMsg() = 0;
+        virtual IGetPlayerAuthIDHookRegistry *getPlayerAuthID() = 0;
+        virtual IGetPlayerUserIDHookRegistry *getPlayerUserID() = 0;
+        virtual ISVDropClientHookRegistry *svDropClient() = 0;
+        virtual ICvarDirectSetHookRegistry *cvarDirectSet() = 0;
+        virtual IInfoKeyValueHookRegistry *infoKeyValue() = 0;
+        virtual ICmdArgvHookRegistry *cmdArgv() = 0;
+        virtual ICmdArgsHookRegistry *cmdArgs() = 0;
+        virtual ICmdArgcHookRegistry *cmdArgc() = 0;
+        virtual IRegisterCvarHookRegistry *registerCvar() = 0;
+        virtual IGetCvarHookRegistry *getCvar() = 0;
     };
 }

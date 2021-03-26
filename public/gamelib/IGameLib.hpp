@@ -19,13 +19,28 @@
 
 #pragma once
 
+#include <Common.hpp>
+
 #include <string_view>
 #include <StdFSWrapper.hpp>
-#include <gamelib/IHooks.hpp>
+
+namespace Metamod::Engine
+{
+    class IEdict;
+    class IEntVars;
+    class ITraceResult;
+}
 
 namespace Metamod::GameLib
 {
-    class IFuncs;
+    namespace Entities
+    {
+        class IBaseEntity;
+        class IBasePlayer;
+    }
+    class IHooks;
+    class IBasePlayerHooks;
+
     class IGameLib
     {
     public:
@@ -36,6 +51,38 @@ namespace Metamod::GameLib
         virtual const fs::path &getGameDir() const = 0;
         virtual const fs::path &getPathname() const = 0;
         virtual IHooks *getHooks() const = 0;
-        virtual IFuncs *getFuncs(bool direct = false) const = 0;
+
+        virtual void pfnGameInit(FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual bool pfnClientConnect(Engine::IEdict *pEntity, std::string_view pszName,
+                                      std::string_view pszAddress, std::string &szRejectReason,
+                                      FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual void pfnClientPutInServer(Engine::IEdict *pEntity, FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual void pfnClientCommand(Engine::IEdict *pEntity, FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual void pfnClientUserInfoChanged(Engine::IEdict *pEntity,
+                                              char *infobuffer,
+                                              FuncCallType callType = FuncCallType::Direct) = 0;
+
+        virtual void pfnServerActivate(std::uint32_t edictCount,
+                                       std::uint32_t clientMax,
+                                       FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual void pfnServerDeactivate(FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual void pfnStartFrame(FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual void pfnGameShutdown(FuncCallType callType = FuncCallType::Direct) = 0;
+
+        /**
+         * @brief Returns entity.
+         *
+         * @return Edict's base entity representation.
+         */
+        virtual Entities::IBaseEntity *getBaseEntity(const Engine::IEdict *edict) = 0;
+
+        /**
+         * @brief Returns player entity.
+         *
+         * @return Edict's player entity representation.
+         */
+        virtual Entities::IBasePlayer *getBasePlayer(const Engine::IEdict *edict) = 0;
+
+        virtual IBasePlayerHooks *getCBasePlayerHooks() = 0;
     };
 }

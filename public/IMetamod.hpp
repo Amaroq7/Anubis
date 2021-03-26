@@ -19,15 +19,12 @@
 
 #pragma once
 
-#include <string_view>
-
 #include "Common.hpp"
+#include "IHelpers.hpp"
 #include "IPlugin.hpp"
+#include "IHookChains.hpp"
 #include "engine/IEngine.hpp"
-#include "engine/IHooks.hpp"
-#include "HookChains.hpp"
 #include "gamelib/IGameLib.hpp"
-#include "entities/IBasePlayer.hpp"
 
 namespace Metamod
 {
@@ -36,6 +33,20 @@ namespace Metamod
         Valve = 0,
         CStrike,
         CZero,
+    };
+
+    enum class LogLevel : std::uint8_t
+    {
+        Debug = 0,
+        Info,
+        Warning,
+        Error
+    };
+
+    enum class LogDest : std::uint8_t
+    {
+        Console = (1 << 0),
+        File = (1 << 1)
     };
 
     class IMetamod
@@ -50,7 +61,7 @@ namespace Metamod
         {
             std::string_view name;
             std::int16_t size;
-            std::uint8_t id;
+            std::uint8_t id = -1;
         };
 
         virtual ~IMetamod() = default;
@@ -60,11 +71,12 @@ namespace Metamod
         virtual GameLib::IGameLib *getGameLib() const = 0;
         virtual GameType getGameType() const = 0;
         virtual const RegMsg *getMsgInfo(std::string_view name) const = 0;
+        virtual void logMsg(IPlugin *plugin, LogLevel level, LogDest dest, std::string_view msg) = 0;
     };
 
-    C_DLLEXPORT IPlugin *MetaQuery();
     using fnMetaQuery = IPlugin *(*)();
+    C_DLLEXPORT IPlugin *MetaQuery();
 
-    C_DLLEXPORT bool MetaInit();
-    using fnMetaInit = bool *(*)(IMetamod *api);
+    using fnMetaInit = bool (*)(IMetamod *api);
+    C_DLLEXPORT bool MetaInit(IMetamod *api);
 }

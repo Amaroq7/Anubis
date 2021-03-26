@@ -34,13 +34,28 @@ namespace Metamod
 {
     // Specifies priorities for hooks call order in the chain.
     // For equal priorities first registered hook will be called first.
-    enum class HookPriority : std::uint32_t
+    enum class HookPriority : std::uint8_t
     {
         UNINTERRUPTABLE = 255, // Hook will be called before other hooks.
         HIGH = 192,            // Hook will be called before hooks with default priority.
         DEFAULT = 128,         // Default hook call priority.
         MEDIUM = 64,           // Hook will be called after hooks with default priority.
         LOW = 0,               // Hook will be called after all other hooks.
+    };
+    
+    class IHookInfo
+    {
+    public:
+        enum class State : std::uint8_t
+        {
+            Disabled = 0,
+            Enabled
+        };
+        
+    public:
+        virtual ~IHookInfo() = default;
+        virtual void setState(State state) = 0;
+        virtual HookPriority getPriority() const = 0;
     };
 
     template<typename t_ret, typename... t_args>
@@ -66,8 +81,8 @@ namespace Metamod
     public:
         virtual ~IHookRegistry() = default;
 
-        virtual bool registerHook(HookFunc<t_ret, t_args...> hook, HookPriority priority = HookPriority::DEFAULT) = 0;
-        virtual void unregisterHook(HookFunc<t_ret, t_args...> hook) = 0;
+        virtual IHookInfo *registerHook(HookFunc<t_ret, t_args...> hook, HookPriority priority = HookPriority::DEFAULT) = 0;
+        virtual void unregisterHook(IHookInfo *hookInfo) = 0;
     };
 
     template<typename t_ret, typename t_entity, typename... t_args>
@@ -76,12 +91,12 @@ namespace Metamod
     public:
         virtual ~IClassHook() = default;
 
-        virtual t_ret callNext(t_entity *entity, t_args... args) = 0;
-        virtual t_ret callOriginal(t_entity *entity, t_args... args) const = 0;
+        virtual t_ret callNext(t_entity entity, t_args... args) = 0;
+        virtual t_ret callOriginal(t_entity entity, t_args... args) const = 0;
     };
 
     template<typename t_ret, typename t_entity, typename... t_args>
-    using ClassHookFunc = std::function<t_ret(IClassHook<t_ret, t_entity *, t_args...> *, t_entity *, t_args...)>;
+    using ClassHookFunc = std::function<t_ret(IClassHook<t_ret, t_entity, t_args...> *, t_entity, t_args...)>;
 
     template<typename t_ret, typename t_entity, typename... t_args>
     class IClassHookRegistry
@@ -89,7 +104,7 @@ namespace Metamod
     public:
         virtual ~IClassHookRegistry() = default;
 
-        virtual bool registerHook(ClassHookFunc<t_ret, t_entity, t_args...> hook, HookPriority priority = HookPriority::DEFAULT) = 0;
-        virtual void unregisterHook(ClassHookFunc<t_ret, t_entity, t_args...> hook) = 0;
+        virtual IHookInfo *registerHook(ClassHookFunc<t_ret, t_entity, t_args...> hook, HookPriority priority = HookPriority::DEFAULT) = 0;
+        virtual void unregisterHook(IHookInfo *hookInfo) = 0;
     };
 }

@@ -22,12 +22,6 @@
 #include <cinttypes>
 #include <cstddef>
 
-namespace Metamod::Entities
-{
-    class IBasePlayer;
-    class IBaseEntity;
-}
-
 namespace Metamod::Engine
 {
     class IEntVars;
@@ -57,20 +51,6 @@ namespace Metamod::Engine
          * @return True if edict is freed, false otherwise.
          */
         virtual bool isValid() const = 0;
-
-        /**
-         * @brief Returns entity.
-         *
-         * @return Edict's base entity representation.
-         */
-        virtual Entities::IBaseEntity *getBaseEntity() = 0;
-
-        /**
-         * @brief Returns player entity.
-         *
-         * @return Edict's player entity representation.
-         */
-        virtual Entities::IBasePlayer *getBasePlayer() = 0;
 
         /**
          * @brief Returns entity's variables.
