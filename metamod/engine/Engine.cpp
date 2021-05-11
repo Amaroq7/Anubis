@@ -423,6 +423,14 @@ namespace Metamod::Engine
         }, callType, pEdict, model);
     }
 
+    Edict *Engine::createEntity(FuncCallType callType)
+    {
+        static CreateEntityHookRegistry *hookchain = m_hooks->createEntity();
+        return _execEngineFunc(hookchain, [this]() {
+            return getEdict(CREATE_ENTITY());
+        }, callType);
+    }
+
     void Engine::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;

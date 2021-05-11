@@ -73,6 +73,7 @@ namespace Metamod::Engine
         virtual void registerCvar(std::string_view name, std::string_view value, FuncCallType callType) = 0;
         virtual ICvar *getCvar(std::string_view name, FuncCallType callType) = 0;
         virtual void setModel(IEdict *pEdict, std::string_view model, FuncCallType callType) = 0;
+        virtual IEdict *createEntity(FuncCallType callType) = 0;
 
         /* Engine globals */
         virtual float getTime() const = 0;

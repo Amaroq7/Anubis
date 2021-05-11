@@ -160,4 +160,9 @@ namespace Metamod::Engine
     {
         return &m_setModel;
     }
+
+    CreateEntityHookRegistry *Hooks::createEntity()
+    {
+        return &m_createEntity;
+    }
 }

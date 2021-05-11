@@ -171,4 +171,11 @@ namespace Metamod::Engine::Callbacks::GameDLL
 
         engine->setModel(engine->getEdict(e), m, FuncCallType::Hooks);
     }
+
+    edict_t *pfnCreateEntity()
+    {
+        static Engine *engine = gMetaGlobal->getEngine();
+
+        return *engine->createEntity(FuncCallType::Hooks);
+    }
 }

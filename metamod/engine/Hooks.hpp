@@ -109,6 +109,9 @@ namespace Metamod::Engine
     using SetModelHook = Hook<void, IEdict *, std::string_view>;
     using SetModelHookRegistry = HookRegistry<void, IEdict *, std::string_view>;
 
+    using CreateEntityHook = Hook<IEdict *>;
+    using CreateEntityHookRegistry = HookRegistry<IEdict*>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -142,6 +145,7 @@ namespace Metamod::Engine
         RegisterCvarHookRegistry *registerCvar() override;
         GetCvarHookRegistry *getCvar() override;
         SetModelHookRegistry *setModel() override;
+        CreateEntityHookRegistry *createEntity() override;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -172,5 +176,6 @@ namespace Metamod::Engine
         RegisterCvarHookRegistry m_registerCvar;
         GetCvarHookRegistry m_getCvar;
         SetModelHookRegistry m_setModel;
+        CreateEntityHookRegistry m_createEntity;
     };
 }
