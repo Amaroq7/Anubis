@@ -77,6 +77,7 @@ namespace Metamod::Engine
         std::uint8_t cmdArgc(FuncCallType callType) const override;
         void registerCvar(std::string_view name, std::string_view value, FuncCallType callType) override;
         Cvar *getCvar(std::string_view name, FuncCallType callType) override;
+        void setModel(IEdict *pEdict, std::string_view model, FuncCallType callType) override;
 
         float getTime() const override;
         std::string_view getMapName() const override;

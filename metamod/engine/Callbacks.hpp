@@ -61,4 +61,5 @@ namespace Metamod::Engine::Callbacks::GameDLL
 	int	pfnCmd_Argc();
     void pfnCVarRegister(cvar_t *pCvar);
     cvar_t *pfnCVarGetPointer(const char *szVarName);
+    void pfnSetModel(edict_t *e, const char *m);
 }

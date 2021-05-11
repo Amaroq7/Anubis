@@ -106,6 +106,9 @@ namespace Metamod::Engine
     using GetCvarHook = Hook<ICvar *, std::string_view>;
     using GetCvarHookRegistry = HookRegistry<ICvar *, std::string_view>;
 
+    using SetModelHook = Hook<void, IEdict *, std::string_view>;
+    using SetModelHookRegistry = HookRegistry<void, IEdict *, std::string_view>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -138,6 +141,7 @@ namespace Metamod::Engine
         CmdArgcHookRegistry *cmdArgc() override;
         RegisterCvarHookRegistry *registerCvar() override;
         GetCvarHookRegistry *getCvar() override;
+        SetModelHookRegistry *setModel() override;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -167,5 +171,6 @@ namespace Metamod::Engine
         CmdArgcHookRegistry m_cmdArgc;
         RegisterCvarHookRegistry m_registerCvar;
         GetCvarHookRegistry m_getCvar;
+        SetModelHookRegistry m_setModel;
     };
 }

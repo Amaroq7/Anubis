@@ -155,4 +155,9 @@ namespace Metamod::Engine
     {
         return &m_getCvar;
     }
+
+    SetModelHookRegistry *Hooks::setModel()
+    {
+        return &m_setModel;
+    }
 }

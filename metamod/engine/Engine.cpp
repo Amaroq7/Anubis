@@ -415,6 +415,14 @@ namespace Metamod::Engine
         }, callType, name, value);
     }
 
+    void Engine::setModel(IEdict *pEdict, std:;string_view model, FuncCallType callType)
+    {
+        static SetModelHookRegistry *hookchain = m_hooks->setModel();
+        return _execEngineFunc(hookchain, [](IEdict *edict, std::string_view model) {
+            SET_MODEL(*dynamic_cast<Edict *>(pEdict), model.data());
+        }, callType, pEdict, model);
+    }
+
     void Engine::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;
@@ -446,6 +454,7 @@ namespace Metamod::Engine
         ASSIGN_ENG_FUNCS(pfnCmd_Argc);
         ASSIGN_ENG_FUNCS(pfnCVarRegister);
         ASSIGN_ENG_FUNCS(pfnCVarGetPointer);
+        ASSIGN_ENG_FUNCS(pfnSetModel);
 #undef ASSIGN_ENG_FUNCS
     }
 

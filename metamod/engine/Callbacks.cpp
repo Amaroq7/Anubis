@@ -164,4 +164,11 @@ namespace Metamod::Engine::Callbacks::GameDLL
         
         return *engine->getCvar(szVarName, FuncCallType::Hooks);
     }
+    
+    void pfnSetModel(edict_t *e, const char *m)
+    {
+        static Engine *engine = gMetaGlobal->getEngine();
+
+        engine->setModel(engine->getEdict(e), m, FuncCallType::Hooks);
+    }
 }
