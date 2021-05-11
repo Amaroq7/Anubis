@@ -182,6 +182,21 @@ namespace Metamod::GameLib
         return m_hooks.get();
     }
 
+    bool GameLib::callGameEntity(std::string_view name, IEntVars *pev)
+    {
+        using ENTITY_FN = void (*)(entvars_t *);
+
+        auto pfnEntity = m_gameLibrary->getSymbol<ENTITY_FN>(name.data());
+        
+        if (!pfnEntity) {
+            return false;
+        }
+
+        std::invoke(pfnEntity, *dynamic_cast<EntVars *>(pev));
+
+        return true;
+    }
+
     void GameLib::pfnGameInit(FuncCallType callType)
     {
         static GameInitHookRegistry *hookchain = m_hooks->gameInit();

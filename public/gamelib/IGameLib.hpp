@@ -52,6 +52,8 @@ namespace Metamod::GameLib
         virtual const fs::path &getPathname() const = 0;
         virtual IHooks *getHooks() const = 0;
 
+        virtual bool callGameEntity(std::string_view name, IEntVars *pev) = 0;
+
         virtual void pfnGameInit(FuncCallType callType = FuncCallType::Direct) = 0;
         virtual bool pfnClientConnect(Engine::IEdict *pEntity, std::string_view pszName,
                                       std::string_view pszAddress, std::string &szRejectReason,

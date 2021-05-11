@@ -58,6 +58,8 @@ namespace Metamod::GameLib
         const fs::path &getPathname() const override;
         Hooks *getHooks() const override;
 
+        bool callGameEntity(std::string_view name, IEntVars *pev) override;
+
         void pfnGameInit(FuncCallType callType = FuncCallType::Direct) override;
         bool pfnClientConnect(Engine::IEdict *pEntity, std::string_view pszName,
                                       std::string_view pszAddress, std::string &szRejectReason,
