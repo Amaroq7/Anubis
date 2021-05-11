@@ -79,6 +79,7 @@ namespace Metamod::Engine
         Cvar *getCvar(std::string_view name, FuncCallType callType) override;
         void setModel(IEdict *pEdict, std::string_view model, FuncCallType callType) override;
         Edict *createEntity(FuncCallType callType) override;
+        void removeEntity(IEdict *pEdict, FuncCallType callType) override;
 
         float getTime() const override;
         std::string_view getMapName() const override;

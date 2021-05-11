@@ -112,6 +112,9 @@ namespace Metamod::Engine
     using CreateEntityHook = Hook<IEdict *>;
     using CreateEntityHookRegistry = HookRegistry<IEdict*>;
 
+    using RemoveEntityHook = Hook<void, IEdict *>;
+    using RemoveEntityHookRegistry = HookRegistry<void, IEdict *>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -146,6 +149,7 @@ namespace Metamod::Engine
         GetCvarHookRegistry *getCvar() override;
         SetModelHookRegistry *setModel() override;
         CreateEntityHookRegistry *createEntity() override;
+        RemoveEntityHookRegistry *removeEntity() override;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -177,5 +181,6 @@ namespace Metamod::Engine
         GetCvarHookRegistry m_getCvar;
         SetModelHookRegistry m_setModel;
         CreateEntityHookRegistry m_createEntity;
+        RemoveEntityHookRegistry m_removeEntity;
     };
 }

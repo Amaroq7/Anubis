@@ -431,6 +431,14 @@ namespace Metamod::Engine
         }, callType);
     }
 
+    void Engine::removeEntity(IEdict *pEdict, FuncCallType callType)
+    {
+        static CreateEntityHookRegistry *hookchain = m_hooks->removeEntity();
+        return _execEngineFunc(hookchain, [this](IEdict *edict) {
+            REMOVE_ENTITY(*dynamic_cast<Edict *>(pEdict));
+        }, callType, pEdict);
+    }
+
     void Engine::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;
@@ -463,6 +471,8 @@ namespace Metamod::Engine
         ASSIGN_ENG_FUNCS(pfnCVarRegister);
         ASSIGN_ENG_FUNCS(pfnCVarGetPointer);
         ASSIGN_ENG_FUNCS(pfnSetModel);
+        ASSIGN_ENG_FUNCS(pfnCreateEntity);
+        ASSIGN_ENG_FUNCS(pfnRemoveEntity);
 #undef ASSIGN_ENG_FUNCS
     }
 

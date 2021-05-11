@@ -178,4 +178,11 @@ namespace Metamod::Engine::Callbacks::GameDLL
 
         return *engine->createEntity(FuncCallType::Hooks);
     }
+
+    void pfnRemoveEntity(edict_t *e)
+    {
+        static Engine *engine = gMetaGlobal->getEngine();
+
+        engine->removeEntity(engine->getEdict(e), FuncCallType::Hooks);
+    }
 }

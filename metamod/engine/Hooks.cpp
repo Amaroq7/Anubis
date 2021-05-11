@@ -165,4 +165,9 @@ namespace Metamod::Engine
     {
         return &m_createEntity;
     }
+
+    RemoveEntityHookRegistry *Hooks::removeEntity()
+    {
+        return &m_removeEntity;
+    }
 }

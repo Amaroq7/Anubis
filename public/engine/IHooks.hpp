@@ -117,6 +117,9 @@ namespace Metamod::Engine
     using ICreateEntityHook = IHook<IEdict *>;
     using ICreateEntityHookRegistry = IHookRegistry<IEdict*>;
 
+    using IRemoveEntityHook = IHook<void, IEdict *>;
+    using IRemoveEntityHookRegistry = IHookRegistry<void, IEdict *>;
+
     class IHooks
     {
     public:
@@ -151,5 +154,6 @@ namespace Metamod::Engine
         virtual IGetCvarHookRegistry *getCvar() = 0;
         virtual ISetModelHookRegistry *setModel() = 0;
         virtual ICreateEntityHookRegistry *createEntity() = 0;
+        virtual IRemoveEntityHookRegistry *removeEntity() = 0;
     };
 }
