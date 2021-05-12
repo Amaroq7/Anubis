@@ -42,6 +42,8 @@ namespace
         return nullptr;
     }
 
+    inline std::intptr_t getVTable(void *instance) { return *(reinterpret_cast<std::intptr_t *>(instance));}
+
     /* virtual void	Spawn( void ) { return; } */
     void vSpawnHook(
 #if defined __linux__
@@ -56,11 +58,14 @@ namespace
             mov [instance], ecx
         }
 #endif
-        static GameLib::BasePlayerSpawnHookRegistry *hookchain = gMetaGlobal->getGameLib()->getCBasePlayerHooks()->spawn();
+        if (getVTable(instance) == GameLib::Entities::Valve::BasePlayer::getVTable())
+        {
+            static GameLib::BasePlayerSpawnHookRegistry *hookchain = gMetaGlobal->getGameLib()->getCBasePlayerHooks()->spawn();
 
-        hookchain->callChain([instance](GameLib::Entities::IBasePlayer *) {
-            GameLib::VFuncHelpers::execOriginalFunc<>(gMetaGlobal->getGameLib()->getOriginalVFunc("spawn"), instance);
-        }, instanceToType<GameLib::Entities::IBasePlayer>(instance));
+            hookchain->callChain([instance](GameLib::Entities::IBasePlayer *) {
+              GameLib::VFuncHelpers::execOriginalFunc<>(gMetaGlobal->getGameLib()->getOriginalVFunc("spawn"), instance);
+            }, instanceToType<GameLib::Entities::IBasePlayer>(instance));
+        }
     }
 
     /*int TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType); */

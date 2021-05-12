@@ -46,6 +46,8 @@ namespace Metamod::Engine
             // Edict
             operator edict_t *() const;
 
+            void *getPrivateData() const;
+
         private:
             edict_t *m_edict = nullptr;
             std::unique_ptr<EntVars> m_entVars;

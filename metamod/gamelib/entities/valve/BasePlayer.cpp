@@ -18,6 +18,7 @@
  */
 
 #include "BasePlayer.hpp"
+#include <Metamod.hpp>
 #include <osconfig.h>
 #include <util.h>
 #include <cbase.h>
@@ -64,5 +65,35 @@ namespace Metamod::GameLib::Entities::Valve
             flDamage,
             bitsDamageType
         );
+    }
+
+    std::intptr_t BasePlayer::getVTable()
+    {
+        static std::intptr_t vTable = 0;
+
+        if (vTable == 0)
+        {
+            auto engine = gMetaGlobal->getEngine();
+            auto gameLib = gMetaGlobal->getGameLib();
+
+            Engine::Edict *edict = engine->createEntity(FuncCallType::Direct);
+            gameLib->callGameEntity(BasePlayer::CLASS_NAME, edict->getEntVars());
+
+            if (!edict->getPrivateData())
+            {
+                engine->removeEntity(edict, FuncCallType::Direct);
+                return 0;
+            }
+
+            vTable = *(reinterpret_cast<std::intptr_t *>(edict->getPrivateData()));
+            engine->removeEntity(edict, FuncCallType::Direct);
+
+            if (!reinterpret_cast<void *>(vTable))
+            {
+                return 0;
+            }
+        }
+
+        return vTable;
     }
 } // namespace Valve

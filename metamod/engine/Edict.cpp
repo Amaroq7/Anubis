@@ -51,4 +51,8 @@ namespace Metamod::Engine
     {
         return m_edict;
     }
+    void *Edict::getPrivateData() const
+    {
+        return m_edict->pvPrivateData;
+    }
 } // namespace Metamod::Engine

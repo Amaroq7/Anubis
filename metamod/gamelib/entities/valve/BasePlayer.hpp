@@ -14,11 +14,16 @@ namespace Metamod::GameLib::Entities::Valve
     class BasePlayer : public BaseMonster, public virtual IBasePlayer
     {
         public:
-            BasePlayer(const Engine::Edict *edict, BasePlayerHooks *m_hooks, const std::unordered_map<std::string, std::intptr_t> &originalVFuncs);
+            constexpr const char *CLASS_NAME = "player";
 
+        public:
+            BasePlayer(const Engine::Edict *edict, BasePlayerHooks *m_hooks, const std::unordered_map<std::string, std::intptr_t> &originalVFuncs);
+            ~BasePlayer() override = default;
+
+        public:
             int takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, int bitsDamageType) override;
             void makeVIP() override;
-            ~BasePlayer() override = default;
+            static std::intptr_t getVTable();
 
         private:
             operator CBasePlayer *() const;
