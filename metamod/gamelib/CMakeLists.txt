@@ -15,6 +15,7 @@ target_include_directories(${PROJECT_NAME}
         SYSTEM
         PRIVATE
         ${YAML_CPP_INCLUDE_DIR}
+        ${FMT_INCLUDE_DIR}
         ${CMAKE_SOURCE_DIR}/metamod
         ${CMAKE_SOURCE_DIR}/public
         ${CMAKE_SOURCE_DIR}/rehlds

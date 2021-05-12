@@ -319,7 +319,7 @@ namespace Metamod
             if (!hook)
             {
                 // TODO: Error message
-                return false;
+                return nullptr;
             }
 
             auto hookInfo = std::make_unique<ClassHookInfo<t_ret, t_entity, t_args...>>(hook, priority);

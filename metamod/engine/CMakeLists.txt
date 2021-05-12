@@ -17,6 +17,7 @@ add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 target_include_directories(${PROJECT_NAME}
         SYSTEM
         PRIVATE
+        ${FMT_INCLUDE_DIR}
         ${CMAKE_SOURCE_DIR}/metamod
         ${CMAKE_SOURCE_DIR}/include/
         ${CMAKE_SOURCE_DIR}/public
