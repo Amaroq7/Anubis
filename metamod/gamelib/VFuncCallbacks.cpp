@@ -26,19 +26,22 @@
 namespace
 {
     using namespace Metamod;
+
     template<typename T, typename = std::enable_if_t<std::is_base_of_v<GameLib::Entities::IBaseEntity, T>>>
     T *instanceToType(void *instance)
     {
         static GameLib::GameLib *gameLib = gMetaGlobal->getGameLib();
         static Engine::Engine *engine = gMetaGlobal->getEngine();
-        static std::uint32_t offset = gameLib->getPevOffset();
 
-        edict_t *ed = ENT(*reinterpret_cast<entvars_t **>(reinterpret_cast<std::intptr_t *>(instance) + offset));
+        edict_t *ed = ENT(*reinterpret_cast<entvars_t **>(reinterpret_cast<std::intptr_t *>(instance) + gameLib->getPevOffset()));
         if constexpr (std::is_same_v<T, GameLib::Entities::IBasePlayer>)
         {
             return gameLib->getBasePlayer(engine->getEdict(ed));
         }
+
+        return nullptr;
     }
+
     /* virtual void	Spawn( void ) { return; } */
     void vSpawnHook(
 #if defined __linux__
@@ -55,13 +58,13 @@ namespace
 #endif
         static GameLib::BasePlayerSpawnHookRegistry *hookchain = gMetaGlobal->getGameLib()->getCBasePlayerHooks()->spawn();
 
-        hookchain->callChain([instance](GameLib::Entities::IBasePlayer *plr) {
-            GameLib::VFuncHelpers::execOriginalFunc<>(gMetaGlobal->getGameLib()->getOriginalVFunc(0), instance);
+        hookchain->callChain([instance](GameLib::Entities::IBasePlayer *) {
+            GameLib::VFuncHelpers::execOriginalFunc<>(gMetaGlobal->getGameLib()->getOriginalVFunc("spawn"), instance);
         }, instanceToType<GameLib::Entities::IBasePlayer>(instance));
     }
 
     /*int TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType); */
-    std::int32_t vTakeDamageHook(
+    /*std::int32_t vTakeDamageHook(
 #if defined SP_POSIX
         void *instance,
 #endif
@@ -79,11 +82,11 @@ namespace
 #endif
 
         return 0;
-    }
+    }*/
 
     /*void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int
      * bitsDamageType); */
-    void vTraceAttack(
+    /*void vTraceAttack(
 #if defined SP_POSIX
         void *instance,
 #endif
@@ -100,6 +103,6 @@ namespace
             mov [instance], ecx
         }
 #endif
-    }
+    }*/
 
 } // namespace

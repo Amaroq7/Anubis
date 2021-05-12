@@ -29,7 +29,7 @@ namespace Metamod::GameLib::VFunc
 #endif
     );
 
-    std::int32_t vTakeDamageHook(
+    /*std::int32_t vTakeDamageHook(
 #if defined __linux__
         void *instance,
 #endif
@@ -48,5 +48,5 @@ namespace Metamod::GameLib::VFunc
         Vector vecDir,
         ::TraceResult *ptr,
         std::int32_t bitsDamageType
-    );
+    );*/
 } // namespace

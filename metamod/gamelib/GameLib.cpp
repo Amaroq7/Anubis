@@ -22,12 +22,13 @@
 #include <DllExports.hpp>
 #include "EntitiesHooks.hpp"
 
+#include <yaml-cpp/yaml.h>
+
 namespace Metamod::GameLib
 {
     GameLib::GameLib(const std::unique_ptr<Engine::Engine> &engine,
-                     std::string_view gameDir
-    )
-        : m_hooks(std::make_unique<Hooks>())
+                     std::string_view gameDir,
+                     const fs::path &metaConfigsDir) : m_hooks(std::make_unique<Hooks>())
     {
         for (const ModInfo& modInfo : knownGames)
         {
@@ -54,6 +55,7 @@ namespace Metamod::GameLib
 #endif
 
         _loadGameDLL(engine);
+        _loadVOffsets(metaConfigsDir);
     }
 
     std::string_view GameLib::getName() const
@@ -182,17 +184,18 @@ namespace Metamod::GameLib
         return m_hooks.get();
     }
 
-    bool GameLib::callGameEntity(std::string_view name, IEntVars *pev)
+    bool GameLib::callGameEntity(std::string_view name, Engine::IEntVars *pev)
     {
         using ENTITY_FN = void (*)(entvars_t *);
 
         auto pfnEntity = m_gameLibrary->getSymbol<ENTITY_FN>(name.data());
         
-        if (!pfnEntity) {
+        if (!pfnEntity)
+        {
             return false;
         }
 
-        std::invoke(pfnEntity, *dynamic_cast<EntVars *>(pev));
+        std::invoke(pfnEntity, *dynamic_cast<Engine::EntVars *>(pev));
 
         return true;
     }
@@ -321,7 +324,7 @@ namespace Metamod::GameLib
                 return _getEntity<Entities::Valve::BasePlayer>(edict);
             case GameType::CStrike:
             case GameType::CZero:
-                return _getEntity<Entities::CStrike::BasePlayer>(edict);
+                //return _getEntity<Entities::CStrike::BasePlayer>(edict);
             default:
                 return nullptr;
         }
@@ -337,13 +340,46 @@ namespace Metamod::GameLib
         return m_basePlayerhooks.get();
     }
 
+    std::intptr_t GameLib::getOriginalVFunc(std::string_view vname) const
+    {
+        return m_originalVFuncs.at(vname.data());
+    }
+
+    void GameLib::_loadVOffsets(const fs::path &metaConfigsDir)
+    {
+        try
+        {
+            fs::path virtualOffsetsPath =
+                metaConfigsDir / "gamedata" / "virtual" / getName() / "offsets.yml";
+#if defined __linux__
+            YAML::Node rootNode = YAML::LoadFile(virtualOffsetsPath.c_str());
+            std::string_view osName("linux");
+#elif defined _WIN32
+            YAML::Node rootNode = YAML::LoadFile(virtualOffsetsPath.string().c_str());
+            std::string_view osName("windows");
+#endif
+            for (auto funcIt = rootNode.begin(); funcIt != rootNode.end(); ++funcIt)
+            {
+                if (m_pevOffset == std::numeric_limits<std::uint32_t>::max() &&
+                    funcIt->first.as<std::string>() == "pev")
+                {
+                    m_pevOffset = funcIt->second[osName.data()].as<std::uint32_t>();
+                    continue;
+                }
+
+                m_virtualOffsets.try_emplace(funcIt->first.as<std::string>(),
+                                                funcIt->second[osName.data()].as<std::uint32_t>());
+            }
+        }
+        catch (const YAML::BadFile &e)
+        {
+            using namespace std::string_literals;
+            throw std::runtime_error("Error parsing yaml vtable offsets file: "s + e.what());
+        }
+    }
+
     std::uint32_t GameLib::getPevOffset() const
     {
         return m_pevOffset;
-    }
-
-    std::intptr_t GameLib::getOriginalVFunc(std::uint16_t func) const
-    {
-        return m_originalVFuncs.at(func);
     }
 }

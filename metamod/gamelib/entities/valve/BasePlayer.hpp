@@ -14,7 +14,7 @@ namespace Metamod::GameLib::Entities::Valve
     class BasePlayer : public BaseMonster, public virtual IBasePlayer
     {
         public:
-            BasePlayer(const Engine::Edict *edict, BasePlayerHooks *m_hooks, const std::unordered_map<std::uint16_t, std::intptr_t> &originalVFuncs);
+            BasePlayer(const Engine::Edict *edict, BasePlayerHooks *m_hooks, const std::unordered_map<std::string, std::intptr_t> &originalVFuncs);
 
             int takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, int bitsDamageType) override;
             void makeVIP() override;
@@ -25,6 +25,6 @@ namespace Metamod::GameLib::Entities::Valve
 
         private:
             BasePlayerHooks *m_hooks;
-            const std::unordered_map<std::uint16_t, std::intptr_t> &m_originalVFuncs;
+            const std::unordered_map<std::string, std::intptr_t> &m_originalVFuncs;
     };
 }

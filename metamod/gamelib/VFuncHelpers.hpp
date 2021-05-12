@@ -39,7 +39,7 @@ namespace Metamod::GameLib::VFuncHelpers
 #if defined __linux__
             reinterpret_cast<t_ret (*)(void *, t_args...)>(origFunc)(instance, args...);
 #elif defined _WIN32
-            reinterpret_cast<ReturnType(__fastcall *)(void *, int, Args...)>(origFunc)(instance, 0, args...);
+            reinterpret_cast<t_ret(__fastcall *)(void *, int, Args...)>(origFunc)(instance, 0, args...);
 #endif
         }
         else
@@ -47,7 +47,7 @@ namespace Metamod::GameLib::VFuncHelpers
 #if defined __linux__
             return reinterpret_cast<t_ret (*)(void *, t_args...)>(origFunc)(instance, args...);
 #elif defined _WIN32
-            return reinterpret_cast<ReturnType(__fastcall *)(void *, int, Args...)>(origFunc)(instance, 0, args...);
+            return reinterpret_cast<t_ret(__fastcall *)(void *, int, Args...)>(origFunc)(instance, 0, args...);
 #endif
         }
     }

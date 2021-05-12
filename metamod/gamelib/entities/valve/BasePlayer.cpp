@@ -30,7 +30,7 @@ namespace Metamod::GameLib::Entities::Valve
 {
     BasePlayer::BasePlayer(const Engine::Edict *edict,
                            BasePlayerHooks *m_hooks,
-                           const std::unordered_map<std::uint16_t, std::intptr_t> &originalVFuncs)
+                           const std::unordered_map<std::string, std::intptr_t> &originalVFuncs)
         : BaseMonster(edict), m_hooks(m_hooks), m_originalVFuncs(originalVFuncs)
     {}
 
@@ -53,7 +53,7 @@ namespace Metamod::GameLib::Entities::Valve
         if (hasHooks && !m_callHooks)
         {
             return VFuncHelpers::execOriginalFunc<std::int32_t, entvars_t *, entvars_t *, float, std::int32_t>(
-                m_originalVFuncs.at(static_cast<std::uint16_t>(vFuncType::TakeDamage)),
+                m_originalVFuncs.at("takedamage"),
                                  operator CBasePlayer *(), *static_cast<Engine::EntVars *>(pevInflictor),
                                  *static_cast<Engine::EntVars *>(pevAttacker), flDamage, bitsDamageType);
         }

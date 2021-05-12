@@ -415,27 +415,27 @@ namespace Metamod::Engine
         }, callType, name, value);
     }
 
-    void Engine::setModel(IEdict *pEdict, std:;string_view model, FuncCallType callType)
+    void Engine::setModel(IEdict *pEdict, std::string_view model, FuncCallType callType)
     {
         static SetModelHookRegistry *hookchain = m_hooks->setModel();
         return _execEngineFunc(hookchain, [](IEdict *edict, std::string_view model) {
-            SET_MODEL(*dynamic_cast<Edict *>(pEdict), model.data());
+            SET_MODEL(*dynamic_cast<Edict *>(edict), model.data());
         }, callType, pEdict, model);
     }
 
     Edict *Engine::createEntity(FuncCallType callType)
     {
         static CreateEntityHookRegistry *hookchain = m_hooks->createEntity();
-        return _execEngineFunc(hookchain, [this]() {
+        return static_cast<Edict *>(_execEngineFunc(hookchain, [this]() -> IEdict * {
             return getEdict(CREATE_ENTITY());
-        }, callType);
+        }, callType));
     }
 
     void Engine::removeEntity(IEdict *pEdict, FuncCallType callType)
     {
-        static CreateEntityHookRegistry *hookchain = m_hooks->removeEntity();
-        return _execEngineFunc(hookchain, [this](IEdict *edict) {
-            REMOVE_ENTITY(*dynamic_cast<Edict *>(pEdict));
+        static RemoveEntityHookRegistry *hookchain = m_hooks->removeEntity();
+        return _execEngineFunc(hookchain, [](IEdict *edict) {
+            REMOVE_ENTITY(*dynamic_cast<Edict *>(edict));
         }, callType, pEdict);
     }
 
