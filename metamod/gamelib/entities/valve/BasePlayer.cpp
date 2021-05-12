@@ -19,8 +19,6 @@
 
 #include "BasePlayer.hpp"
 #include <Metamod.hpp>
-#include <osconfig.h>
-#include <util.h>
 #include <cbase.h>
 #include <player.h>
 

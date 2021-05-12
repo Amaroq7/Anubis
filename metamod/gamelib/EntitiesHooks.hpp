@@ -27,8 +27,8 @@ namespace Metamod::GameLib
     using BasePlayerSpawnHook = ClassHook<void, Entities::IBasePlayer *>;
     using BasePlayerSpawnHookRegistry = ClassHookRegistry<void, Entities::IBasePlayer *>;
 
-    using BasePlayerTakeDamageHook = ClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
-    using BasePlayerTakeDamageHookRegistry = ClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
+    using BasePlayerTakeDamageHook = ClassHook<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
+    using BasePlayerTakeDamageHookRegistry = ClassHookRegistry<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
 
     using BasePlayerTraceAttackHook = ClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, int>;
     using BasePlayerTraceAttackHookRegistry = ClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, int>;

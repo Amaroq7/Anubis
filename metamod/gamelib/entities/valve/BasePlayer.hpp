@@ -14,7 +14,7 @@ namespace Metamod::GameLib::Entities::Valve
     class BasePlayer : public BaseMonster, public virtual IBasePlayer
     {
         public:
-            constexpr const char *CLASS_NAME = "player";
+            static constexpr const char *CLASS_NAME = "player";
 
         public:
             BasePlayer(const Engine::Edict *edict, BasePlayerHooks *m_hooks, const std::unordered_map<std::string, std::intptr_t> &originalVFuncs);

@@ -51,7 +51,7 @@ namespace
 #endif
     )
     {
-#if defined SP_WINDOWS
+#if defined _WIN32
         void *instance;
         __asm
         {
@@ -69,8 +69,8 @@ namespace
     }
 
     /*int TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType); */
-    /*std::int32_t vTakeDamageHook(
-#if defined SP_POSIX
+    std::int32_t vTakeDamageHook(
+#if defined __linux__
         void *instance,
 #endif
         entvars_t *pevInflictor,
@@ -78,16 +78,26 @@ namespace
         float flDamage,
         std::int32_t bitsDamageType [[maybe_unused]])
     {
-#if defined SP_WINDOWS
+#if defined _WIN32
         void *instance;
         __asm
         {
             mov [instance], ecx
         }
 #endif
+        if (getVTable(instance) == GameLib::Entities::Valve::BasePlayer::getVTable())
+        {
+            static GameLib::BasePlayerTakeDamageHookRegistry *hookchain = gMetaGlobal->getGameLib()->getCBasePlayerHooks()->takeDamage();
+            static auto engine = gMetaGlobal->getEngine();
+
+            return hookchain->callChain([instance](GameLib::Entities::IBasePlayer *, Engine::IEntVars * pevInflictor, Engine::IEntVars * pevAttacker, float flDamage, int bitsDamageType) {
+                      return GameLib::VFuncHelpers::execOriginalFunc<int, entvars_t *, entvars_t *, float, int>(gMetaGlobal->getGameLib()->getOriginalVFunc("takedamage"), instance, *dynamic_cast<Engine::EntVars *>(pevInflictor), *dynamic_cast<Engine::EntVars *>(pevAttacker), flDamage, bitsDamageType);
+            },instanceToType<GameLib::Entities::IBasePlayer>(instance),
+                engine->getEntVars(pevInflictor), engine->getEntVars(pevAttacker), flDamage, bitsDamageType);
+        }
 
         return 0;
-    }*/
+    }
 
     /*void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int
      * bitsDamageType); */
