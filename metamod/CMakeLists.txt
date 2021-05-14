@@ -21,7 +21,7 @@ else()
 endif()
 
 add_subdirectory(engine)
-add_subdirectory(gamelib)
+add_subdirectory(game)
 
 set(SRC_FILES
         EngineExports.cpp

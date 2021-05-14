@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Metamod++ Development Team
+ *  Copyright (C) 2020-2021 Metamod++ Development Team
  *
  *  This file is part of Metamod++.
  *
@@ -17,20 +17,36 @@
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "GameClient.hpp"
-#include <Metamod.hpp>
+#pragma once
 
-namespace Metamod::Engine
+#include "Library.hpp"
+
+namespace Metamod::Game::VFunc
 {
-    GameClient::GameClient(::IGameClient *gameClient) : m_gameClient(gameClient) {}
-    Edict *GameClient::getEdict() const
-    {
-        static Library *engine = gMetaGlobal->getEngine();
-        return engine->getEdict(m_gameClient->GetEdict());
-    }
+    void vSpawnHook(
+#if defined __linux__
+        void *instance
+#endif
+    );
 
-    GameClient::operator ::IGameClient *() const
-    {
-        return m_gameClient;
-    }
-}
+    std::int32_t vTakeDamageHook(
+#if defined __linux__
+        void *instance,
+#endif
+        entvars_t *pevInflictor,
+        entvars_t *pevAttacker,
+        float flDamage,
+        std::int32_t bitsDamageType
+    );
+
+    /*void vTraceAttack(
+#if defined __linux__
+        void *instance,
+#endif
+        entvars_t *pevAttacker,
+        float flDamage,
+        Vector vecDir,
+        ::TraceResult *ptr,
+        std::int32_t bitsDamageType
+    );*/
+} // namespace

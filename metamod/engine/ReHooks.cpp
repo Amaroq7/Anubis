@@ -41,10 +41,10 @@ namespace Metamod::Engine::ReHooks
 
     void Cvar_DirectSetHook(IRehldsHook_Cvar_DirectSet *chain, cvar_t *cvar, const char *value)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
         static CvarDirectSetHookRegistry *hookchain = engine->getHooks()->cvarDirectSet();
 
-        auto metaCvar = engine->registerCvar(cvar);
+        auto metaCvar = engine->getCvar(cvar->name, FuncCallType::Direct);
 
         hookchain->callChain([chain](ICvar *cvar, std::string_view value) {
             chain->callNext(*dynamic_cast<Cvar *>(cvar), value.data());

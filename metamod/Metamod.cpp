@@ -18,7 +18,7 @@
  */
 
 #include "Metamod.hpp"
-#include <gamelib/GameLib.hpp>
+#include "game/Library.hpp"
 #include <EngineExports.hpp>
 #include <MetaInfo.hpp>
 #include <Utils.hpp>
@@ -68,34 +68,18 @@ namespace Metamod
 
     Metamod::Metamod(std::unique_ptr<Config> &&config)
     : m_config(std::move(config)),
-      m_engineLib(std::make_unique<Engine::Engine>())
+      m_engineLib(std::make_unique<Engine::Library>())
       
     {
         char gameDir[MAX_PATH];
         GET_GAME_DIR(gameDir);
-        m_gameLib = std::make_unique<GameLib::GameLib>(m_engineLib, gameDir);
-
-        std::string_view gameDirsv(gameDir);
-        if (gameDirsv == "valve")
-        {
-            m_gameType = GameType::Valve;
-        }
-        else if (gameDirsv == "cstrike")
-        {
-            m_gameType = GameType::CStrike;
-        }
-        else if (gameDirsv == "czero")
-        {
-            m_gameType = GameType::CZero;
-        }
+        m_gameLib = std::make_unique<Game::Library>(m_engineLib, gameDir, m_config->getPath(PathType::Configs));
 
         constexpr std::size_t ENGINE_MSG_NUM = 58;
         for (std::size_t i = 0; i <= ENGINE_MSG_NUM; i++)
         {
             m_regMsgs.at(i).id = i;
         }
-
-        m_engineLib->addExtDll(m_gameLib->getSystemHandle());
 
         _loadPlugins();
     }
@@ -105,19 +89,14 @@ namespace Metamod
         return VERSION;
     }
 
-    Engine::Engine *Metamod::getEngine() const
+    Engine::Library *Metamod::getEngine() const
     {
         return m_engineLib.get();
     }
 
-    GameLib::GameLib *Metamod::getGameLib() const
+    Game::Library *Metamod::getGame() const
     {
         return m_gameLib.get();
-    }
-
-    GameType Metamod::getGameType() const
-    {
-        return m_gameType;
     }
 
     const Metamod::RegMsg *Metamod::getMsgInfo(std::string_view name) const

@@ -21,9 +21,9 @@
 
 #include <extdll.h>
 
-namespace Metamod::GameLib
+namespace Metamod::Game
 {
-    using fnNewDllFunctions = int(*)(NEW_DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion);;
+    using fnNewDllFunctions = int(*)(NEW_DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion);
     using fnDllFunctionsv2 = int(*)(DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion);
     using fnDllFunctions = int(*)(DLL_FUNCTIONS *pFunctionTable, int interfaceVersion);
 }

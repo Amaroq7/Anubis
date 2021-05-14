@@ -1,0 +1,425 @@
+/*
+ *  Copyright (C) 2020-2021 Metamod++ Development Team
+ *
+ *  This file is part of Metamod++.
+ *
+ *  Metamod++ is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ *  Metamod++ is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+
+ *  You should have received a copy of the GNU General Public License
+ *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#include "Library.hpp"
+#include <Metamod.hpp>
+#include <DllExports.hpp>
+#include "EntitiesHooks.hpp"
+
+#include <yaml-cpp/yaml.h>
+
+namespace Metamod::Game
+{
+    Library::Library(const std::unique_ptr<Engine::Library> &engine,
+                     std::string_view gameDir,
+                     const fs::path &metaConfigsDir) : m_hooks(std::make_unique<Hooks>()), m_engine(engine)
+    {
+        if (gameDir == "valve")
+        {
+            m_modType = Mod::Valve;
+        }
+        else if (gameDir == "cstrike")
+        {
+            m_modType = Mod::CStrike;
+        }
+        else if (gameDir == "czero")
+        {
+            m_modType = Mod::CZero;
+        }
+        else
+        {
+            throw std::runtime_error("Game mod not recognized");
+        }
+
+        auto modId = static_cast<std::underlying_type_t<Mod>>(m_modType);
+
+        m_gameDir = fs::current_path() / gameDir;
+        m_pathName = fs::current_path() / gameDir / "dlls" /
+#if defined __linux__
+        knownGames[modId].libNameLinux;
+#elif defined _WIN32
+        knownGames[modId].libNameWin32;
+#endif
+
+        _loadGameDLL();
+        _loadVOffsets(metaConfigsDir);
+    }
+
+    std::string_view Library::getName() const
+    {
+        return knownGames[static_cast<std::underlying_type_t<Mod>>(m_modType)].name;
+    }
+
+    std::string_view Library::getDesc() const
+    {
+        return gEntityInterface.pfnGetGameDescription();
+    }
+
+    const fs::path &Library::getGameDir() const
+    {
+        return m_gameDir;
+    }
+
+    const fs::path &Library::getPathname() const
+    {
+        return m_pathName;
+    }
+
+    void Library::_loadGameDLL()
+    {
+        using namespace std::string_literals;
+
+        m_gameLibrary = std::make_unique<Module>(m_pathName);
+
+        if (!m_gameLibrary->isLoaded())
+        {
+            throw std::runtime_error("Error while loading game dll: "s + Module::getError().data());
+        }
+
+        auto fnGiveEngFuncs = m_gameLibrary->getSymbol<Engine::fnGiveFuncs>(engineEntryFuncName);
+        if (!fnGiveEngFuncs)
+        {
+            throw std::runtime_error("Cannot find GiveFnptrsToDll in the game library");
+        }
+        fnGiveEngFuncs(const_cast<enginefuncs_t *>(m_engine->getEngineFuncs()), gpGlobals);
+
+        auto fnGetNewDLLFuncs = m_gameLibrary->getSymbol<fnNewDllFunctions>(newDllApiFuncName);
+        if (fnGetNewDLLFuncs)
+        {
+            std::int32_t version = newDLLInterfaceVersion;
+            if (!fnGetNewDLLFuncs(&gNewDLLFunctions, &version))
+            {
+                if (version > newDLLInterfaceVersion)
+                {
+                    throw std::runtime_error("New DLL API functions not compatible. Metamod outdated.");
+                }
+                else
+                {
+                    throw std::runtime_error("New DLL API functions not compatible. GameDLL outdated.");
+                }
+            }
+        }
+
+        auto fnGetEntityAPI2 = m_gameLibrary->getSymbol<fnDllFunctionsv2>(entityApi2FuncName);
+        if (fnGetEntityAPI2)
+        {
+            std::int32_t version = entityAPIInterfaceVersion;
+            if (!fnGetEntityAPI2(&gEntityInterface, &version))
+            {
+                if (version > entityAPIInterfaceVersion)
+                {
+                    throw std::runtime_error("EntityAPI2 functions not compatible. Metamod outdated.");
+                }
+                else
+                {
+                    throw std::runtime_error("EntityAPI2 functions not compatible. GameDLL outdated.");
+                }
+            }
+        }
+        else
+        {
+            auto fnGetEntityAPI = m_gameLibrary->getSymbol<fnDllFunctions>(entityApiFuncName);
+            if (fnGetEntityAPI)
+            {
+                if (!fnGetEntityAPI(&gEntityInterface, entityAPIInterfaceVersion))
+                {
+                    throw std::runtime_error("Cannot get retrieve EntityAPI functions from GameDLL.");
+                }
+            }
+            else
+            {
+                throw std::runtime_error("Cannot get retrieve EntityAPI functions from GameDLL.");
+            }
+        }
+
+        _replaceFuncs();
+    }
+
+    void Library::_replaceFuncs()
+    {
+        m_dllApiTable = gEntityInterface;
+        m_newDllApiTable = gNewDLLFunctions;
+
+        // Replace only funcs we want to have hooked
+#define ASSIGN_ENT_FUNC(func) (m_dllApiTable.func = Callbacks::Engine::func)
+        ASSIGN_ENT_FUNC(pfnGameInit);
+        ASSIGN_ENT_FUNC(pfnClientConnect);
+        ASSIGN_ENT_FUNC(pfnClientPutInServer);
+        ASSIGN_ENT_FUNC(pfnClientCommand);
+        ASSIGN_ENT_FUNC(pfnClientUserInfoChanged);
+        ASSIGN_ENT_FUNC(pfnServerActivate);
+        ASSIGN_ENT_FUNC(pfnServerDeactivate);
+        ASSIGN_ENT_FUNC(pfnStartFrame);
+#undef ASSIGN_ENT_FUNC
+#define ASSIGN_NEW_DLL_FUNC(func) (m_newDllApiTable.func = Callbacks::Engine::func)
+        ASSIGN_NEW_DLL_FUNC(pfnGameShutdown);
+#undef ASSIGN_NEW_DLL_FUNC
+    }
+
+    const DLL_FUNCTIONS *Library::getDllFuncs() const
+    {
+        return &m_dllApiTable;
+    }
+
+    const NEW_DLL_FUNCTIONS *Library::getNewDllFuncs() const
+    {
+        return &m_newDllApiTable;
+    }
+
+    Mod Library::getMod() const
+    {
+        return m_modType;
+    }
+
+    Hooks *Library::getHooks() const
+    {
+        return m_hooks.get();
+    }
+
+    bool Library::callGameEntity(std::string_view name, Engine::IEntVars *pev)
+    {
+        using ENTITY_FN = void (*)(entvars_t *);
+
+        auto pfnEntity = m_gameLibrary->getSymbol<ENTITY_FN>(name.data());
+        
+        if (!pfnEntity)
+        {
+            return false;
+        }
+
+        std::invoke(pfnEntity, *dynamic_cast<Engine::EntVars *>(pev));
+        return true;
+    }
+
+    void Library::pfnGameInit(FuncCallType callType)
+    {
+        static GameInitHookRegistry *hookchain = m_hooks->gameInit();
+        _execGameDLLFunc(hookchain, []() {
+            gEntityInterface.pfnGameInit();
+        }, callType);
+    }
+
+    bool Library::pfnClientConnect(Engine::IEdict *pEntity,
+                                   std::string_view pszName,
+                                   std::string_view pszAddress,
+                                   std::string &szRejectReason,
+                                   FuncCallType callType)
+    {
+        static ClientConnectHookRegistry *hookchain = m_hooks->clientConnect();
+        return _execGameDLLFunc(hookchain, [](::Metamod::Engine::IEdict *pEntity, std::string_view pszName, std::string_view pszAddress, std::string &szRejectReason) {
+            constexpr const std::size_t REASON_REJECT_MAX_LEN = 128;
+            if (szRejectReason.capacity() < REASON_REJECT_MAX_LEN)
+            {
+                szRejectReason.reserve(REASON_REJECT_MAX_LEN);
+            }
+            return static_cast<bool>(
+                gEntityInterface.pfnClientConnect(
+                    *dynamic_cast<::Metamod::Engine::Edict *>(pEntity), pszName.data(), pszAddress.data(), szRejectReason.data()
+                )
+            );
+        }, callType, pEntity, pszName, pszAddress, std::ref(szRejectReason));
+    }
+
+    void Library::pfnClientPutInServer(Engine::IEdict *pEntity, FuncCallType callType)
+    {
+        static ClientPutinServerHookRegistry *hookchain = m_hooks->clientPutinServer();
+        _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity) {
+            gEntityInterface.pfnClientPutInServer(*dynamic_cast<::Metamod::Engine::Edict *>(pEntity));
+        }, callType, pEntity);
+    }
+
+    void Library::pfnClientCommand(Engine::IEdict *pEntity, FuncCallType callType)
+    {
+        static ClientCmdHookRegistry *hookchain = m_hooks->clientCmd();
+        _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity) {
+            gEntityInterface.pfnClientCommand(*dynamic_cast<::Metamod::Engine::Edict *>(pEntity));
+        }, callType, pEntity);
+    }
+
+    void Library::pfnClientUserInfoChanged(Engine::IEdict *pEntity, char *infobuffer, FuncCallType callType)
+    {
+        static ClientInfoChangedHookRegistry *hookchain = m_hooks->clientInfoChanged();
+        _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity, char *infobuffer) {
+            gEntityInterface.pfnClientUserInfoChanged(*dynamic_cast<::Metamod::Engine::Edict *>(pEntity), infobuffer);
+        }, callType, pEntity, infobuffer);
+    }
+
+    void Library::pfnServerActivate(std::uint32_t edictCount, std::uint32_t clientMax, FuncCallType callType)
+    {
+        static ServerActivateHookRegistry *hookchain = m_hooks->serverActivate();
+        _execGameDLLFunc(hookchain, [](std::uint32_t edictCount, std::uint32_t clientMax) {
+            gEntityInterface.pfnServerActivate(gMetaGlobal->getEngine()->getEngineEdictList(),
+                                               static_cast<int>(edictCount),
+                                               static_cast<int>(clientMax));
+        }, callType, edictCount, clientMax);
+    }
+
+    void Library::pfnServerDeactivate(FuncCallType callType)
+    {
+        static ServerDeactivateHookRegistry *hookchain = m_hooks->serverDeactivate();
+        _execGameDLLFunc(hookchain, []() {
+            gEntityInterface.pfnServerDeactivate();
+        }, callType);
+    }
+
+    void Library::pfnStartFrame(FuncCallType callType)
+    {
+        static StartFrameHookRegistry *hookchain = m_hooks->startFrame();
+        _execGameDLLFunc(hookchain, []() {
+            gEntityInterface.pfnStartFrame();
+        }, callType);
+    }
+
+    void Library::pfnGameShutdown(FuncCallType callType)
+    {
+        static GameShutdownHookRegistry *hookchain = m_hooks->gameShutdown();
+        _execGameDLLFunc(hookchain, [this]() {
+            gMetaGlobal->getEngine()->removeExtDll(getSystemHandle());
+            if (gNewDLLFunctions.pfnGameShutdown)
+            {
+                gNewDLLFunctions.pfnGameShutdown();
+            }
+        }, callType);
+    }
+
+    Module::SystemHandle Library::getSystemHandle() const
+    {
+        return *m_gameLibrary;
+    }
+
+    Entities::IBaseEntity *Library::getBaseEntity(const Engine::IEdict *edict)
+    {
+        switch (m_modType)
+        {
+            case Mod::Valve:
+                return _getEntity<Entities::Valve::BaseEntity>(edict);
+            case Mod::CStrike:
+            case Mod::CZero:
+                return _getEntity<Entities::CStrike::BaseEntity>(edict);
+            default:
+                return nullptr;
+        }
+    }
+
+    Entities::IBasePlayer *Library::getBasePlayer(const Engine::IEdict *edict)
+    {
+        std::uint32_t idx = edict->getIndex();
+        if (idx > m_maxClients || !idx)
+        {
+            return nullptr;
+        }
+
+        switch (m_modType)
+        {
+            case Mod::Valve:
+                return _getEntity<Entities::Valve::BasePlayer>(edict);
+            case Mod::CStrike:
+            case Mod::CZero:
+                //return _getEntity<Entities::CStrike::BasePlayer>(edict);
+            default:
+                return nullptr;
+        }
+    }
+
+    void Library::setMaxClients(std::uint32_t maxPlayers)
+    {
+        m_maxClients = maxPlayers;
+    }
+
+    BasePlayerHooks *Library::getCBasePlayerHooks()
+    {
+        return m_basePlayerhooks.get();
+    }
+
+    void Library::_loadVOffsets(const fs::path &metaConfigsDir)
+    {
+        try
+        {
+            fs::path virtualOffsetsPath =
+                metaConfigsDir / "gamedata" / "virtual" / getName() / "offsets.yml";
+#if defined __linux__
+            YAML::Node rootNode = YAML::LoadFile(virtualOffsetsPath.c_str());
+            std::string_view osName("linux");
+#elif defined _WIN32
+            YAML::Node rootNode = YAML::LoadFile(virtualOffsetsPath.string().c_str());
+            std::string_view osName("windows");
+#endif
+            for (auto funcIt = rootNode.begin(); funcIt != rootNode.end(); ++funcIt)
+            {
+                if (m_pevOffset == std::numeric_limits<std::uint32_t>::max() &&
+                    funcIt->first.as<std::string>() == "pev")
+                {
+                    m_pevOffset = funcIt->second[osName.data()].as<std::uint32_t>();
+                    continue;
+                }
+
+                m_virtualOffsets.try_emplace(funcIt->first.as<std::string>(),
+                                                funcIt->second[osName.data()].as<std::uint32_t>());
+            }
+        }
+        catch (const YAML::BadFile &e)
+        {
+            using namespace std::string_literals;
+            throw std::runtime_error("Error parsing yaml vtable offsets file: "s + e.what() + " "s + getName().data());
+        }
+    }
+
+    std::uint32_t Library::getPevOffset() const
+    {
+        return m_pevOffset;
+    }
+
+    void Library::initVFuncHooks()
+    {
+        std::string_view plrClassName;
+
+        if (m_modType == Mod::Valve)
+        {
+            plrClassName = Entities::Valve::BasePlayer::CLASS_NAME;
+        }
+
+        Entities::IBasePlayer::VTable = _getVTableOfEntity(plrClassName);
+        m_basePlayerhooks = std::make_unique<BasePlayerHooks>(m_virtualOffsets);
+    }
+
+    std::intptr_t Library::_getVTableOfEntity(std::string_view entityClass)
+    {
+        Engine::Edict *edict = m_engine->createEntity(FuncCallType::Direct);
+        if (!callGameEntity(entityClass, edict->getEntVars()))
+        {
+            m_engine->removeEntity(edict, FuncCallType::Direct);
+            return 0;
+        }
+
+        if (!edict->getPrivateData())
+        {
+            m_engine->removeEntity(edict, FuncCallType::Direct);
+            return 0;
+        }
+
+        auto vTable = *(reinterpret_cast<std::intptr_t *>(edict->getPrivateData()));
+        m_engine->removeEntity(edict, FuncCallType::Direct);
+
+        if (!reinterpret_cast<void *>(vTable))
+        {
+            return 0;
+        }
+        return vTable;
+    }
+}

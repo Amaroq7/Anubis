@@ -33,6 +33,15 @@
 #include <stdexcept>
 #include <functional>
 #include <memory>
+#include <utility>
+
+#if defined _WIN32
+#define WIN32_LEAN_AND_MEAN
+    #include "windows.h"
+#elif defined __linux__
+    #include <sys/mman.h>
+    #include <unistd.h>
+#endif
 
 namespace Metamod
 {
@@ -140,12 +149,9 @@ namespace Metamod
                 {
                     ++iter;
                 };
-                    
-                if (hasHooks())
-                {
-                    Hook<t_ret, t_args...> chain(iter, m_hooks, origFunc);
-                    return chain.callNext(std::forward<t_args>(args)...);
-                }
+
+                Hook<t_ret, t_args...> chain(iter, m_hooks, origFunc);
+                return chain.callNext(std::forward<t_args>(args)...);
             }
 
             return origFunc(std::forward<t_args>(args)...);
@@ -293,8 +299,12 @@ namespace Metamod
     class ClassHookRegistry final : public IClassHookRegistry<t_ret, t_entity, t_args...>
     {
     public:
+        using vFuncCallback = std::function<void(ClassHookRegistry<t_ret, t_entity, t_args...> *)>;
+    public:
         ClassHookRegistry() = default;
-        ~ClassHookRegistry() override = default;
+        ClassHookRegistry(std::intptr_t vTable, std::uint32_t offset, std::intptr_t callbackFn)
+            : m_vTable(vTable), m_vOffset(offset), m_vCallback(callbackFn) {}
+        ~ClassHookRegistry() final = default;
 
         t_ret callChain(std::function<t_ret(t_entity, t_args...)> lastFn, t_entity entity, t_args... args)
         {
@@ -314,7 +324,7 @@ namespace Metamod
             return !m_hooks.empty();
         }
 
-        ClassHookInfo<t_ret, t_entity, t_args...> *registerHook(ClassHookFunc<t_ret, t_entity, t_args...> hook, HookPriority priority) override
+        ClassHookInfo<t_ret, t_entity, t_args...> *registerHook(ClassHookFunc<t_ret, t_entity, t_args...> hook, HookPriority priority) final
         {
             if (!hook)
             {
@@ -323,9 +333,17 @@ namespace Metamod
             }
 
             auto hookInfo = std::make_unique<ClassHookInfo<t_ret, t_entity, t_args...>>(hook, priority);
-
             if (!hasHooks())
             {
+                if (m_vTable && !m_origVFunc)
+                {
+                    std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
+
+                    m_origVFunc = *reinterpret_cast<std::intptr_t *>(vFunc);
+                    std::int32_t memProtection = _unprotect(vFunc);
+                    *(reinterpret_cast<std::intptr_t *>(vFunc)) = m_vCallback;
+                    _protect(vFunc, memProtection);
+                }
                 return m_hooks.emplace_front(std::move(hookInfo)).get();
             }
 
@@ -343,14 +361,61 @@ namespace Metamod
             return (*m_hooks.emplace_after(prevIter, std::move(hookInfo))).get();
         }
 
-        void unregisterHook(IHookInfo *hookInfo) override
+        void unregisterHook(IHookInfo *hookInfo) final
         {
             m_hooks.remove_if([hookInfo](const std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>> &hook) {
                 return hookInfo == hook.get();
             });
+
+            if (m_origVFunc)
+            {
+                std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
+                std::int32_t memProtection = _unprotect(vFunc);
+                *(reinterpret_cast<std::intptr_t *>(vFunc)) = m_origVFunc;
+                _protect(vFunc, memProtection);
+
+                m_origVFunc = 0;
+            }
+        }
+
+        std::intptr_t getVFuncAddr() const
+        {
+            return m_origVFunc;
         }
 
     private:
+        static void _protect(std::intptr_t region, std::int32_t protection)
+        {
+#if defined _WIN32
+            MEMORY_BASIC_INFORMATION mbi;
+            VirtualQuery(reinterpret_cast<void *>(region), &mbi, sizeof(mbi));
+            VirtualProtect(mbi.BaseAddress, mbi.RegionSize, protection, &mbi.Protect);
+#elif defined __linux__
+            static std::int32_t pageSize = sysconf(_SC_PAGE_SIZE);
+            mprotect(reinterpret_cast<void *>(region & ~(pageSize - 1)), pageSize, protection);
+#endif
+        }
+
+        static std::int32_t _unprotect(std::intptr_t region)
+        {
+#if defined _WIN32
+            MEMORY_BASIC_INFORMATION mbi;
+            VirtualQuery(reinterpret_cast<void *>(region), &mbi, sizeof(mbi));
+            VirtualProtect(mbi.BaseAddress, mbi.RegionSize, PAGE_READWRITE, &mbi.Protect);
+            return mbi.Protect;
+#elif defined __linux__
+            static std::int32_t pageSize = sysconf(_SC_PAGE_SIZE);
+            mprotect(reinterpret_cast<void *>(region & ~(pageSize - 1)), pageSize,
+                     PROT_READ | PROT_WRITE | PROT_EXEC);
+            return PROT_READ | PROT_EXEC;
+#endif
+        }
+
+    private:
+        std::intptr_t m_vTable = 0;
+        std::intptr_t m_vOffset = 0;
+        std::intptr_t m_vCallback = 0;
+        std::intptr_t m_origVFunc = 0;
         std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>> m_hooks;
     };
 }

@@ -23,18 +23,11 @@
 #include "IHelpers.hpp"
 #include "IPlugin.hpp"
 #include "IHookChains.hpp"
-#include "engine/IEngine.hpp"
-#include "gamelib/IGameLib.hpp"
+#include "engine/ILibrary.hpp"
+#include "game/ILibrary.hpp"
 
 namespace Metamod
 {
-    enum class GameType : std::uint8_t
-    {
-        Valve = 0,
-        CStrike,
-        CZero,
-    };
-
     enum class LogLevel : std::uint8_t
     {
         Debug = 0,
@@ -67,9 +60,8 @@ namespace Metamod
         virtual ~IMetamod() = default;
 
         virtual std::uint32_t getInterfaceVersion() const = 0;
-        virtual Engine::IEngine *getEngine() const = 0;
-        virtual GameLib::IGameLib *getGameLib() const = 0;
-        virtual GameType getGameType() const = 0;
+        virtual Engine::ILibrary *getEngine() const = 0;
+        virtual Game::ILibrary *getGame() const = 0;
         virtual const RegMsg *getMsgInfo(std::string_view name) const = 0;
         virtual void logMsg(IPlugin *plugin, LogLevel level, LogDest dest, std::string_view msg) = 0;
     };

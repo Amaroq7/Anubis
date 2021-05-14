@@ -21,8 +21,8 @@
 
 #include <IMetamod.hpp>
 
-#include "gamelib/GameLib.hpp"
-#include "engine/Engine.hpp"
+#include "game/Library.hpp"
+#include "engine/Library.hpp"
 #include "MetaConfig.hpp"
 
 #include <fmt/format.h>
@@ -40,9 +40,8 @@ namespace Metamod
         ~Metamod();
 
         std::uint32_t getInterfaceVersion() const final;
-        Engine::Engine *getEngine() const final;
-        GameLib::GameLib *getGameLib() const final;
-        GameType getGameType() const final;
+        Engine::Library *getEngine() const final;
+        Game::Library *getGame() const final;
         const RegMsg *getMsgInfo(std::string_view name) const final;
         void logMsg(IPlugin *plugin, LogLevel level, LogDest dest, std::string_view msg) final;
 
@@ -79,10 +78,9 @@ namespace Metamod
 
     private:
         std::unique_ptr<Config> m_config;
-        std::unique_ptr<Engine::Engine> m_engineLib;
-        std::unique_ptr<GameLib::GameLib> m_gameLib;
+        std::unique_ptr<Engine::Library> m_engineLib;
+        std::unique_ptr<Game::Library> m_gameLib;
         std::vector<std::unique_ptr<Module>> m_plugins;
-        GameType m_gameType;
         std::array<RegMsg, 256> m_regMsgs = {
             RegMsg{"svc_bad", -1},
             RegMsg{"svc_nop", -1},

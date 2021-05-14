@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Metamod++ Development Team
+ *  Copyright (C) 2020-2021 Metamod++ Development Team
  *
  *  This file is part of Metamod++.
  *
@@ -17,20 +17,28 @@
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "GameClient.hpp"
-#include <Metamod.hpp>
+#pragma once
 
 namespace Metamod::Engine
 {
-    GameClient::GameClient(::IGameClient *gameClient) : m_gameClient(gameClient) {}
-    Edict *GameClient::getEdict() const
-    {
-        static Library *engine = gMetaGlobal->getEngine();
-        return engine->getEdict(m_gameClient->GetEdict());
-    }
+    class IEdict;
+    class IEntVars;
+    class ITraceResult;
+}
 
-    GameClient::operator ::IGameClient *() const
+#include <string_view>
+
+namespace Metamod::Game::Entities
+{
+    class IBaseEntity 
     {
-        return m_gameClient;
-    }
+        public:
+            virtual ~IBaseEntity() = default;
+            virtual Engine::IEdict *edict() const = 0;
+            virtual void remove() = 0;
+            virtual bool isAlive() const = 0;
+            virtual std::string_view getTeam() const = 0;
+            virtual int takeHealth(float flHealth, int bitsDamageType) const = 0;
+            virtual int takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, int bitsDamageType) = 0;
+    };
 }

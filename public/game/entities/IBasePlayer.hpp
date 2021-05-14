@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Metamod++ Development Team
+ *  Copyright (C) 2020-2021 Metamod++ Development Team
  *
  *  This file is part of Metamod++.
  *
@@ -17,20 +17,22 @@
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "GameClient.hpp"
-#include <Metamod.hpp>
+#pragma once
 
-namespace Metamod::Engine
+#include <IHookChains.hpp>
+#include <game/entities/IBaseMonster.hpp>
+
+namespace Metamod::Game::Entities
 {
-    GameClient::GameClient(::IGameClient *gameClient) : m_gameClient(gameClient) {}
-    Edict *GameClient::getEdict() const
+    class IBasePlayer : public virtual IBaseMonster
     {
-        static Library *engine = gMetaGlobal->getEngine();
-        return engine->getEdict(m_gameClient->GetEdict());
-    }
+        public:
+            ~IBasePlayer() override = default;
+            virtual void makeVIP() = 0;
 
-    GameClient::operator ::IGameClient *() const
-    {
-        return m_gameClient;
-    }
+#if defined META_CORE
+        public:
+            static inline std::intptr_t VTable;
+#endif
+    };
 }

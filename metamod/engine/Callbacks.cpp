@@ -55,7 +55,7 @@ namespace Metamod::Engine::Callbacks::GameDLL
 
     void pfnMessageBegin(int msg_dest, int msg_type, const float *pOrigin, edict_t *ed)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
 
         engine->messageBegin(
             static_cast<MsgDest>(msg_dest),
@@ -118,70 +118,75 @@ namespace Metamod::Engine::Callbacks::GameDLL
 
     int pfnGetPlayerUserId(edict_t *e)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
         return engine->getPlayerUserID(engine->getEdict(e), FuncCallType::Hooks);
     }
 
     const char *pfnGetPlayerAuthId(edict_t *e)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
         return engine->getPlayerAuthID(engine->getEdict(e), FuncCallType::Hooks).data();
     }
     
     char *pfnInfoKeyValue(char *infobuffer, const char *key)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
         return const_cast<char *>(engine->infoKeyValue(infobuffer, key, FuncCallType::Hooks).data());
     }
     
     const char *pfnCmd_Args()
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
         return engine->cmdArgs(FuncCallType::Hooks).data();
     }
     
 	const char *pfnCmd_Argv(int argc)
 	{
-	    static Engine *engine = gMetaGlobal->getEngine();
+	    static Library *engine = gMetaGlobal->getEngine();
         return engine->cmdArgv(static_cast<std::uint8_t>(argc), FuncCallType::Hooks).data();
     }
     
 	int	pfnCmd_Argc()
 	{
-	    static Engine *engine = gMetaGlobal->getEngine();
+	    static Library *engine = gMetaGlobal->getEngine();
         return static_cast<int>(engine->cmdArgc(FuncCallType::Hooks));
     }
 
     void pfnCVarRegister(cvar_t *pCvar)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
         engine->registerCvar(pCvar);
     }
 
     cvar_t *pfnCVarGetPointer(const char *szVarName)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
-        
-        return *engine->getCvar(szVarName, FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+
+        if (Cvar *cvar = engine->getCvar(szVarName, FuncCallType::Hooks); cvar)
+        {
+            return *cvar;
+        }
+
+        return nullptr;
     }
     
     void pfnSetModel(edict_t *e, const char *m)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
 
         engine->setModel(engine->getEdict(e), m, FuncCallType::Hooks);
     }
 
     edict_t *pfnCreateEntity()
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
 
         return *engine->createEntity(FuncCallType::Hooks);
     }
 
     void pfnRemoveEntity(edict_t *e)
     {
-        static Engine *engine = gMetaGlobal->getEngine();
+        static Library *engine = gMetaGlobal->getEngine();
 
         engine->removeEntity(engine->getEdict(e), FuncCallType::Hooks);
     }

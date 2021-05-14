@@ -59,8 +59,8 @@ namespace Metamod::Engine
     }
     Edict *TraceResult::getHit() const
     {
-        static Engine *engineAPI = gMetaGlobal->getEngine();
-        return engineAPI->getEdict(ENTINDEX(operator ::TraceResult *()->pHit));
+        static Library *engineAPI = gMetaGlobal->getEngine();
+        return engineAPI->getEdict(operator ::TraceResult *()->pHit);
     }
     HitGroup TraceResult::getHitGroup() const
     {

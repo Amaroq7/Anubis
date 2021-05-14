@@ -16,21 +16,19 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
+#pragma once
 
-#include "GameClient.hpp"
-#include <Metamod.hpp>
+#include <extdll.h>
 
-namespace Metamod::Engine
+namespace Metamod::Game::Callbacks::Engine
 {
-    GameClient::GameClient(::IGameClient *gameClient) : m_gameClient(gameClient) {}
-    Edict *GameClient::getEdict() const
-    {
-        static Library *engine = gMetaGlobal->getEngine();
-        return engine->getEdict(m_gameClient->GetEdict());
-    }
-
-    GameClient::operator ::IGameClient *() const
-    {
-        return m_gameClient;
-    }
+    void pfnGameInit();
+    qboolean pfnClientConnect(edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[128]);
+    void pfnClientPutInServer(edict_t *pEntity);
+    void pfnClientCommand(edict_t *pEntity);
+    void pfnClientUserInfoChanged(edict_t *pEntity, char *infobuffer);
+    void pfnServerActivate(edict_t *pEdictList, int edictCount, int clientMax);
+    void pfnServerDeactivate();
+    void pfnStartFrame();
+    void pfnGameShutdown();
 }
