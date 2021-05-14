@@ -80,6 +80,5 @@ namespace Metamod::Game::Callbacks::Engine
     void pfnGameShutdown()
     {
         gameLib->pfnGameShutdown(FuncCallType::Hooks);
-        gMetaGlobal.reset();
     }
 }
