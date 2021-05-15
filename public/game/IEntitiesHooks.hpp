@@ -41,11 +41,11 @@ namespace Metamod::Game
     using IBasePlayerSpawnHook = IClassHook<void, Entities::IBasePlayer *>;
     using IBasePlayerSpawnHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *>;
 
-    using IBasePlayerTakeDamageHook = IClassHook<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
-    using IBasePlayerTakeDamageHookRegistry = IClassHookRegistry<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
+    using IBasePlayerTakeDamageHook = IClassHook<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
+    using IBasePlayerTakeDamageHookRegistry = IClassHookRegistry<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
 
-    using IBasePlayerTraceAttackHook = IClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, int>;
-    using IBasePlayerTraceAttackHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, int>;
+    using IBasePlayerTraceAttackHook = IClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
+    using IBasePlayerTraceAttackHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
 
     class IBasePlayerHooks
     {

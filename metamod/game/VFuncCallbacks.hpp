@@ -39,7 +39,7 @@ namespace Metamod::Game::VFunc
         std::int32_t bitsDamageType
     );
 
-    /*void vTraceAttack(
+    void vTraceAttack(
 #if defined __linux__
         void *instance,
 #endif
@@ -48,5 +48,5 @@ namespace Metamod::Game::VFunc
         Vector vecDir,
         ::TraceResult *ptr,
         std::int32_t bitsDamageType
-    );*/
+    );
 } // namespace

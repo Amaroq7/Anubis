@@ -304,7 +304,10 @@ namespace Metamod
         ClassHookRegistry() = default;
         ClassHookRegistry(std::intptr_t vTable, std::uint32_t offset, std::intptr_t callbackFn)
             : m_vTable(vTable), m_vOffset(offset), m_vCallback(callbackFn) {}
-        ~ClassHookRegistry() final = default;
+        ~ClassHookRegistry() final
+        {
+            _restoreOriginalVFunc();
+        }
 
         t_ret callChain(std::function<t_ret(t_entity, t_args...)> lastFn, t_entity entity, t_args... args)
         {
@@ -363,11 +366,12 @@ namespace Metamod
 
         void unregisterHook(IHookInfo *hookInfo) final
         {
+            bool wereHooksPresent = !m_hooks.empty();
             m_hooks.remove_if([hookInfo](const std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>> &hook) {
                 return hookInfo == hook.get();
             });
 
-            if (m_origVFunc)
+            if (wereHooksPresent && m_hooks.empty() && m_origVFunc)
             {
                 std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
                 std::int32_t memProtection = _unprotect(vFunc);
@@ -409,6 +413,20 @@ namespace Metamod
                      PROT_READ | PROT_WRITE | PROT_EXEC);
             return PROT_READ | PROT_EXEC;
 #endif
+        }
+
+    private:
+        void _restoreOriginalVFunc()
+        {
+            if (m_origVFunc)
+            {
+                std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
+                std::int32_t memProtection = _unprotect(vFunc);
+                *(reinterpret_cast<std::intptr_t *>(vFunc)) = m_origVFunc;
+                _protect(vFunc, memProtection);
+
+                m_origVFunc = 0;
+            }
         }
 
     private:

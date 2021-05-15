@@ -118,8 +118,8 @@ namespace Metamod::Game::VFunc
 
     /*void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int
  * bitsDamageType); */
-    /*void vTraceAttack(
-    #if defined SP_POSIX
+    void vTraceAttack(
+    #if defined __linux__
         void *instance,
     #endif
         entvars_t *pevAttacker,
@@ -128,12 +128,27 @@ namespace Metamod::Game::VFunc
         ::TraceResult *ptr,
         std::int32_t bitsDamageType)
     {
-    #if defined SP_WINDOWS
+    #if defined _WIN32
         void *instance;
         __asm
         {
             mov [instance], ecx
         }
     #endif
-    }*/
+
+        static Game::Library *game = gMetaGlobal->getGame();
+        static Engine::Library *engine = gMetaGlobal->getEngine();
+
+        if (getVTable(instance) == Entities::IBasePlayer::VTable)
+        {
+            static BasePlayerTraceAttackHookRegistry *hookchain = game->getCBasePlayerHooks()->traceAttack();
+            Engine::TraceResult tr(ptr);
+
+            hookchain->callChain([instance](Entities::IBasePlayer *, Engine::IEntVars *pevAttacker, float flDamage, float *vec, Engine::ITraceResult *metatr, std::int32_t bitsDamageType) {
+                VFuncHelpers::execOriginalFunc<void, entvars_t *, float, float *, ::TraceResult *, int>(hookchain->getVFuncAddr(), instance, *dynamic_cast<Engine::EntVars *>(pevAttacker), flDamage, vec, *dynamic_cast<Engine::TraceResult *>(metatr), bitsDamageType);
+            },
+            instanceToType<Entities::IBasePlayer>(instance), engine->getEntVars(pevAttacker),
+            flDamage, &vecDir.x, &tr, bitsDamageType);
+        }
+    }
 }

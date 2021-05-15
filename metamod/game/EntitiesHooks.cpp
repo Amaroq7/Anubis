@@ -26,7 +26,7 @@ namespace Metamod::Game
     BasePlayerHooks::BasePlayerHooks(const std::unordered_map<std::string, std::uint32_t> &vOffsets) :
           m_spawn(Entities::IBasePlayer::VTable, vOffsets.at("spawn"), reinterpret_cast<intptr_t>(VFunc::vSpawnHook)),
           m_takeDamage(Entities::IBasePlayer::VTable, vOffsets.at("takedamage"), reinterpret_cast<intptr_t>(VFunc::vTakeDamageHook)),
-          m_traceAttack()
+          m_traceAttack(Entities::IBasePlayer::VTable, vOffsets.at("traceattack"), reinterpret_cast<intptr_t>(VFunc::vTraceAttack))
     {}
 
     BasePlayerSpawnHookRegistry *BasePlayerHooks::spawn()
