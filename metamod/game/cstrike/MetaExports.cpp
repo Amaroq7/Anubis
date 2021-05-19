@@ -132,7 +132,7 @@ C_DLLEXPORT void InitGameEntitiesDLL(
         return;
     }
 
-    gBasePlayerHooks = std::make_unique<Metamod::Game::CStrike::BasePlayerHooks>();
+    gBasePlayerHooks = std::make_unique<Metamod::Game::CStrike::BasePlayerHooks>(gReGameAPI->GetHookchains());
 }
 
 C_DLLEXPORT Metamod::Game::IBasePlayerHooks *GetBasePlayerHooks()

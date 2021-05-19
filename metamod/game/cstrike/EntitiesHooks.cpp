@@ -25,26 +25,26 @@ std::unique_ptr<Metamod::Game::CStrike::BasePlayerHooks> gBasePlayerHooks;
 
 namespace Metamod::Game::CStrike
 {
-    BasePlayerHooks::BasePlayerHooks() :
-        m_spawn([]() {
-            gReGameAPI->GetHookchains()->CBasePlayer_Spawn()->registerHook(Game::VFunc::vCBasePlayerSpawn);
-        }, []() {
-            gReGameAPI->GetHookchains()->CBasePlayer_Spawn()->unregisterHook(Game::VFunc::vCBasePlayerSpawn);
+    BasePlayerHooks::BasePlayerHooks(IReGameHookchains *rehooks) :
+        m_spawn([rehooks]() {
+            rehooks->CBasePlayer_Spawn()->registerHook(Game::VFunc::vCBasePlayerSpawn);
+        }, [rehooks]() {
+            rehooks->CBasePlayer_Spawn()->unregisterHook(Game::VFunc::vCBasePlayerSpawn);
         }),
-        m_takeDamage([]() {
-            gReGameAPI->GetHookchains()->CBasePlayer_TakeDamage()->registerHook(Game::VFunc::vCBasePlayerTakeDamage);
-        }, []() {
-            gReGameAPI->GetHookchains()->CBasePlayer_TakeDamage()->unregisterHook(Game::VFunc::vCBasePlayerTakeDamage);
+        m_takeDamage([rehooks]() {
+            rehooks->CBasePlayer_TakeDamage()->registerHook(Game::VFunc::vCBasePlayerTakeDamage);
+        }, [rehooks]() {
+            rehooks->CBasePlayer_TakeDamage()->unregisterHook(Game::VFunc::vCBasePlayerTakeDamage);
         }),
-        m_traceAttack([]() {
-            gReGameAPI->GetHookchains()->CBasePlayer_TraceAttack()->registerHook(Game::VFunc::vCBasePlayerTraceAttack);
-        }, []() {
-            gReGameAPI->GetHookchains()->CBasePlayer_TraceAttack()->unregisterHook(Game::VFunc::vCBasePlayerTraceAttack);
+        m_traceAttack([rehooks]() {
+            rehooks->CBasePlayer_TraceAttack()->registerHook(Game::VFunc::vCBasePlayerTraceAttack);
+        }, [rehooks]() {
+            rehooks->CBasePlayer_TraceAttack()->unregisterHook(Game::VFunc::vCBasePlayerTraceAttack);
         }),
-        m_killed([]() {
-            gReGameAPI->GetHookchains()->CBasePlayer_Killed()->registerHook(Game::VFunc::vCBasePlayerKilled);
-        }, []() {
-            gReGameAPI->GetHookchains()->CBasePlayer_Killed()->unregisterHook(Game::VFunc::vCBasePlayerKilled);
+        m_killed([rehooks]() {
+            rehooks->CBasePlayer_Killed()->registerHook(Game::VFunc::vCBasePlayerKilled);
+        }, [rehooks]() {
+            rehooks->CBasePlayer_Killed()->unregisterHook(Game::VFunc::vCBasePlayerKilled);
         })
     {}
 

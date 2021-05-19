@@ -23,6 +23,8 @@
 #include <HookChains.hpp>
 #include <game/VFuncHelpers.hpp>
 
+class IReGameHookchains;
+
 namespace Metamod::Game::CStrike
 {
     using BasePlayerSpawnHook = ClassHook<void, IBasePlayer *>;
@@ -40,7 +42,7 @@ namespace Metamod::Game::CStrike
     class BasePlayerHooks final : public IBasePlayerHooks
     {
     public:
-         BasePlayerHooks();
+         explicit BasePlayerHooks(IReGameHookchains *rehooks);
         ~BasePlayerHooks() final = default;
 
         BasePlayerSpawnHookRegistry *spawn() final;
