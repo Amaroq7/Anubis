@@ -317,8 +317,8 @@ namespace Metamod
         ~ClassHookRegistry() final
         {
             _restoreOriginalVFunc();
-            if (!m_hooks.empty())
-                std::invoke(m_registerFn);
+            if (m_unregisterFn && !m_hooks.empty())
+                std::invoke(m_unregisterFn);
         }
 
         t_ret callChain(std::function<t_ret(t_entity, t_args...)> lastFn, t_entity entity, t_args... args)
