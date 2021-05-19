@@ -118,6 +118,9 @@ namespace Metamod::Engine
     using AlertHook = Hook<void, AlertType, std::string_view>;
     using AlertHookRegistry = HookRegistry<void, AlertType, std::string_view>;
 
+    using ServerPrintHook = Hook<void, std::string_view>;
+    using ServerPrintHookRegistry = HookRegistry<void, std::string_view>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -154,6 +157,7 @@ namespace Metamod::Engine
         CreateEntityHookRegistry *createEntity() override;
         RemoveEntityHookRegistry *removeEntity() override;
         AlertHookRegistry *alert() final;
+        ServerPrintHookRegistry *serverPrint() final;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -187,5 +191,6 @@ namespace Metamod::Engine
         CreateEntityHookRegistry m_createEntity;
         RemoveEntityHookRegistry m_removeEntity;
         AlertHookRegistry m_alert;
+        ServerPrintHookRegistry m_serverPrint;
     };
 }

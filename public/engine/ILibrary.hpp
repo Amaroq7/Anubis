@@ -84,7 +84,7 @@ namespace Metamod::Engine
         virtual IEdict *createEntity(FuncCallType callType) = 0;
         virtual void removeEntity(IEdict *pEdict, FuncCallType callType) = 0;
         virtual void alert(AlertType alertType, std::string_view msg, FuncCallType callType) = 0;
-        virtual void removeCmd(std::string_view cmd_name) = 0;
+        virtual void print(std::string_view szMsg, FuncCallType callType) = 0;
 
         /* Engine globals */
         virtual float getTime() const = 0;
@@ -93,6 +93,7 @@ namespace Metamod::Engine
         /* ReFuncs */
         virtual bool addExtDll(void *hModule) const = 0;
         virtual void removeExtDll(void *hModule) const = 0;
+        virtual void removeCmd(std::string_view cmd_name) = 0;
 
 #if defined META_CORE
         virtual IEdict *getEdict(edict_t *edict) = 0;

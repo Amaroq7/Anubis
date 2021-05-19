@@ -200,4 +200,10 @@ namespace Metamod::Engine::Callbacks::GameDLL
         static Library *engine = gMetaGlobal->getEngine();
         engine->removeEntity(engine->getEdict(e), FuncCallType::Hooks);
     }
+
+    void pfnServerPrint(const char *szMsg)
+    {
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->print(szMsg, FuncCallType::Hooks);
+    }
 }

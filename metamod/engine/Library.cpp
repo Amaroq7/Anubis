@@ -448,6 +448,29 @@ namespace Metamod::Engine
         }, callType, alertType, msg);
     }
 
+    void Library::registerCvar(cvar_t *cvar)
+    {
+        static RegisterCvarHookRegistry *hookchain = m_hooks->registerCvar();
+        _execEngineFunc(hookchain, [this, cvar](std::string_view name, std::string_view value) {
+            auto metaCvar = std::make_unique<Cvar>(cvar);
+
+            CVAR_REGISTER(cvar);
+
+            if (CVAR_GET_POINTER(cvar->name))
+            {
+                m_cvars.try_emplace(cvar->name, std::move(metaCvar));
+            }
+        }, FuncCallType::Hooks, cvar->name, cvar->string);
+    }
+
+    void Library::print(std::string_view szMsg, FuncCallType callType)
+    {
+        static ServerPrintHookRegistry *hookchain = m_hooks->serverPrint();
+        _execEngineFunc(hookchain, [](std::string_view msg) {
+            std::invoke(g_engfuncs.pfnServerPrint, msg.data());
+        }, callType, szMsg);
+    }
+
     void Library::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;
@@ -529,21 +552,6 @@ namespace Metamod::Engine
     Library::~Library()
     {
         _uninstallHooks();
-    }
-
-    void Library::registerCvar(cvar_t *cvar)
-    {
-        static RegisterCvarHookRegistry *hookchain = m_hooks->registerCvar();
-        _execEngineFunc(hookchain, [this, cvar](std::string_view name, std::string_view value) {
-            auto metaCvar = std::make_unique<Cvar>(cvar);
-
-            CVAR_REGISTER(cvar);
-
-            if (CVAR_GET_POINTER(cvar->name))
-            {
-                m_cvars.try_emplace(cvar->name, std::move(metaCvar));
-            }
-        }, FuncCallType::Hooks, cvar->name, cvar->string);
     }
 
     Cvar *Library::addToCache(cvar_t *cvar)

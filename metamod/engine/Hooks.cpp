@@ -175,4 +175,9 @@ namespace Metamod::Engine
     {
         return &m_alert;
     }
+
+    ServerPrintHookRegistry *Hooks::serverPrint()
+    {
+        return &m_serverPrint;
+    }
 }

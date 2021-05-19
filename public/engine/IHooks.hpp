@@ -123,6 +123,9 @@ namespace Metamod::Engine
     using IAlertHook = IHook<void, AlertType, std::string_view>;
     using IAlertHookRegistry = IHookRegistry<void, AlertType, std::string_view>;
 
+    using IServerPrintHook = IHook<void, std::string_view>;
+    using IServerPrintHookRegistry = IHookRegistry<void, std::string_view>;
+
     class IHooks
     {
     public:
@@ -159,5 +162,6 @@ namespace Metamod::Engine
         virtual ICreateEntityHookRegistry *createEntity() = 0;
         virtual IRemoveEntityHookRegistry *removeEntity() = 0;
         virtual IAlertHookRegistry *alert() = 0;
+        virtual IServerPrintHookRegistry *serverPrint() = 0;
     };
 }

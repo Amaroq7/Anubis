@@ -82,6 +82,7 @@ namespace Metamod::Engine
         void removeEntity(IEdict *pEdict, FuncCallType callType) override;
         void alert(AlertType alertType, std::string_view msg, FuncCallType callType) final;
         void removeCmd(std::string_view cmd_name) final;
+        void print(std::string_view szMsg, FuncCallType callType) final;
 
         float getTime() const override;
         std::string_view getMapName() const override;
