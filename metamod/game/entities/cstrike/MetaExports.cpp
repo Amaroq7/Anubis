@@ -78,7 +78,7 @@ bool _initReGameDLL_API()
     {
         using namespace std::string_literals;
         gMetamod->logMsg(Metamod::LogLevel::Error, Metamod::LogDest::File | Metamod::LogDest::Console,
-            "ReHLDS API minor version mismatch. "s +
+            "ReGameDLL API minor version mismatch. "s +
             "Expected at least " + std::to_string(REGAMEDLL_API_VERSION_MINOR) +
             " got " + std::to_string(minorVersion));
         return false;
@@ -92,7 +92,7 @@ C_DLLEXPORT void InitGameEntitiesDLL(
     Metamod::IMetamod *api,
     const std::unordered_map<std::string, std::uint32_t> &vOffsets [[maybe_unused]])
 {
-    if (!gGameLib)
+    if (gMetamod)
     {
         return;
     }

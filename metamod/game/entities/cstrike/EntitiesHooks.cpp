@@ -19,7 +19,6 @@
 
 #include "EntitiesHooks.hpp"
 #include "VFuncCallbacks.hpp"
-#include "BasePlayer.hpp"
 #include "MetaExports.hpp"
 
 std::unique_ptr<Metamod::Game::CStrike::BasePlayerHooks> gBasePlayerHooks;

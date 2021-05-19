@@ -5,7 +5,6 @@
 #include "BaseMonster.hpp"
 
 #include <memory>
-#include "EntitiesHooks.hpp"
 
 class CBasePlayer;
 
@@ -26,7 +25,7 @@ namespace Metamod::Game::Entities::Valve
             ~BasePlayer() override = default;
 
         public:
-            bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType, FuncCallType callType) override;
+            bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType) override;
             void makeVIP() override;
             //void killed() final;
 

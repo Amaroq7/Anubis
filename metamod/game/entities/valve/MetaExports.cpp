@@ -33,7 +33,7 @@ C_DLLEXPORT void InitGameEntitiesDLL(
     Metamod::IMetamod *api,
     const std::unordered_map<std::string, std::uint32_t> &vOffsets)
 {
-    if (!gGameLib)
+    if (gMetamod)
     {
         return;
     }

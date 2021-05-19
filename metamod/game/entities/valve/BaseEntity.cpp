@@ -44,7 +44,7 @@ namespace Metamod::Game::Entities::Valve
         {
             // this situation can screw up monsters who can't tell their entity pointers are invalid.
             baseEntity->pev->health = 0;
-            gEngineLib->alert(Engine::AlertType::Aiconsole, "SUB_Remove called on entity with health > 0\n", FuncCallType::Direct);
+            gEngineLib->alert(Engine::AlertType::Aiconsole, "remove called on entity with health > 0\n", FuncCallType::Direct);
         }
 
         gEngineLib->removeEntity(m_edict, FuncCallType::Direct);
@@ -68,7 +68,7 @@ namespace Metamod::Game::Entities::Valve
     bool BaseEntity::takeDamage(Engine::IEntVars *pevInflictor,
                                 Engine::IEntVars *pevAttacker,
                                 float flDamage,
-                                std::int32_t bitsDamageType, FuncCallType callType [[maybe_unused]])
+                                std::int32_t bitsDamageType)
     {
         return operator CBaseEntity *()->TakeDamage(*pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
     }

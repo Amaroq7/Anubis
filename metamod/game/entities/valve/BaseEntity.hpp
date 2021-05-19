@@ -20,7 +20,7 @@ namespace Metamod::Game::Entities::Valve
             bool isAlive() const override;
             std::string_view getTeam() const override;
             int takeHealth(float flHealth, int bitsDamageType) const override;
-            bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType, FuncCallType callType) override;
+            bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType) override;
 
         protected:
             Engine::IEdict *m_edict;

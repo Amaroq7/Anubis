@@ -58,7 +58,11 @@ namespace Metamod::Game
 #endif
 
         _loadGameDLL();
-        _loadVOffsets(metaConfigsDir);
+        // Dont load voffsets for CStrike and CZero for now
+        if (m_modType == Mod::Valve)
+        {
+            _loadVOffsets(metaConfigsDir);
+        }
     }
 
     std::string_view Library::getName() const

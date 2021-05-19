@@ -5,11 +5,6 @@
 
 class CBasePlayer;
 
-namespace Metamod::Game::CStrike
-{
-    class BasePlayerHooks;
-}
-
 namespace Metamod::Game::Entities::CStrike
 {
     class BasePlayer : public BaseMonster, public virtual IBasePlayer
@@ -22,7 +17,7 @@ namespace Metamod::Game::Entities::CStrike
         ~BasePlayer() override = default;
 
     public:
-        bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType, FuncCallType funcCallType) override;
+        bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType) override;
         void makeVIP() override;
         //void killed() override;
 

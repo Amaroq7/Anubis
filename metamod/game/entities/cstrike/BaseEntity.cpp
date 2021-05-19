@@ -62,8 +62,7 @@ namespace Metamod::Game::Entities::CStrike
     bool BaseEntity::takeDamage(Engine::IEntVars *pevInflictor,
                                         Engine::IEntVars *pevAttacker,
                                         float flDamage,
-                                        std::int32_t bitsDamageType,
-                                        FuncCallType callType [[maybe_unused]])
+                                        std::int32_t bitsDamageType)
     {
         return operator CBaseEntity *()->TakeDamage(*pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
     }

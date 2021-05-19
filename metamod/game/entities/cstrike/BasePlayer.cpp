@@ -18,7 +18,6 @@
  */
 
 #include "BasePlayer.hpp"
-#include "EntitiesHooks.hpp"
 
 #include <engine/IEntVars.hpp>
 
@@ -47,19 +46,8 @@ namespace Metamod::Game::Entities::CStrike
     bool BasePlayer::takeDamage(Engine::IEntVars *pevInflictor,
                                 Engine::IEntVars *pevAttacker,
                                 float flDamage,
-                                std::int32_t bitsDamageType,
-                                FuncCallType funcCallType)
+                                std::int32_t bitsDamageType)
     {
-        static Game::CStrike::BasePlayerTakeDamageHookRegistry *registry = gBasePlayerHooks->takeDamage();
-
-        // VFunc is hooked so call the original
-        if (bool hasHooks = registry->hasHooks(); hasHooks && funcCallType == FuncCallType::Direct)
-        {
-            return VFuncHelpers::execOriginalFunc<std::int32_t, entvars_t *, entvars_t *, float, std::int32_t>(
-                registry->getVFuncAddr(),
-                operator CBasePlayer *(), *pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
-        }
-
         return operator CBasePlayer *()->TakeDamage(*pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
     }
 } // namespace Valve
