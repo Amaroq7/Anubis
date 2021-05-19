@@ -120,6 +120,9 @@ namespace Metamod::Engine
     using IRemoveEntityHook = IHook<void, IEdict *>;
     using IRemoveEntityHookRegistry = IHookRegistry<void, IEdict *>;
 
+    using IAlertHook = IHook<void, AlertType, std::string_view>;
+    using IAlertHookRegistry = IHookRegistry<void, AlertType, std::string_view>;
+
     class IHooks
     {
     public:
@@ -155,5 +158,6 @@ namespace Metamod::Engine
         virtual ISetModelHookRegistry *setModel() = 0;
         virtual ICreateEntityHookRegistry *createEntity() = 0;
         virtual IRemoveEntityHookRegistry *removeEntity() = 0;
+        virtual IAlertHookRegistry *alert() = 0;
     };
 }

@@ -18,24 +18,48 @@
  */
 
 #include "BasePlayer.hpp"
-#include <enginecallback.h>
+#include "EntitiesHooks.hpp"
+
+#include <engine/IEntVars.hpp>
+
+#include <extdll.h>
 #include <tier0/platform.h>
+#include <enginecallback.h>
+#include <util.h>
 #include <cbase.h>
 #include <player.h>
 #include <regamedll_interfaces.h>
 
 namespace Metamod::Game::Entities::CStrike
 {
-    BasePlayer::BasePlayer(const Engine::Edict *edict, const BasePlayerHooks *hooks) : BaseMonster(edict), m_hooks(hooks)
-    {}
+    BasePlayer::BasePlayer(Engine::IEdict *edict) : BaseMonster(edict) {}
 
     BasePlayer::operator CBasePlayer *() const
     {
-        return reinterpret_cast<CBasePlayer *>(GET_PRIVATE(*m_edict));
+        return reinterpret_cast<CBasePlayer *>(m_edict->getPrivateData());
     }
 
     void BasePlayer::makeVIP()
     {
         operator CBasePlayer *()->CSPlayer()->MakeVIP();
+    }
+
+    bool BasePlayer::takeDamage(Engine::IEntVars *pevInflictor,
+                                Engine::IEntVars *pevAttacker,
+                                float flDamage,
+                                std::int32_t bitsDamageType,
+                                FuncCallType funcCallType)
+    {
+        static Game::CStrike::BasePlayerTakeDamageHookRegistry *registry = gBasePlayerHooks->takeDamage();
+
+        // VFunc is hooked so call the original
+        if (bool hasHooks = registry->hasHooks(); hasHooks && funcCallType == FuncCallType::Direct)
+        {
+            return VFuncHelpers::execOriginalFunc<std::int32_t, entvars_t *, entvars_t *, float, std::int32_t>(
+                registry->getVFuncAddr(),
+                operator CBasePlayer *(), *pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
+        }
+
+        return operator CBasePlayer *()->TakeDamage(*pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
     }
 } // namespace Valve

@@ -22,6 +22,10 @@
 #include <cinttypes>
 #include <cstddef>
 
+#if defined META_CORE
+typedef struct edict_s edict_t;
+#endif
+
 namespace Metamod::Engine
 {
     class IEntVars;
@@ -58,5 +62,10 @@ namespace Metamod::Engine
          * @return Enitity's variables.
          */
         virtual IEntVars *getEntVars() const = 0;
+
+#if defined META_CORE
+        virtual void *getPrivateData() const = 0;
+        virtual operator edict_t *() const = 0;
+#endif
     };
 }

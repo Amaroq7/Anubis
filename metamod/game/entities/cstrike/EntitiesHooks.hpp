@@ -23,30 +23,37 @@
 #include <HookChains.hpp>
 #include "VFuncHelpers.hpp"
 
-namespace Metamod::Game
+namespace Metamod::Game::CStrike
 {
     using BasePlayerSpawnHook = ClassHook<void, Entities::IBasePlayer *>;
     using BasePlayerSpawnHookRegistry = ClassHookRegistry<void, Entities::IBasePlayer *>;
 
-    using BasePlayerTakeDamageHook = ClassHook<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
-    using BasePlayerTakeDamageHookRegistry = ClassHookRegistry<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
+    using BasePlayerTakeDamageHook = ClassHook<bool, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
+    using BasePlayerTakeDamageHookRegistry = ClassHookRegistry<bool, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, int>;
 
     using BasePlayerTraceAttackHook = ClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
     using BasePlayerTraceAttackHookRegistry = ClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
 
+    using BasePlayerKilledHook = ClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, GibType>;
+    using BasePlayerKilledHookRegistry = ClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, GibType>;
+
     class BasePlayerHooks final : public IBasePlayerHooks
     {
     public:
-        BasePlayerHooks(const std::unordered_map<std::string, std::uint32_t> &vOffsets);
+         BasePlayerHooks();
         ~BasePlayerHooks() final = default;
 
         BasePlayerSpawnHookRegistry *spawn() final;
         BasePlayerTakeDamageHookRegistry *takeDamage() final;
         BasePlayerTraceAttackHookRegistry *traceAttack() final;
+        //BasePlayerKilledHookRegistry *killed() final;
 
     private:
         BasePlayerSpawnHookRegistry m_spawn;
         BasePlayerTakeDamageHookRegistry m_takeDamage;
         BasePlayerTraceAttackHookRegistry m_traceAttack;
+        //BasePlayerKilledHookRegistry m_killed;
     };
 }
+
+extern std::unique_ptr<Metamod::Game::CStrike::BasePlayerHooks> gBasePlayerHooks;

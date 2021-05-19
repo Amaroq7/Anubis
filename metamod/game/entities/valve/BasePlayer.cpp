@@ -18,15 +18,19 @@
  */
 
 #include "BasePlayer.hpp"
-#include <Metamod.hpp>
+#include "EntitiesHooks.hpp"
+
+#include <engine/IEntVars.hpp>
+#include <extdll.h>
+#include <tier0/platform.h>
+#include <util.h>
 #include <cbase.h>
 #include <player.h>
 
 namespace Metamod::Game::Entities::Valve
 {
-    BasePlayer::BasePlayer(const Engine::Edict *edict,
-                           BasePlayerHooks *m_hooks)
-        : BaseMonster(edict), m_hooks(m_hooks)
+    BasePlayer::BasePlayer(Engine::IEdict *edict)
+        : BaseMonster(edict)
     {}
 
     BasePlayer::operator CBasePlayer *() const
@@ -36,27 +40,23 @@ namespace Metamod::Game::Entities::Valve
 
     void BasePlayer::makeVIP() { /* CStrike only */ }
 
-    int BasePlayer::takeDamage(Engine::IEntVars *pevInflictor,
+    bool BasePlayer::takeDamage(Engine::IEntVars *pevInflictor,
                                Engine::IEntVars *pevAttacker,
                                float flDamage,
-                               int bitsDamageType)
+                               std::int32_t bitsDamageType,
+                               FuncCallType callType)
     {
-        static BasePlayerTakeDamageHookRegistry *registry = m_hooks->takeDamage();
+        static Game::Valve::BasePlayerTakeDamageHookRegistry *registry = gBasePlayerHooks->takeDamage();
 
         // VFunc is hooked so call the original
-        if (bool hasHooks = registry->hasHooks(); hasHooks && !m_callHooks)
+        if (bool hasHooks = registry->hasHooks(); hasHooks && callType != FuncCallType::Hooks)
         {
-            return VFuncHelpers::execOriginalFunc<std::int32_t, entvars_t *, entvars_t *, float, std::int32_t>(
-                registry->getVFuncAddr(),
-                                 operator CBasePlayer *(), *dynamic_cast<Engine::EntVars *>(pevInflictor),
-                                 *dynamic_cast<Engine::EntVars *>(pevAttacker), flDamage, bitsDamageType);
+            return VFuncHelpers::execOriginalFunc<std::int32_t, entvars_t *, entvars_t *, float, std::int32_t>
+                (registry->getVFuncAddr(), operator CBasePlayer *(), *pevInflictor,
+                       *pevAttacker, flDamage, bitsDamageType)
+                   == TRUE;
         }
 
-        return operator CBasePlayer *()->TakeDamage(
-            *dynamic_cast<Engine::EntVars *>(pevInflictor),
-            *dynamic_cast<Engine::EntVars *>(pevAttacker),
-            flDamage,
-            bitsDamageType
-        );
+        return operator CBasePlayer *()->TakeDamage(*pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
     }
 } // namespace Valve

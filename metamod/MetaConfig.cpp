@@ -39,6 +39,7 @@ namespace Metamod
         setPath(PathType::Metamod, metamodPath);
         setPath(PathType::Configs, metamodPath / "configs");
         setPath(PathType::Logs, metamodPath / "logs");
+        setPath(PathType::Plugins, metamodPath.parent_path());
 
         // Create dir for logs in case it doesnt exist
         fs::create_directory(getPath(PathType::Logs));

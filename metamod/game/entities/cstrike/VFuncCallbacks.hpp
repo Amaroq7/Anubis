@@ -19,21 +19,28 @@
 
 #pragma once
 
-#include <IHookChains.hpp>
-#include <game/entities/IBaseMonster.hpp>
+#include <cinttypes>
 
-namespace Metamod::Game::Entities
+#include "ReGameHeaders.hpp"
+
+namespace Metamod::Game::VFunc
 {
-    class IBasePlayer : public virtual IBaseMonster
-    {
-        public:
-            ~IBasePlayer() override = default;
-            virtual void makeVIP() = 0;
-            //virtual void killed() = 0;
+    void vCBasePlayerSpawn(IReGameHook_CBasePlayer_Spawn *hook, CBasePlayer *player);
 
-#if defined META_CORE
-        public:
-            static inline std::intptr_t VTable;
-#endif
-    };
-}
+     BOOL vCBasePlayerTakeDamage(IReGameHook_CBasePlayer_TakeDamage *hook,
+        CBasePlayer *instance,
+        entvars_t *pevInflictor,
+        entvars_t *pevAttacker,
+        float &flDamage,
+        std::int32_t bitsDamageType
+    );
+
+    void vCBasePlayerTraceAttack(IReGameHook_CBasePlayer_TraceAttack *hook,
+        CBasePlayer *player,
+        entvars_t *pevAttacker,
+        float flDamage,
+        Vector &vecDir,
+        ::TraceResult *ptr,
+        std::int32_t bitsDamageType
+    );
+} // namespace

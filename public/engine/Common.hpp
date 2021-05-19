@@ -54,6 +54,16 @@ namespace Metamod::Engine
         RightLeg = 7  /**< Right leg */
     };
 
+    enum class AlertType : std::uint8_t
+    {
+        Notice = 0,
+        Console,		// same as at_notice, but forces a ConPrintf, not a message box
+        Aiconsole,	// same as at_console, but only shown if developer level is 2!
+        Warning,
+        Error,
+        Logged		// Server print to console ( only in multiplayer games ).
+    };
+
     /**
      * Server command callback.
      */

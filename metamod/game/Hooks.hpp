@@ -27,6 +27,9 @@ namespace Metamod::Game
     using GameInitHook = Hook<void>;
     using GameInitHookRegistry = HookRegistry<void>;
 
+    using SpawnHook = Hook<std::int32_t, Engine::IEdict *>;
+    using SpawnHookRegistry = HookRegistry<std::int32_t, Engine::IEdict *>;
+
     using ClientConnectHook = Hook<bool, Engine::IEdict *, std::string_view, std::string_view, std::string &>;
     using ClientConnectHookRegistry = HookRegistry<bool, Engine::IEdict *, std::string_view, std::string_view, std::string &>;
 
@@ -58,6 +61,7 @@ namespace Metamod::Game
         ~Hooks() override = default;
 
         GameInitHookRegistry *gameInit() override;
+        SpawnHookRegistry *spawn() override;
         ClientConnectHookRegistry *clientConnect() override;
         ClientPutinServerHookRegistry *clientPutinServer() override;
         ClientCmdHookRegistry *clientCmd() override;
@@ -69,6 +73,7 @@ namespace Metamod::Game
 
     private:
         GameInitHookRegistry m_gameInitRegistry;
+        SpawnHookRegistry m_spawn;
         ClientConnectHookRegistry m_clientConnectRegistry;
         ClientPutinServerHookRegistry m_clientPutinServerRegistry;
         ClientCmdHookRegistry m_clientCmdRegistry;

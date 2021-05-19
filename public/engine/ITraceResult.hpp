@@ -21,6 +21,10 @@
 
 #include "Common.hpp"
 
+#if defined META_CORE
+struct TraceResult;
+#endif
+
 namespace Metamod::Engine
 {
     class IEdict;
@@ -51,5 +55,9 @@ namespace Metamod::Engine
         virtual void setPlaneNormal(const float *planeNormal) = 0;
         virtual void setHit(IEdict *hit) = 0;
         virtual void setHitGroup(HitGroup hitGroup) = 0;
+
+#if defined META_CORE
+        virtual operator ::TraceResult *() const = 0;
+#endif
     };
 } // namespace SPMod::Engine

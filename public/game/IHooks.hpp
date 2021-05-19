@@ -34,6 +34,9 @@ namespace Metamod::Game
     using IGameInitHook = IHook<void>;
     using IGameInitHookRegistry = IHookRegistry<void>;
 
+    using ISpawnHook = IHook<std::int32_t, Engine::IEdict *>;
+    using ISpawnHookRegistry = IHookRegistry<std::int32_t, Engine::IEdict *>;
+
     using IClientConnectHook = IHook<bool, Engine::IEdict *, std::string_view, std::string_view, std::string &>;
     using IClientConnectHookRegistry = IHookRegistry<bool, Engine::IEdict *, std::string_view, std::string_view, std::string &>;
 
@@ -64,6 +67,7 @@ namespace Metamod::Game
         virtual ~IHooks() = default;
 
         virtual IGameInitHookRegistry *gameInit() = 0;
+        virtual ISpawnHookRegistry *spawn() = 0;
         virtual IClientConnectHookRegistry *clientConnect() = 0;
         virtual IClientPutinServerHookRegistry *clientPutinServer() = 0;
         virtual IClientCmdHookRegistry *clientCmd() = 0;

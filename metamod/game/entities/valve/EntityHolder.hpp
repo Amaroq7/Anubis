@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Metamod++ Development Team
+ *  Copyright (C) 2020-2021 Metamod++ Development Team
  *
  *  This file is part of Metamod++.
  *
@@ -16,20 +16,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#include <extdll.h>
+#include <game/entities/IEntityHolder.hpp>
 
-namespace Metamod::Game::Callbacks::Engine
+namespace Metamod::Game::Entities
 {
-    void pfnGameInit();
-    int pfnSpawn(edict_t *pent);
-    qboolean pfnClientConnect(edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[128]);
-    void pfnClientPutInServer(edict_t *pEntity);
-    void pfnClientCommand(edict_t *pEntity);
-    void pfnClientUserInfoChanged(edict_t *pEntity, char *infobuffer);
-    void pfnServerActivate(edict_t *pEdictList, int edictCount, int clientMax);
-    void pfnServerDeactivate();
-    void pfnStartFrame();
-    void pfnGameShutdown();
+    class EntityHolder final : public IEntityHolder
+    {
+    public:
+        IBaseEntity *getBaseEntity(Engine::IEdict *edict) final;
+        IBasePlayer *getBasePlayer(Engine::IEdict *edict) final;
+    };
 }
+extern Metamod::Game::Entities::EntityHolder gEntityHolder;

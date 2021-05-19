@@ -170,4 +170,9 @@ namespace Metamod::Engine
     {
         return &m_removeEntity;
     }
+
+    AlertHookRegistry *Hooks::alert()
+    {
+        return &m_alert;
+    }
 }

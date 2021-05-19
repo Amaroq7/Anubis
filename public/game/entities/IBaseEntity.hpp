@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <Common.hpp>
+
 namespace Metamod::Engine
 {
     class IEdict;
@@ -39,6 +41,6 @@ namespace Metamod::Game::Entities
             virtual bool isAlive() const = 0;
             virtual std::string_view getTeam() const = 0;
             virtual int takeHealth(float flHealth, int bitsDamageType) const = 0;
-            virtual int takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, int bitsDamageType) = 0;
+            virtual bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType, FuncCallType callType) = 0;
     };
 }

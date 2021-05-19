@@ -26,14 +26,6 @@
 
 namespace Metamod
 {
-    enum class PathType : std::uint8_t
-    {
-        Game = 0,
-        Metamod = 1,
-        Logs = 2,
-        Configs = 3
-    };
-
     class Config
     {
     public:
@@ -49,7 +41,7 @@ namespace Metamod
         void _readConfigFile();
 
     private:
-        std::array<fs::path, 4> m_paths;
+        std::array<fs::path, 5> m_paths;
         LogLevel m_currentLogLevel = LogLevel::Info;
         std::string m_configFilename = "config.yaml";
     };

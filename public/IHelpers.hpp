@@ -18,23 +18,27 @@
  */
 #pragma once
 
+#if !defined META_DONT_INCLUDE_ENUM_HELPERS
+
 #include <type_traits>
 
 template<typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-constexpr bool operator&(const T lhs, const T rhs)
+inline constexpr bool operator&(const T lhs, const T rhs)
 {
   using enumType = std::underlying_type_t<T>;
   return static_cast<bool>(static_cast<enumType>(lhs) & static_cast<enumType>(rhs));
 }
 
 template<typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-constexpr T operator|(const T lhs, const T rhs)
+inline constexpr T operator|(const T lhs, const T rhs)
 {
   return static_cast<T>(static_cast<std::underlying_type_t<T>>(lhs) | static_cast<std::underlying_type_t<T>>(rhs));
 }
 
 template<typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-constexpr T operator^(const T lhs, const T rhs)
+inline constexpr T operator^(const T lhs, const T rhs)
 {
   return static_cast<T>(static_cast<std::underlying_type_t<T>>(lhs) ^ static_cast<std::underlying_type_t<T>>(rhs));
 }
+
+#endif

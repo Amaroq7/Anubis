@@ -33,6 +33,19 @@ namespace Metamod::Game::Callbacks::Engine
 
         gameLib->pfnGameInit(FuncCallType::Hooks);
     }
+
+    int pfnSpawn(edict_t *pent)
+    {
+        static bool vFuncInitialized = false;
+        if (!vFuncInitialized)
+        {
+            gameLib->initVFuncHooks();
+            vFuncInitialized = true;
+        }
+
+        return gameLib->pfnSpawn(engine->getEdict(pent), FuncCallType::Hooks);
+    }
+
     qboolean pfnClientConnect(edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[128])
     {
         constexpr const std::size_t REASON_REJECT_MAX_LEN = 128;
@@ -50,18 +63,22 @@ namespace Metamod::Game::Callbacks::Engine
         }
         return TRUE;
     }
+
     void pfnClientPutInServer(edict_t *pEntity)
     {
         gameLib->pfnClientPutInServer(engine->getEdict(pEntity), FuncCallType::Hooks);
     }
+
     void pfnClientCommand(edict_t *pEntity)
     {
         gameLib->pfnClientCommand(engine->getEdict(pEntity), FuncCallType::Hooks);
     }
+
     void pfnClientUserInfoChanged(edict_t *pEntity, char *infobuffer)
     {
         gameLib->pfnClientUserInfoChanged(engine->getEdict(pEntity), infobuffer, FuncCallType::Hooks);
     }
+
     void pfnServerActivate(edict_t *pEdictList, int edictCount, int clientMax)
     {
         engine->initializeEdicts(pEdictList, static_cast<std::uint32_t>(edictCount), static_cast<std::uint32_t>(clientMax));
@@ -69,14 +86,17 @@ namespace Metamod::Game::Callbacks::Engine
         gameLib->initVFuncHooks();
         gameLib->pfnServerActivate(static_cast<std::uint32_t>(edictCount), static_cast<std::uint32_t>(clientMax), FuncCallType::Hooks);
     }
+
     void pfnServerDeactivate()
     {
         gameLib->pfnServerDeactivate(FuncCallType::Hooks);
     }
+
     void pfnStartFrame()
     {
         gameLib->pfnStartFrame(FuncCallType::Hooks);
     }
+
     void pfnGameShutdown()
     {
         gameLib->pfnGameShutdown(FuncCallType::Hooks);

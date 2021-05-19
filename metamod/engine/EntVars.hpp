@@ -18,7 +18,7 @@ namespace Metamod::Engine
             virtual std::uint32_t getIndex() const override;
 
             // EntVars
-            operator entvars_t *() const;
+            operator entvars_t *() const final;
 
         private:
             entvars_t *m_entVars = nullptr;

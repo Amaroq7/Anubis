@@ -8,7 +8,7 @@ namespace Metamod::Game::Entities::CStrike
     class BaseDelay : public BaseEntity, public virtual IBaseDelay
     {
         public:
-            explicit BaseDelay(const Engine::Edict *edict) : BaseEntity(edict) {};
+            explicit BaseDelay(Engine::IEdict *edict) : BaseEntity(edict) {};
             ~BaseDelay() override = default;
     };
 }

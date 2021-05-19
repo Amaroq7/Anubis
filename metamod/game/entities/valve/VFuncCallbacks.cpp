@@ -18,26 +18,30 @@
  */
 
 #include "VFuncCallbacks.hpp"
-
-#include <Metamod.hpp>
-#include "Library.hpp"
 #include "VFuncHelpers.hpp"
-
-using namespace Metamod;
+#include "MetaExports.hpp"
+#include "EntitiesHooks.hpp"
+#include "EntityHolder.hpp"
+#include <engine/IEntVars.hpp>
+#include <engine/ITraceResult.hpp>
+#include <game/entities/IBasePlayer.hpp>
+#include <type_traits>
+#include <extdll.h>
+#include <util.h>
 
 namespace
 {
+    using namespace Metamod;
+
     template<typename T, typename = std::enable_if_t<std::is_base_of_v<Game::Entities::IBaseEntity, T>>>
     T *instanceToType(void *instance)
     {
-        static Game::Library *gameLib = gMetaGlobal->getGame();
-        static Engine::Library *engine = gMetaGlobal->getEngine();
-
+        static std::uint32_t pevOffset = gVOffsets.at("pev");
         edict_t *ed =
-            ENT(*reinterpret_cast<entvars_t **>(reinterpret_cast<std::intptr_t *>(instance) + gameLib->getPevOffset()));
+            ENT(*reinterpret_cast<entvars_t **>(reinterpret_cast<std::intptr_t *>(instance) + pevOffset));
         if constexpr (std::is_same_v<T, Game::Entities::IBasePlayer>)
         {
-            return gameLib->getBasePlayer(engine->getEdict(ed));
+            return gEntityHolder.getBasePlayer(gEngineLib->getEdict(ed));
         }
 
         return nullptr;
@@ -65,10 +69,9 @@ namespace Metamod::Game::VFunc
             mov [instance], ecx
         }
 #endif
-        static Game::Library *game = gMetaGlobal->getGame();
-        if (getVTable(instance) == Entities::IBasePlayer::VTable)
+        if (getVTable(instance) == Game::Entities::IBasePlayer::VTable)
         {
-            static BasePlayerSpawnHookRegistry *hookchain = game->getCBasePlayerHooks()->spawn();
+            static Game::Valve::BasePlayerSpawnHookRegistry *hookchain = gBasePlayerHooks->spawn();
 
             hookchain->callChain([instance](Entities::IBasePlayer *) {
                     VFuncHelpers::execOriginalFunc<>(hookchain->getVFuncAddr(), instance);
@@ -93,12 +96,9 @@ namespace Metamod::Game::VFunc
             mov [instance], ecx
         }
 #endif
-        static Game::Library *game = gMetaGlobal->getGame();
-        static Engine::Library *engine = gMetaGlobal->getEngine();
-
         if (getVTable(instance) == Entities::IBasePlayer::VTable)
         {
-            static BasePlayerTakeDamageHookRegistry *hookchain = game->getCBasePlayerHooks()->takeDamage();
+            static Game::Valve::BasePlayerTakeDamageHookRegistry *hookchain = gBasePlayerHooks->takeDamage();
 
             return hookchain->callChain(
                 [instance](Entities::IBasePlayer *, Engine::IEntVars *pevInflictor,
@@ -106,11 +106,11 @@ namespace Metamod::Game::VFunc
                 {
                     return VFuncHelpers::execOriginalFunc<int, entvars_t *, entvars_t *, float, int>(
                         hookchain->getVFuncAddr(), instance,
-                        *dynamic_cast<Engine::EntVars *>(pevInflictor), *dynamic_cast<Engine::EntVars *>(pevAttacker),
+                        *pevInflictor, *pevAttacker,
                         flDamage, bitsDamageType);
                 },
-                instanceToType<Entities::IBasePlayer>(instance), engine->getEntVars(pevInflictor),
-                engine->getEntVars(pevAttacker), flDamage, bitsDamageType);
+                instanceToType<Entities::IBasePlayer>(instance), gEngineLib->getEntVars(pevInflictor),
+                gEngineLib->getEntVars(pevAttacker), flDamage, bitsDamageType);
         }
 
         return 0;
@@ -135,20 +135,20 @@ namespace Metamod::Game::VFunc
             mov [instance], ecx
         }
     #endif
-
-        static Game::Library *game = gMetaGlobal->getGame();
-        static Engine::Library *engine = gMetaGlobal->getEngine();
-
         if (getVTable(instance) == Entities::IBasePlayer::VTable)
         {
-            static BasePlayerTraceAttackHookRegistry *hookchain = game->getCBasePlayerHooks()->traceAttack();
-            Engine::TraceResult tr(ptr);
+            static Game::Valve::BasePlayerTraceAttackHookRegistry *hookchain = gBasePlayerHooks->traceAttack();
+            Engine::ITraceResult *metaTr = gEngineLib->createTraceResult(ptr);
 
             hookchain->callChain([instance](Entities::IBasePlayer *, Engine::IEntVars *pevAttacker, float flDamage, float *vec, Engine::ITraceResult *metatr, std::int32_t bitsDamageType) {
-                VFuncHelpers::execOriginalFunc<void, entvars_t *, float, float *, ::TraceResult *, int>(hookchain->getVFuncAddr(), instance, *dynamic_cast<Engine::EntVars *>(pevAttacker), flDamage, vec, *dynamic_cast<Engine::TraceResult *>(metatr), bitsDamageType);
+                VFuncHelpers::execOriginalFunc<void, entvars_t *, float, float *, ::TraceResult *, int>(
+                     hookchain->getVFuncAddr(), instance, *pevAttacker, flDamage, vec, *metatr, bitsDamageType
+                );
             },
-            instanceToType<Entities::IBasePlayer>(instance), engine->getEntVars(pevAttacker),
-            flDamage, &vecDir.x, &tr, bitsDamageType);
+            instanceToType<Entities::IBasePlayer>(instance), gEngineLib->getEntVars(pevAttacker),
+            flDamage, &vecDir.x, metaTr, bitsDamageType);
+
+            gEngineLib->freeTraceResult(metaTr);
         }
     }
 }

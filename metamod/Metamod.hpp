@@ -45,8 +45,10 @@ namespace Metamod
         const RegMsg *getMsgInfo(std::string_view name) const final;
         void logMsg(IPlugin *plugin, LogLevel level, LogDest dest, std::string_view msg) final;
 
+        void logMsg(LogLevel level, LogDest dest, std::string_view msg) final;
         bool addNewMsg(Engine::MsgType id, std::string_view name, std::int16_t size);
         bool setLogLevel(std::string_view logLevel);
+        fs::path getPath(PathType pathType) final;
 
         template<typename... t_args>
         void logMsg(LogLevel level, LogDest dest, std::string_view format, t_args&&... args)
@@ -57,8 +59,10 @@ namespace Metamod
             }
 
             std::string msg = fmt::vformat(format, fmt::make_args_checked<t_args...>(format, args...));
-            auto sendToFileFn = std::bind(&Metamod::_sendToFile, m_config->getPath(PathType::Logs),
-                                          std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+
+            auto sendToFileFn = [this](std::string_view logTag, LogLevel logLevel, std::string_view msg) {
+                Metamod::_sendToFile(m_config->getPath(PathType::Logs), logTag, logLevel, msg);
+            };
 
             if (dest & LogDest::Console)
             {

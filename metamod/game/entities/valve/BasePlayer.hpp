@@ -5,7 +5,7 @@
 #include "BaseMonster.hpp"
 
 #include <memory>
-#include <game/EntitiesHooks.hpp>
+#include "EntitiesHooks.hpp"
 
 class CBasePlayer;
 
@@ -22,17 +22,15 @@ namespace Metamod::Game::Entities::Valve
             static constexpr const char *CLASS_NAME = "player";
 
         public:
-            BasePlayer(const Engine::Edict *edict, BasePlayerHooks *m_hooks);
+            BasePlayer(Engine::IEdict *edict);
             ~BasePlayer() override = default;
 
         public:
-            int takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, int bitsDamageType) override;
+            bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType, FuncCallType callType) override;
             void makeVIP() override;
+            //void killed() final;
 
         private:
             operator CBasePlayer *() const;
-
-        private:
-            BasePlayerHooks *m_hooks;
     };
 }

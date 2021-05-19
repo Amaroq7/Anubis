@@ -3,6 +3,10 @@
 #include <cinttypes>
 #include <cstddef>
 
+#if defined META_CORE
+typedef struct entvars_s entvars_t;
+#endif
+
 namespace Metamod::Engine
 {
     enum class EntFlags : std::uint32_t
@@ -55,5 +59,9 @@ namespace Metamod::Engine
             virtual void setFlags(EntFlags flags) = 0;
 
             virtual std::uint32_t getIndex() const = 0;
+
+#if defined META_CORE
+            virtual operator entvars_t *() const = 0;
+#endif
     };
 }

@@ -57,4 +57,8 @@ namespace Metamod::Game
     {
         return &m_gameShutdownRegistry;
     }
+    SpawnHookRegistry *Hooks::spawn()
+    {
+        return &m_spawn;
+    }
 }

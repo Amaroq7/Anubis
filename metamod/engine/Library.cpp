@@ -439,6 +439,14 @@ namespace Metamod::Engine
         }, callType, pEdict);
     }
 
+    void Library::alert(AlertType alertType, std::string_view msg, FuncCallType callType)
+    {
+        static AlertHookRegistry *hookchain = m_hooks->alert();
+        return _execEngineFunc(hookchain, [](AlertType alertType, std::string_view msg) {
+            ALERT(static_cast<ALERT_TYPE>(alertType), msg.data());
+        }, callType, alertType, msg);
+    }
+
     void Library::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;

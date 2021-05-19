@@ -19,14 +19,16 @@
 
 #include "EntitiesHooks.hpp"
 #include "VFuncCallbacks.hpp"
-#include "entities/valve/BasePlayer.hpp"
+#include "BasePlayer.hpp"
 
-namespace Metamod::Game
+std::unique_ptr<Metamod::Game::Valve::BasePlayerHooks> gBasePlayerHooks;
+
+namespace Metamod::Game::Valve
 {
     BasePlayerHooks::BasePlayerHooks(const std::unordered_map<std::string, std::uint32_t> &vOffsets) :
-          m_spawn(Entities::IBasePlayer::VTable, vOffsets.at("spawn"), reinterpret_cast<intptr_t>(VFunc::vSpawnHook)),
-          m_takeDamage(Entities::IBasePlayer::VTable, vOffsets.at("takedamage"), reinterpret_cast<intptr_t>(VFunc::vTakeDamageHook)),
-          m_traceAttack(Entities::IBasePlayer::VTable, vOffsets.at("traceattack"), reinterpret_cast<intptr_t>(VFunc::vTraceAttack))
+        m_spawn(Entities::IBasePlayer::VTable, vOffsets.at("spawn"), reinterpret_cast<intptr_t>(VFunc::vSpawnHook)),
+        m_takeDamage(Entities::IBasePlayer::VTable, vOffsets.at("takedamage"), reinterpret_cast<intptr_t>(VFunc::vTakeDamageHook)),
+        m_traceAttack(Entities::IBasePlayer::VTable, vOffsets.at("traceattack"), reinterpret_cast<intptr_t>(VFunc::vTraceAttack))
     {}
 
     BasePlayerSpawnHookRegistry *BasePlayerHooks::spawn()
@@ -43,4 +45,9 @@ namespace Metamod::Game
     {
         return &m_traceAttack;
     }
+
+    /*BasePlayerKilledHookRegistry *BasePlayerHooks::killed()
+    {
+        return &m_killed;
+    }*/
 }

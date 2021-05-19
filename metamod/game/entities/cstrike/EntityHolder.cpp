@@ -16,20 +16,20 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
 
-#include <extdll.h>
+#include "EntityHolder.hpp"
+#include "BasePlayer.hpp"
 
-namespace Metamod::Game::Callbacks::Engine
+Metamod::Game::Entities::EntityHolder gEntityHolder;
+
+Metamod::Game::Entities::IBaseEntity *
+    Metamod::Game::Entities::EntityHolder::getBaseEntity(Metamod::Engine::IEdict *edict)
 {
-    void pfnGameInit();
-    int pfnSpawn(edict_t *pent);
-    qboolean pfnClientConnect(edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[128]);
-    void pfnClientPutInServer(edict_t *pEntity);
-    void pfnClientCommand(edict_t *pEntity);
-    void pfnClientUserInfoChanged(edict_t *pEntity, char *infobuffer);
-    void pfnServerActivate(edict_t *pEdictList, int edictCount, int clientMax);
-    void pfnServerDeactivate();
-    void pfnStartFrame();
-    void pfnGameShutdown();
+    return _getEntity<Entities::CStrike::BaseEntity>(edict);
+}
+
+Metamod::Game::Entities::IBasePlayer *
+    Metamod::Game::Entities::EntityHolder::getBasePlayer(Metamod::Engine::IEdict *edict)
+{
+    return _getEntity<Entities::CStrike::BasePlayer>(edict);
 }

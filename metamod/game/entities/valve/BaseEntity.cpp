@@ -18,19 +18,21 @@
  */
 
 #include "BaseEntity.hpp"
+#include "MetaExports.hpp"
+
 #include <extdll.h>
 #include <osconfig.h>
 #include <util.h>
 #include <cbase.h>
-#include <enginecallback.h>
+
+#include <engine/Common.hpp>
+#include <engine/IEntVars.hpp>
 
 namespace Metamod::Game::Entities::Valve
 {
-    BaseEntity::BaseEntity(const Engine::Edict *edict)
-      : m_edict(const_cast<Engine::Edict *>(edict))
-    {}
+    BaseEntity::BaseEntity(Engine::IEdict *edict) : m_edict(edict) {}
 
-    Metamod::Engine::Edict *BaseEntity::edict() const
+    Metamod::Engine::IEdict *BaseEntity::edict() const
     {
         return m_edict;
     }
@@ -42,10 +44,10 @@ namespace Metamod::Game::Entities::Valve
         {
             // this situation can screw up monsters who can't tell their entity pointers are invalid.
             baseEntity->pev->health = 0;
-            ALERT(at_aiconsole, "SUB_Remove called on entity with health > 0\n");
+            gEngineLib->alert(Engine::AlertType::Aiconsole, "SUB_Remove called on entity with health > 0\n", FuncCallType::Direct);
         }
 
-        REMOVE_ENTITY(ENT(baseEntity->pev));
+        gEngineLib->removeEntity(m_edict, FuncCallType::Direct);
     }
 
     bool BaseEntity::isAlive() const
@@ -63,38 +65,16 @@ namespace Metamod::Game::Entities::Valve
         return operator CBaseEntity *()->TeamID();
     }
 
-    std::int32_t BaseEntity::takeDamage(Engine::IEntVars *pevInflictor,
-                                        Engine::IEntVars *pevAttacker,
-                                        float flDamage,
-                                        std::int32_t bitsDamageType)
+    bool BaseEntity::takeDamage(Engine::IEntVars *pevInflictor,
+                                Engine::IEntVars *pevAttacker,
+                                float flDamage,
+                                std::int32_t bitsDamageType, FuncCallType callType [[maybe_unused]])
     {
-        /*VTableHook *hook = gSPGlobal->getVTableManager()->getHook(IVTableHookManager::vFuncType::TakeDamage);
-
-        // VFunc is hooked so call the original
-        if (hook && !m_callHooks)
-        {
-            return hook->execOriginalFunc<std::int32_t, entvars_t *, entvars_t *, float, std::int32_t>(
-                operator CBaseEntity *(), *static_cast<Engine::EntVars *>(pevInflictor),
-                *static_cast<Engine::EntVars *>(pevAttacker), flDamage, bitsDamageType);
-        }*/
-
-        return operator CBaseEntity *()->TakeDamage(*static_cast<Engine::EntVars *>(pevInflictor),
-                                                    *static_cast<Engine::EntVars *>(pevAttacker), flDamage,
-                                                    bitsDamageType);
+        return operator CBaseEntity *()->TakeDamage(*pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
     }
 
     BaseEntity::operator CBaseEntity *() const
     {
-        return reinterpret_cast<CBaseEntity *>(GET_PRIVATE(*m_edict));
-    }
-
-    void BaseEntity::setCallHooks(bool call)
-    {
-        m_callHooks = call;
-    }
-
-    std::intptr_t BaseEntity::_getCurrentVTable()
-    {
-        return *reinterpret_cast<intptr_t *>(GET_PRIVATE(*m_edict));
+        return reinterpret_cast<CBaseEntity *>(m_edict->getPrivateData());
     }
 } // namespace Valve

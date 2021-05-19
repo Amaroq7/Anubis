@@ -16,20 +16,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#include <extdll.h>
+class CBaseEntity;
 
-namespace Metamod::Game::Callbacks::Engine
-{
-    void pfnGameInit();
-    int pfnSpawn(edict_t *pent);
-    qboolean pfnClientConnect(edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[128]);
-    void pfnClientPutInServer(edict_t *pEntity);
-    void pfnClientCommand(edict_t *pEntity);
-    void pfnClientUserInfoChanged(edict_t *pEntity, char *infobuffer);
-    void pfnServerActivate(edict_t *pEdictList, int edictCount, int clientMax);
-    void pfnServerDeactivate();
-    void pfnStartFrame();
-    void pfnGameShutdown();
-}
+#include <extdll.h>
+#include <cmath>
+#include <vector.h>
+#include <tier0/platform.h>
+#include <enginecallback.h>
+#include <cbase.h>
+#include <player.h>
+#include <regamedll_api.h>

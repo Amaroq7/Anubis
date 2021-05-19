@@ -22,21 +22,24 @@
 #include <game/ILibrary.hpp>
 #include <EngineExports.hpp>
 #include <Module.hpp>
-#include "entities/valve/BaseEntity.hpp"
-#include "entities/valve/BasePlayer.hpp"
-#include "entities/cstrike/BaseEntity.hpp"
-#include "entities/cstrike/BasePlayer.hpp"
 #include "Callbacks.hpp"
 #include "Hooks.hpp"
-#include "engine/Library.hpp"
-#include "engine/Edict.hpp"
-#include "EntitiesHooks.hpp"
 
 #include <unordered_map>
 #include <limits>
 
+namespace Metamod::Engine
+{
+    class ILibrary;
+}
+
 namespace Metamod::Game
 {
+    namespace Entities
+    {
+        class IEntityHolder;
+    }
+
     struct ModInfo
     {
         std::string_view name;      // name (the game dir)
@@ -48,7 +51,7 @@ namespace Metamod::Game
     {
     public:
         Library() = delete;
-        Library(const std::unique_ptr<Engine::Library> &engine,
+        Library(Engine::ILibrary *engine,
             std::string_view gameDir,
             const fs::path &metaConfigsDir
         );
@@ -63,6 +66,7 @@ namespace Metamod::Game
         bool callGameEntity(std::string_view name, Engine::IEntVars *pev) override;
 
         void pfnGameInit(FuncCallType callType) override;
+        std::int32_t pfnSpawn(Engine::IEdict *edict, FuncCallType callType) override;
         bool pfnClientConnect(Engine::IEdict *pEntity, std::string_view pszName,
                                       std::string_view pszAddress, std::string &szRejectReason,
                                       FuncCallType callType) override;
@@ -75,62 +79,21 @@ namespace Metamod::Game
         void pfnStartFrame(FuncCallType callType) override;
         void pfnGameShutdown(FuncCallType callType) override;
 
-        Entities::IBaseEntity *getBaseEntity(const Engine::IEdict *edict) override;
-        Entities::IBasePlayer *getBasePlayer(const Engine::IEdict *edict) override;
-        BasePlayerHooks *getCBasePlayerHooks() override;
+        Entities::IBaseEntity *getBaseEntity(Engine::IEdict *edict) override;
+        Entities::IBasePlayer *getBasePlayer(Engine::IEdict *edict) override;
+        IBasePlayerHooks *getCBasePlayerHooks() override;
         void initVFuncHooks();
 
         const DLL_FUNCTIONS *getDllFuncs() const;
         const NEW_DLL_FUNCTIONS *getNewDllFuncs() const;
         Module::SystemHandle getSystemHandle() const;
         void setMaxClients(std::uint32_t maxClients);
-        std::uint32_t getPevOffset() const;
 
     private:
         void _loadGameDLL();
         void _replaceFuncs();
         void _loadVOffsets(const fs::path &metaConfigsDir);
-        std::intptr_t _getVTableOfEntity(std::string_view entityClass);
-
-        template<typename T, typename = std::enable_if_t<std::is_base_of_v<Entities::IBaseEntity, T>>>
-        T *_getEntity(const Engine::IEdict *edict)
-        {
-            auto edictImpl = dynamic_cast<const Engine::Edict *>(edict);
-            if (!edictImpl->isValid() || !edictImpl->getPrivateData())
-            {
-                return nullptr;
-            }
-
-            const auto& [beginIt, endIt] = m_entities.equal_range(edictImpl->getIndex());
-            if (beginIt != m_entities.end() && beginIt->second->serialNumber != edictImpl->getSerialNumber())
-            {
-                m_entities.erase(beginIt, endIt);
-            }
-            else
-            {
-                for (auto it = beginIt; it != endIt; ++it)
-                {
-                    if (auto entityBase = dynamic_cast<T *>(it->second->entity.get()); entityBase)
-                    {
-                        return entityBase;
-                    }
-                }
-            }
-
-            std::unique_ptr<T> entity;
-
-            if constexpr (std::disjunction_v<
-                std::is_same<Entities::Valve::BasePlayer, T>,
-                std::is_same<Entities::CStrike::BasePlayer, T>>)
-            {
-                entity = std::make_unique<T>(const_cast<Engine::Edict *>(edictImpl), m_basePlayerhooks.get());
-            }
-
-            auto result = dynamic_cast<T *>(entity.get());
-            m_entities.emplace(edictImpl->getIndex(), std::make_unique<EntityInfo>(std::move(entity), edictImpl->getSerialNumber()));
-
-            return result;
-        }
+        void _initGameEntityDLL(fs::path &&path);
 
         template <typename t_hookregistry, typename t_origfunc, typename... t_args>
         auto _execGameDLLFunc(t_hookregistry *hookchain, t_origfunc origFunc, FuncCallType callType, t_args... args)
@@ -143,17 +106,6 @@ namespace Metamod::Game
 
             return hookchain->callChain(origFunc, std::forward<t_args>(args)...);
         }
-
-    private:
-        struct EntityInfo
-        {
-            EntityInfo(std::unique_ptr<Entities::IBaseEntity> &&ent, std::uint32_t snumber) :
-                entity(std::move(ent)), serialNumber(snumber)
-            {}
-
-            std::unique_ptr<Entities::IBaseEntity> entity;
-            std::uint32_t serialNumber;
-        };
 
     private:
         constexpr static inline std::size_t knownGamesNum = 5;
@@ -176,18 +128,18 @@ namespace Metamod::Game
 
     private:
         std::unique_ptr<Hooks> m_hooks;
-        const std::unique_ptr<Engine::Library> &m_engine;
-        std::unique_ptr<BasePlayerHooks> m_basePlayerhooks;
+        Engine::ILibrary *m_engine;
+        IBasePlayerHooks *m_basePlayerhooks = nullptr;
+        Entities::IEntityHolder *m_entityHolder = nullptr;
         Mod m_modType;
         fs::path m_gameDir;
         fs::path m_pathName;
         std::unique_ptr<Module> m_gameLibrary;
-        std::unordered_multimap<std::uint32_t, std::unique_ptr<EntityInfo>> m_entities;
+        std::unique_ptr<Module> m_entityLibrary;
         std::uint32_t m_maxClients = 6;
 
         DLL_FUNCTIONS m_dllApiTable = {};
         NEW_DLL_FUNCTIONS m_newDllApiTable = {};
-        std::uint32_t m_pevOffset = std::numeric_limits<std::uint32_t>::max();
         std::unordered_map<std::string, std::uint32_t> m_virtualOffsets;
     };
 }

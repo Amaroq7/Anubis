@@ -260,13 +260,20 @@ namespace Metamod
     public:
         ClassHook(typename std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>>::iterator iter,
              const std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>> &hooks,
-             std::function<t_ret(t_entity, t_args...)> lastFn)
-            : m_iter(iter), m_hooks(hooks), m_endFunc(lastFn)
+             ClassOriginalFunc<t_ret, t_entity, t_args...> lastFn)
+            : m_iter(iter), m_hooks(hooks), m_endFunc(lastFn), m_originalFunc(lastFn)
         {}
 
-        ~ClassHook() override = default;
+        ClassHook(typename std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>>::iterator iter,
+                  const std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>> &hooks,
+                  ClassOriginalFunc<t_ret, t_entity, t_args...> lastFn,
+                  ClassOriginalFunc<t_ret, t_entity, t_args...> origFn)
+            : m_iter(iter), m_hooks(hooks), m_endFunc(lastFn), m_originalFunc(origFn)
+        {}
 
-        t_ret callNext(t_entity entity, t_args... args) override
+        ~ClassHook() final = default;
+
+        t_ret callNext(t_entity entity, t_args... args) final
         {
             if (m_iter != m_hooks.end())
             {
@@ -281,18 +288,19 @@ namespace Metamod
                 return std::invoke(currentHook->getHookFn(), &nextChain, entity, std::forward<t_args>(args)...);
             }
 
-            return callOriginal(entity, std::forward<t_args>(args)...);
+            return std::invoke(m_endFunc, entity, std::forward<t_args>(args)...);
         }
 
         t_ret callOriginal(t_entity entity, t_args... args) const override
         {
-            return std::invoke(m_endFunc, entity, std::forward<t_args>(args)...);
+            return std::invoke(m_originalFunc, entity, std::forward<t_args>(args)...);
         }
 
     private:
         typename std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>>::iterator m_iter;
         const std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>> &m_hooks;
-        std::function<t_ret(t_entity, t_args...)> m_endFunc;
+        ClassOriginalFunc<t_ret, t_entity, t_args...> m_endFunc;
+        ClassOriginalFunc<t_ret, t_entity, t_args...> m_originalFunc;
     };
 
     template<typename t_ret, typename t_entity, typename... t_args>
@@ -301,9 +309,11 @@ namespace Metamod
     public:
         using vFuncCallback = std::function<void(ClassHookRegistry<t_ret, t_entity, t_args...> *)>;
     public:
-        ClassHookRegistry() = default;
+        ClassHookRegistry(std::function<void()> registerFn, std::function<void()> unregisterFn)
+        : m_registerFn(registerFn), m_unregisterFn(unregisterFn) {}
+
         ClassHookRegistry(std::intptr_t vTable, std::uint32_t offset, std::intptr_t callbackFn)
-            : m_vTable(vTable), m_vOffset(offset), m_vCallback(callbackFn) {}
+            : m_vTable(vTable), m_vOffset(offset), m_vCallback(callbackFn), m_hookVTable(true) {}
         ~ClassHookRegistry() final
         {
             _restoreOriginalVFunc();
@@ -322,6 +332,26 @@ namespace Metamod
             return chain.callNext(entity, std::forward<t_args>(args)...);
         }
 
+        t_ret callChain(ClassOriginalFunc<t_ret, t_entity, t_args...> lastFunc,
+                        ClassOriginalFunc<t_ret, t_entity, t_args...> origFunc,
+                        t_entity entity, t_args... args)
+        {
+            if (hasHooks())
+            {
+                auto iter = m_hooks.begin();
+
+                while (iter != m_hooks.end() && !(*iter)->isEnabled())
+                {
+                    ++iter;
+                };
+
+                ClassHook<t_ret, t_entity, t_args...> chain(iter, m_hooks, lastFunc, origFunc);
+                return chain.callNext(entity, std::forward<t_args>(args)...);
+            }
+
+            return lastFunc(entity, std::forward<t_args>(args)...);
+        }
+
         bool hasHooks() const
         {
             return !m_hooks.empty();
@@ -329,6 +359,7 @@ namespace Metamod
 
         ClassHookInfo<t_ret, t_entity, t_args...> *registerHook(ClassHookFunc<t_ret, t_entity, t_args...> hook, HookPriority priority) final
         {
+            using namespace std::string_literals;
             if (!hook)
             {
                 // TODO: Error message
@@ -338,7 +369,7 @@ namespace Metamod
             auto hookInfo = std::make_unique<ClassHookInfo<t_ret, t_entity, t_args...>>(hook, priority);
             if (!hasHooks())
             {
-                if (m_vTable && !m_origVFunc)
+                if (m_hookVTable)
                 {
                     std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
 
@@ -346,6 +377,14 @@ namespace Metamod
                     std::int32_t memProtection = _unprotect(vFunc);
                     *(reinterpret_cast<std::intptr_t *>(vFunc)) = m_vCallback;
                     _protect(vFunc, memProtection);
+                }
+                else if (m_registerFn)
+                {
+                    std::invoke(m_registerFn);
+                }
+                else
+                {
+                    return nullptr;
                 }
                 return m_hooks.emplace_front(std::move(hookInfo)).get();
             }
@@ -366,19 +405,32 @@ namespace Metamod
 
         void unregisterHook(IHookInfo *hookInfo) final
         {
+            if (!hookInfo)
+            {
+                return;
+            }
+
             bool wereHooksPresent = !m_hooks.empty();
             m_hooks.remove_if([hookInfo](const std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>> &hook) {
                 return hookInfo == hook.get();
             });
 
-            if (wereHooksPresent && m_hooks.empty() && m_origVFunc)
+            bool shouldRemoveHook = wereHooksPresent && m_hooks.empty();
+            if (shouldRemoveHook)
             {
-                std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
-                std::int32_t memProtection = _unprotect(vFunc);
-                *(reinterpret_cast<std::intptr_t *>(vFunc)) = m_origVFunc;
-                _protect(vFunc, memProtection);
+                if (m_hookVTable && m_origVFunc)
+                {
+                    std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
+                    std::int32_t memProtection = _unprotect(vFunc);
+                    *(reinterpret_cast<std::intptr_t *>(vFunc)) = m_origVFunc;
+                    _protect(vFunc, memProtection);
 
-                m_origVFunc = 0;
+                    m_origVFunc = 0;
+                }
+                else if (m_unregisterFn)
+                {
+                    std::invoke(m_unregisterFn);
+                }
             }
         }
 
@@ -434,6 +486,9 @@ namespace Metamod
         std::intptr_t m_vOffset = 0;
         std::intptr_t m_vCallback = 0;
         std::intptr_t m_origVFunc = 0;
+        std::function<void()> m_registerFn;
+        std::function<void()> m_unregisterFn;
         std::forward_list<std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>>> m_hooks;
+        bool m_hookVTable = false;
     };
 }

@@ -48,6 +48,13 @@ namespace Metamod::Game
         CZero,
     };
 
+    enum class GibType : std::uint8_t
+    {
+        Normal = 0,
+        Never,
+        Always
+    };
+
     class ILibrary
     {
     public:
@@ -63,6 +70,7 @@ namespace Metamod::Game
         virtual bool callGameEntity(std::string_view name, Engine::IEntVars *pev) = 0;
 
         virtual void pfnGameInit(FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual std::int32_t pfnSpawn(Engine::IEdict *edict, FuncCallType callType) = 0;
         virtual bool pfnClientConnect(Engine::IEdict *pEntity, std::string_view pszName,
                                       std::string_view pszAddress, std::string &szRejectReason,
                                       FuncCallType callType = FuncCallType::Direct) = 0;
@@ -84,14 +92,14 @@ namespace Metamod::Game
          *
          * @return Edict's base entity representation.
          */
-        virtual Entities::IBaseEntity *getBaseEntity(const Engine::IEdict *edict) = 0;
+        virtual Entities::IBaseEntity *getBaseEntity(Engine::IEdict *edict) = 0;
 
         /**
          * @brief Returns player entity.
          *
          * @return Edict's player entity representation.
          */
-        virtual Entities::IBasePlayer *getBasePlayer(const Engine::IEdict *edict) = 0;
+        virtual Entities::IBasePlayer *getBasePlayer(Engine::IEdict *edict) = 0;
 
         virtual IBasePlayerHooks *getCBasePlayerHooks() = 0;
     };

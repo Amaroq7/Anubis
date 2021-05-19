@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 Metamod++ Development Team
+ *  Copyright (C) 2020 Metamod++ Development Team
  *
  *  This file is part of Metamod++.
  *
@@ -17,36 +17,19 @@
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "EntityHolder.hpp"
+#include "BasePlayer.hpp"
 
-#include "Library.hpp"
+Metamod::Game::Entities::EntityHolder gEntityHolder;
 
-namespace Metamod::Game::VFunc
+Metamod::Game::Entities::IBaseEntity *
+    Metamod::Game::Entities::EntityHolder::getBaseEntity(Metamod::Engine::IEdict *edict)
 {
-    void vSpawnHook(
-#if defined __linux__
-        void *instance
-#endif
-    );
+    return _getEntity<Entities::Valve::BaseEntity>(edict);
+}
 
-    std::int32_t vTakeDamageHook(
-#if defined __linux__
-        void *instance,
-#endif
-        entvars_t *pevInflictor,
-        entvars_t *pevAttacker,
-        float flDamage,
-        std::int32_t bitsDamageType
-    );
-
-    void vTraceAttack(
-#if defined __linux__
-        void *instance,
-#endif
-        entvars_t *pevAttacker,
-        float flDamage,
-        Vector vecDir,
-        ::TraceResult *ptr,
-        std::int32_t bitsDamageType
-    );
-} // namespace
+Metamod::Game::Entities::IBasePlayer *
+    Metamod::Game::Entities::EntityHolder::getBasePlayer(Metamod::Engine::IEdict *edict)
+{
+    return _getEntity<Entities::Valve::BasePlayer>(edict);
+}

@@ -19,21 +19,38 @@
 
 #pragma once
 
-#include <IHookChains.hpp>
-#include <game/entities/IBaseMonster.hpp>
+#include <cinttypes>
 
-namespace Metamod::Game::Entities
+typedef struct entvars_s entvars_t;
+struct TraceResult;
+class Vector;
+
+namespace Metamod::Game::VFunc
 {
-    class IBasePlayer : public virtual IBaseMonster
-    {
-        public:
-            ~IBasePlayer() override = default;
-            virtual void makeVIP() = 0;
-            //virtual void killed() = 0;
-
-#if defined META_CORE
-        public:
-            static inline std::intptr_t VTable;
+    void vSpawnHook(
+#if defined __linux__
+        void *instance
 #endif
-    };
-}
+    );
+
+    std::int32_t vTakeDamageHook(
+#if defined __linux__
+        void *instance,
+#endif
+        entvars_t *pevInflictor,
+        entvars_t *pevAttacker,
+        float flDamage,
+        std::int32_t bitsDamageType
+    );
+
+    void vTraceAttack(
+#if defined __linux__
+        void *instance,
+#endif
+        entvars_t *pevAttacker,
+        float flDamage,
+        Vector vecDir,
+        ::TraceResult *ptr,
+        std::int32_t bitsDamageType
+    );
+} // namespace

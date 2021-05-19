@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include <game/ILibrary.hpp>
 #include <IHookChains.hpp>
-
 #include <string>
 
 namespace Metamod::Engine
@@ -41,11 +41,14 @@ namespace Metamod::Game
     using IBasePlayerSpawnHook = IClassHook<void, Entities::IBasePlayer *>;
     using IBasePlayerSpawnHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *>;
 
-    using IBasePlayerTakeDamageHook = IClassHook<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
-    using IBasePlayerTakeDamageHookRegistry = IClassHookRegistry<std::int32_t, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
+    using IBasePlayerTakeDamageHook = IClassHook<bool, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
+    using IBasePlayerTakeDamageHookRegistry = IClassHookRegistry<bool, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
 
     using IBasePlayerTraceAttackHook = IClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
     using IBasePlayerTraceAttackHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
+
+    using IBasePlayerKilledHook = IClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, GibType>;
+    using IBasePlayerKilledHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, GibType>;
 
     class IBasePlayerHooks
     {
@@ -55,5 +58,6 @@ namespace Metamod::Game
         virtual IBasePlayerSpawnHookRegistry *spawn() = 0;
         virtual IBasePlayerTakeDamageHookRegistry *takeDamage() = 0;
         virtual IBasePlayerTraceAttackHookRegistry *traceAttack() = 0;
+        //virtual IBasePlayerKilledHookRegistry *killed() = 0;
     };
 }

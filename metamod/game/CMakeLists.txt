@@ -5,9 +5,7 @@ add_subdirectory(entities)
 set(SRC_FILES
         Library.cpp
         Callbacks.cpp
-        Hooks.cpp
-        EntitiesHooks.cpp
-        VFuncCallbacks.cpp)
+        Hooks.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 
@@ -33,11 +31,7 @@ else()
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE cstrike_api valve_api)
-
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
         VISIBILITY_INLINES_HIDDEN ON
         CXX_VISIBILITY_PRESET hidden)
-
-add_dependencies(${PROJECT_NAME} cstrike_api valve_api)

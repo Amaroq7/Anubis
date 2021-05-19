@@ -5,7 +5,7 @@
 
 class CBasePlayer;
 
-namespace Metamod::Game
+namespace Metamod::Game::CStrike
 {
     class BasePlayerHooks;
 }
@@ -14,15 +14,19 @@ namespace Metamod::Game::Entities::CStrike
 {
     class BasePlayer : public BaseMonster, public virtual IBasePlayer
     {
-        public:
-            explicit BasePlayer(const Engine::Edict *edict, const BasePlayerHooks *hooks);
-            void makeVIP() override;
-            ~BasePlayer() override = default;
+    public:
+        static constexpr const char *CLASS_NAME = "player";
 
-        private:
-            operator CBasePlayer *() const;
+    public:
+        explicit BasePlayer(Engine::IEdict *edict);
+        ~BasePlayer() override = default;
 
-        private:
-            const BasePlayerHooks *m_hooks;
+    public:
+        bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType, FuncCallType funcCallType) override;
+        void makeVIP() override;
+        //void killed() override;
+
+    private:
+        operator CBasePlayer *() const;
     };
 }

@@ -80,13 +80,14 @@ namespace Metamod::Engine
         void setModel(IEdict *pEdict, std::string_view model, FuncCallType callType) override;
         Edict *createEntity(FuncCallType callType) override;
         void removeEntity(IEdict *pEdict, FuncCallType callType) override;
+        void alert(AlertType alertType, std::string_view msg, FuncCallType callType) final;
 
         float getTime() const override;
         std::string_view getMapName() const override;
         
-        Edict *getEdict(edict_t *edict);
-        EntVars *getEntVars(entvars_t *vars);
-        TraceResult *createTraceResult(::TraceResult *tr);
+        Edict *getEdict(edict_t *edict) override;
+        EntVars *getEntVars(entvars_t *vars) override;
+        TraceResult *createTraceResult(::TraceResult *tr) override;
         const std::array<std::uint32_t, 2> &getReHLDSVersion() const;
         bool addExtDll(void *hModule) const override;
         void removeExtDll(void *hModule) const override;

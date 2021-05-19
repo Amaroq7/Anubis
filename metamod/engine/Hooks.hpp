@@ -115,6 +115,9 @@ namespace Metamod::Engine
     using RemoveEntityHook = Hook<void, IEdict *>;
     using RemoveEntityHookRegistry = HookRegistry<void, IEdict *>;
 
+    using AlertHook = Hook<void, AlertType, std::string_view>;
+    using AlertHookRegistry = HookRegistry<void, AlertType, std::string_view>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -150,6 +153,7 @@ namespace Metamod::Engine
         SetModelHookRegistry *setModel() override;
         CreateEntityHookRegistry *createEntity() override;
         RemoveEntityHookRegistry *removeEntity() override;
+        AlertHookRegistry *alert() final;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -182,5 +186,6 @@ namespace Metamod::Engine
         SetModelHookRegistry m_setModel;
         CreateEntityHookRegistry m_createEntity;
         RemoveEntityHookRegistry m_removeEntity;
+        AlertHookRegistry m_alert;
     };
 }

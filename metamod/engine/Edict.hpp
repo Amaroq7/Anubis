@@ -44,9 +44,9 @@ namespace Metamod::Engine
             EntVars *getEntVars() const override;
 
             // Edict
-            operator edict_t *() const;
+            operator edict_t *() const final;
 
-            void *getPrivateData() const;
+            void *getPrivateData() const final;
 
         private:
             edict_t *m_edict = nullptr;

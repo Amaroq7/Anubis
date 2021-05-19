@@ -73,7 +73,7 @@ namespace Metamod
     {
         char gameDir[MAX_PATH];
         GET_GAME_DIR(gameDir);
-        m_gameLib = std::make_unique<Game::Library>(m_engineLib, gameDir, m_config->getPath(PathType::Configs));
+        m_gameLib = std::make_unique<Game::Library>(m_engineLib.get(), gameDir, m_config->getPath(PathType::Configs));
 
         constexpr std::size_t ENGINE_MSG_NUM = 58;
         for (std::size_t i = 0; i <= ENGINE_MSG_NUM; i++)
@@ -345,5 +345,15 @@ namespace Metamod
     Metamod::~Metamod()
     {
         m_engineLib->removeExtDll(m_gameLib->getSystemHandle());
+    }
+
+    fs::path Metamod::getPath(PathType pathType)
+    {
+        return m_config->getPath(pathType);
+    }
+
+    void Metamod::logMsg(LogLevel level, LogDest dest, std::string_view msg)
+    {
+        logMsg(level, dest, msg, 0);
     }
 }

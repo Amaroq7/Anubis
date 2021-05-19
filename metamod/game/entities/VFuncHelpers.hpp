@@ -27,6 +27,8 @@
     #include <unistd.h>
 #endif
 
+#include <type_traits>
+
 namespace Metamod::Game
 {
     enum class vFuncType : std::uint16_t

@@ -20,13 +20,13 @@
 #include "Library.hpp"
 #include <Metamod.hpp>
 #include <DllExports.hpp>
-#include "EntitiesHooks.hpp"
+#include <game/entities/IEntityHolder.hpp>
 
 #include <yaml-cpp/yaml.h>
 
 namespace Metamod::Game
 {
-    Library::Library(const std::unique_ptr<Engine::Library> &engine,
+    Library::Library(Engine::ILibrary *engine,
                      std::string_view gameDir,
                      const fs::path &metaConfigsDir) : m_hooks(std::make_unique<Hooks>()), m_engine(engine)
     {
@@ -159,6 +159,7 @@ namespace Metamod::Game
         // Replace only funcs we want to have hooked
 #define ASSIGN_ENT_FUNC(func) (m_dllApiTable.func = Callbacks::Engine::func)
         ASSIGN_ENT_FUNC(pfnGameInit);
+        ASSIGN_ENT_FUNC(pfnSpawn);
         ASSIGN_ENT_FUNC(pfnClientConnect);
         ASSIGN_ENT_FUNC(pfnClientPutInServer);
         ASSIGN_ENT_FUNC(pfnClientCommand);
@@ -213,6 +214,14 @@ namespace Metamod::Game
         _execGameDLLFunc(hookchain, []() {
             gEntityInterface.pfnGameInit();
         }, callType);
+    }
+
+    std::int32_t Library::pfnSpawn(Engine::IEdict *edict, FuncCallType callType)
+    {
+        static SpawnHookRegistry *hookchain = m_hooks->spawn();
+        return _execGameDLLFunc(hookchain, [](Engine::IEdict *edict) {
+            return gEntityInterface.pfnSpawn(*edict);
+        }, callType, edict);
     }
 
     bool Library::pfnClientConnect(Engine::IEdict *pEntity,
@@ -303,21 +312,12 @@ namespace Metamod::Game
         return *m_gameLibrary;
     }
 
-    Entities::IBaseEntity *Library::getBaseEntity(const Engine::IEdict *edict)
+    Entities::IBaseEntity *Library::getBaseEntity(Engine::IEdict *edict)
     {
-        switch (m_modType)
-        {
-            case Mod::Valve:
-                return _getEntity<Entities::Valve::BaseEntity>(edict);
-            case Mod::CStrike:
-            case Mod::CZero:
-                return _getEntity<Entities::CStrike::BaseEntity>(edict);
-            default:
-                return nullptr;
-        }
+        return m_entityHolder->getBaseEntity(edict);
     }
 
-    Entities::IBasePlayer *Library::getBasePlayer(const Engine::IEdict *edict)
+    Entities::IBasePlayer *Library::getBasePlayer(Engine::IEdict *edict)
     {
         std::uint32_t idx = edict->getIndex();
         if (idx > m_maxClients || !idx)
@@ -325,16 +325,7 @@ namespace Metamod::Game
             return nullptr;
         }
 
-        switch (m_modType)
-        {
-            case Mod::Valve:
-                return _getEntity<Entities::Valve::BasePlayer>(edict);
-            case Mod::CStrike:
-            case Mod::CZero:
-                //return _getEntity<Entities::CStrike::BasePlayer>(edict);
-            default:
-                return nullptr;
-        }
+        return m_entityHolder->getBasePlayer(edict);
     }
 
     void Library::setMaxClients(std::uint32_t maxPlayers)
@@ -342,9 +333,9 @@ namespace Metamod::Game
         m_maxClients = maxPlayers;
     }
 
-    BasePlayerHooks *Library::getCBasePlayerHooks()
+    IBasePlayerHooks *Library::getCBasePlayerHooks()
     {
-        return m_basePlayerhooks.get();
+        return m_basePlayerhooks;
     }
 
     void Library::_loadVOffsets(const fs::path &metaConfigsDir)
@@ -362,13 +353,6 @@ namespace Metamod::Game
 #endif
             for (auto funcIt = rootNode.begin(); funcIt != rootNode.end(); ++funcIt)
             {
-                if (m_pevOffset == std::numeric_limits<std::uint32_t>::max() &&
-                    funcIt->first.as<std::string>() == "pev")
-                {
-                    m_pevOffset = funcIt->second[osName.data()].as<std::uint32_t>();
-                    continue;
-                }
-
                 m_virtualOffsets.try_emplace(funcIt->first.as<std::string>(),
                                                 funcIt->second[osName.data()].as<std::uint32_t>());
             }
@@ -376,50 +360,65 @@ namespace Metamod::Game
         catch (const YAML::BadFile &e)
         {
             using namespace std::string_literals;
-            throw std::runtime_error("Error parsing yaml vtable offsets file: "s + e.what() + " "s + getName().data());
+            throw std::runtime_error("Error parsing yaml vtable offsets file: "s + e.what());
         }
-    }
-
-    std::uint32_t Library::getPevOffset() const
-    {
-        return m_pevOffset;
     }
 
     void Library::initVFuncHooks()
     {
-        std::string_view plrClassName;
+        fs::path mmDllPath = gMetaGlobal->getPath(PathType::Metamod) / "dlls";
 
         if (m_modType == Mod::Valve)
         {
-            plrClassName = Entities::Valve::BasePlayer::CLASS_NAME;
+            mmDllPath /= "libvalve_api.so";
+        }
+        else if (m_modType == Mod::CStrike || m_modType == Mod::CZero)
+        {
+            mmDllPath /= "libcstrike_api.so";
         }
 
-        Entities::IBasePlayer::VTable = _getVTableOfEntity(plrClassName);
-        m_basePlayerhooks = std::make_unique<BasePlayerHooks>(m_virtualOffsets);
+        _initGameEntityDLL(std::move(mmDllPath));
     }
 
-    std::intptr_t Library::_getVTableOfEntity(std::string_view entityClass)
+    void Library::_initGameEntityDLL(fs::path &&path)
     {
-        Engine::Edict *edict = m_engine->createEntity(FuncCallType::Direct);
-        if (!callGameEntity(entityClass, edict->getEntVars()))
+        auto entityLib = std::make_unique<Module>(path);
+        if (!entityLib->isLoaded())
         {
-            m_engine->removeEntity(edict, FuncCallType::Direct);
-            return 0;
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot load entity library: {}", path.c_str());
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            return;
         }
 
-        if (!edict->getPrivateData())
+        auto InitFn = entityLib->getSymbol<fnInitGameEntityDLL>("InitGameEntitiesDLL");
+        if (!InitFn)
         {
-            m_engine->removeEntity(edict, FuncCallType::Direct);
-            return 0;
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot find func: InitGameEntitiesDLL");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            return;
         }
 
-        auto vTable = *(reinterpret_cast<std::intptr_t *>(edict->getPrivateData()));
-        m_engine->removeEntity(edict, FuncCallType::Direct);
+        std::invoke(InitFn, gMetaGlobal.get(), m_virtualOffsets);
 
-        if (!reinterpret_cast<void *>(vTable))
+        auto GetBasePlayerHooks = entityLib->getSymbol<fnGetBasePlayerHooks>("GetBasePlayerHooks");
+        if (!GetBasePlayerHooks)
         {
-            return 0;
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot find: GetBasePlayerHooks");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            return;
         }
-        return vTable;
+
+        auto GetEntityHolder = entityLib->getSymbol<fnGetEntityHolder>("GetEntityHolder");
+        if (!GetEntityHolder)
+        {
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot find: GetEntityHolder");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            return;
+        }
+
+        m_basePlayerhooks = std::invoke(GetBasePlayerHooks);
+        m_entityHolder = std::invoke(GetEntityHolder);
+
+        m_entityLibrary = std::move(entityLib);
     }
 }

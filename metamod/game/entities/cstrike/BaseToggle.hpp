@@ -8,7 +8,7 @@ namespace Metamod::Game::Entities::CStrike
     class BaseToggle : public BaseAnimating, public virtual IBaseToggle
     {
         public:
-            explicit BaseToggle(const Engine::Edict *edict): BaseAnimating(edict) {};
+            explicit BaseToggle(Engine::IEdict *edict): BaseAnimating(edict) {};
             ~BaseToggle() override = default;
     };
 }

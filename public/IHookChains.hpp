@@ -99,6 +99,9 @@ namespace Metamod
     using ClassHookFunc = std::function<t_ret(IClassHook<t_ret, t_entity, t_args...> *, t_entity, t_args...)>;
 
     template<typename t_ret, typename t_entity, typename... t_args>
+    using ClassOriginalFunc = std::function<t_ret(t_entity, t_args...)>;
+
+    template<typename t_ret, typename t_entity, typename... t_args>
     class IClassHookRegistry
     {
     public:
