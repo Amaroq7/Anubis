@@ -35,10 +35,7 @@ namespace Metamod::Engine
 
 namespace Metamod::Game
 {
-    namespace Entities
-    {
-        class IEntityHolder;
-    }
+    class IEntityHolder;
 
     struct ModInfo
     {
@@ -79,8 +76,8 @@ namespace Metamod::Game
         void pfnStartFrame(FuncCallType callType) override;
         void pfnGameShutdown(FuncCallType callType) override;
 
-        Entities::IBaseEntity *getBaseEntity(Engine::IEdict *edict) override;
-        Entities::IBasePlayer *getBasePlayer(Engine::IEdict *edict) override;
+        IBaseEntity *getBaseEntity(Engine::IEdict *edict) override;
+        IBasePlayer *getBasePlayer(Engine::IEdict *edict) override;
         IBasePlayerHooks *getCBasePlayerHooks() override;
         void initVFuncHooks();
 
@@ -130,7 +127,7 @@ namespace Metamod::Game
         std::unique_ptr<Hooks> m_hooks;
         Engine::ILibrary *m_engine;
         IBasePlayerHooks *m_basePlayerhooks = nullptr;
-        Entities::IEntityHolder *m_entityHolder = nullptr;
+        IEntityHolder *m_entityHolder = nullptr;
         Mod m_modType;
         fs::path m_gameDir;
         fs::path m_pathName;

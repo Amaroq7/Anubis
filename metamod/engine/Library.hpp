@@ -54,7 +54,7 @@ namespace Metamod::Engine
         void changeLevel(std::string_view level1, std::string_view level2, FuncCallType callType) const override;
         void serverCommand(std::string_view cmd, FuncCallType callType) const override;
         void serverExecute(FuncCallType callType) const override;
-        void registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType) const override;
+        void registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType) override;
         void messageBegin(MsgDest msgDest,
                           MsgType msgType,
                           const float *pOrigin,
@@ -81,6 +81,7 @@ namespace Metamod::Engine
         Edict *createEntity(FuncCallType callType) override;
         void removeEntity(IEdict *pEdict, FuncCallType callType) override;
         void alert(AlertType alertType, std::string_view msg, FuncCallType callType) final;
+        void removeCmd(std::string_view cmd_name) final;
 
         float getTime() const override;
         std::string_view getMapName() const override;
@@ -92,11 +93,12 @@ namespace Metamod::Engine
         bool addExtDll(void *hModule) const override;
         void removeExtDll(void *hModule) const override;
 
-        const enginefuncs_t *getEngineFuncs() const;
+        const enginefuncs_t *getEngineFuncs() const override;
         void clear(bool uninstallHooks = false);
         void initializeEdicts(edict_t *pEdictList, std::uint32_t edictCount, std::uint32_t clientMax);
         edict_t *getEngineEdictList() const;
-        Cvar *registerCvar(cvar_t *cvar);
+        Cvar *addToCache(cvar_t *cvar);
+        void registerCvar(cvar_t *cvar);
 
     private:
         template <typename t_hookregistry, typename t_origfunc, typename... t_args>
@@ -124,6 +126,7 @@ namespace Metamod::Engine
         std::array<std::unique_ptr<Edict>, MAX_EDICTS> m_edicts;
         std::forward_list<std::unique_ptr<TraceResult>> m_traceResults;
         std::unordered_map<std::string, std::unique_ptr<Cvar>> m_cvars;
+        std::unordered_map<std::string, ServerCmdCallback> m_srvCmds;
         enginefuncs_t m_engineFuncs;
         edict_t *m_edictList;
     };

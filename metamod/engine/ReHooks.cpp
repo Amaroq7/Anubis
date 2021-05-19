@@ -44,7 +44,7 @@ namespace Metamod::Engine::ReHooks
         static Library *engine = gMetaGlobal->getEngine();
         static CvarDirectSetHookRegistry *hookchain = engine->getHooks()->cvarDirectSet();
 
-        auto metaCvar = engine->getCvar(cvar->name, FuncCallType::Direct);
+        auto metaCvar = engine->addToCache(cvar);
 
         hookchain->callChain([chain](ICvar *cvar, std::string_view value) {
             chain->callNext(*dynamic_cast<Cvar *>(cvar), value.data());

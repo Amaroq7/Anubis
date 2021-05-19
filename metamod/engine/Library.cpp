@@ -233,11 +233,12 @@ namespace Metamod::Engine
         }, callType);
     }
 
-    void Library::registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType) const
+    void Library::registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType)
     {
         static RegSrvCmdHookRegistry *hookchain = m_hooks->regSrvCmd();
-        _execEngineFunc(hookchain, [](std::string_view cmd, ServerCmdCallback cb) {
-            std::invoke(g_engfuncs.pfnAddServerCommand, cmd.data(), *cb.target<void(*)()>());
+        _execEngineFunc(hookchain, [this](std::string_view cmd, ServerCmdCallback cb) {
+            const auto& [iter, inserted] = m_srvCmds.try_emplace(cmd.data(), cb);
+            std::invoke(g_engfuncs.pfnAddServerCommand, cmd.data(), *(iter->second).target<void(*)()>());
         }, callType, cmd, cb);
     }
 
@@ -248,7 +249,7 @@ namespace Metamod::Engine
             MESSAGE_BEGIN(static_cast<int>(msgDest),
                           static_cast<int>(msgType),
                           pOrigin,
-                          (pEdict) ? static_cast<edict_t *>(*dynamic_cast<Edict *>(pEdict)) : nullptr);
+                          (pEdict) ? pEdict->operator edict_s *() : nullptr);
         }, callType, msgDest, msgType, pOrigin, pEdict);
     }
 
@@ -338,7 +339,7 @@ namespace Metamod::Engine
     {
         static GetPlayerAuthIDHookRegistry *hookchain = m_hooks->getPlayerAuthID();
         return _execEngineFunc(hookchain, [](IEdict *pEdict) -> std::string_view {
-            return GETPLAYERAUTHID(*dynamic_cast<Edict *>(pEdict));
+            return GETPLAYERAUTHID(*pEdict);
         }, callType, pEdict);
     }
     
@@ -346,7 +347,7 @@ namespace Metamod::Engine
     {
         static GetPlayerUserIDHookRegistry *hookchain = m_hooks->getPlayerUserID();
         return _execEngineFunc(hookchain, [](IEdict *pEdict) {
-            return UserID(GETPLAYERUSERID(*dynamic_cast<Edict *>(pEdict)));
+            return UserID(GETPLAYERUSERID(*pEdict));
         }, callType, pEdict);
     }
     
@@ -406,7 +407,7 @@ namespace Metamod::Engine
         static RegisterCvarHookRegistry *hookchain = m_hooks->registerCvar();
         return _execEngineFunc(hookchain, [this](std::string_view name, std::string_view value) {
             auto cvar = std::make_unique<Cvar>(name, value);
-            CVAR_REGISTER(*cvar.get());
+            CVAR_REGISTER(*cvar);
 
             if (CVAR_GET_POINTER(name.data()))
             {
@@ -530,11 +531,35 @@ namespace Metamod::Engine
         _uninstallHooks();
     }
 
-    Cvar *Library::registerCvar(cvar_t *cvar)
+    void Library::registerCvar(cvar_t *cvar)
     {
-        const auto &[iter, inserted] = m_cvars.try_emplace(cvar->name, std::make_unique<Cvar>(cvar));
-        CVAR_REGISTER(cvar);
+        static RegisterCvarHookRegistry *hookchain = m_hooks->registerCvar();
+        _execEngineFunc(hookchain, [this, cvar](std::string_view name, std::string_view value) {
+            auto metaCvar = std::make_unique<Cvar>(cvar);
 
+            CVAR_REGISTER(cvar);
+
+            if (CVAR_GET_POINTER(cvar->name))
+            {
+                m_cvars.try_emplace(cvar->name, std::move(metaCvar));
+            }
+        }, FuncCallType::Hooks, cvar->name, cvar->string);
+    }
+
+    Cvar *Library::addToCache(cvar_t *cvar)
+    {
+        if (auto it = m_cvars.find(cvar->name); it != m_cvars.end())
+        {
+            return it->second.get();
+        }
+
+        const auto &[iter, inserted] = m_cvars.try_emplace(cvar->name, std::make_unique<Cvar>(cvar));
         return iter->second.get();
+    }
+
+    void Library::removeCmd(std::string_view cmd_name)
+    {
+        m_reHLDSFuncs->Cmd_RemoveCmd(cmd_name.data());
+        m_srvCmds.erase(cmd_name.data());
     }
 } // namespace Metamod::Engine

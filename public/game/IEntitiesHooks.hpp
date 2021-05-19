@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Metamod++ Development Team
+ *  Copyright (C) 2020-2021 Metamod++ Development Team
  *
  *  This file is part of Metamod++.
  *
@@ -32,23 +32,20 @@ namespace Metamod::Engine
 
 namespace Metamod::Game
 {
-    namespace Entities
-    {
-        class IBaseEntity;
-        class IBasePlayer;
-    }
+    class IBaseEntity;
+    class IBasePlayer;
 
-    using IBasePlayerSpawnHook = IClassHook<void, Entities::IBasePlayer *>;
-    using IBasePlayerSpawnHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *>;
+    using IBasePlayerSpawnHook = IClassHook<void, IBasePlayer *>;
+    using IBasePlayerSpawnHookRegistry = IClassHookRegistry<void, IBasePlayer *>;
 
-    using IBasePlayerTakeDamageHook = IClassHook<bool, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
-    using IBasePlayerTakeDamageHookRegistry = IClassHookRegistry<bool, Entities::IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
+    using IBasePlayerTakeDamageHook = IClassHook<bool, IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
+    using IBasePlayerTakeDamageHookRegistry = IClassHookRegistry<bool, IBasePlayer *, Engine::IEntVars *, Engine::IEntVars *, float, std::int32_t>;
 
-    using IBasePlayerTraceAttackHook = IClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
-    using IBasePlayerTraceAttackHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
+    using IBasePlayerTraceAttackHook = IClassHook<void, IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
+    using IBasePlayerTraceAttackHookRegistry = IClassHookRegistry<void, IBasePlayer *, Engine::IEntVars *, float, float *, Engine::ITraceResult *, std::int32_t>;
 
-    using IBasePlayerKilledHook = IClassHook<void, Entities::IBasePlayer *, Engine::IEntVars *, GibType>;
-    using IBasePlayerKilledHookRegistry = IClassHookRegistry<void, Entities::IBasePlayer *, Engine::IEntVars *, GibType>;
+    using IBasePlayerKilledHook = IClassHook<void, IBasePlayer *, Engine::IEntVars *, GibType>;
+    using IBasePlayerKilledHookRegistry = IClassHookRegistry<void, IBasePlayer *, Engine::IEntVars *, GibType>;
 
     class IBasePlayerHooks
     {

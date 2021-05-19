@@ -24,39 +24,43 @@ namespace Metamod::Engine::Callbacks::GameDLL
 {
     int	pfnPrecacheModel(const char *s)
     {
-        return static_cast<int>(gMetaGlobal->getEngine()->precacheModel(s, FuncCallType::Hooks));
+        static Library *engine = gMetaGlobal->getEngine();
+        return static_cast<int>(engine->precacheModel(s, FuncCallType::Hooks));
     }
 
     int	pfnPrecacheSound(const char *s)
     {
-        return static_cast<int>(gMetaGlobal->getEngine()->precacheSound(s, FuncCallType::Hooks));
+        static Library *engine = gMetaGlobal->getEngine();
+        return static_cast<int>(engine->precacheSound(s, FuncCallType::Hooks));
     }
 
     void pfnChangeLevel(const char *s1, const char *s2)
     {
-        gMetaGlobal->getEngine()->changeLevel(s1, s2 ? s2 : std::string_view(), FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->changeLevel(s1, s2 ? s2 : std::string_view(), FuncCallType::Hooks);
     }
 
     void pfnServerCommand(const char *str)
     {
-        gMetaGlobal->getEngine()->serverCommand(str, FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->serverCommand(str, FuncCallType::Hooks);
     }
 
     void pfnServerExecute()
     {
-        gMetaGlobal->getEngine()->serverExecute(FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->serverExecute(FuncCallType::Hooks);
     }
 
     void pfnAddServerCommand(const char *cmd_name, void (*function)())
     {
-        ServerCmdCallback cmdCallback {function};
-        gMetaGlobal->getEngine()->registerSrvCommand(cmd_name, cmdCallback, FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->registerSrvCommand(cmd_name, function, FuncCallType::Hooks);
     }
 
     void pfnMessageBegin(int msg_dest, int msg_type, const float *pOrigin, edict_t *ed)
     {
         static Library *engine = gMetaGlobal->getEngine();
-
         engine->messageBegin(
             static_cast<MsgDest>(msg_dest),
             static_cast<std::uint32_t>(msg_type),
@@ -68,52 +72,62 @@ namespace Metamod::Engine::Callbacks::GameDLL
 
     void pfnMessageEnd()
     {
-        gMetaGlobal->getEngine()->messageEnd(FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->messageEnd(FuncCallType::Hooks);
     }
 
     void pfnWriteByte(int iValue)
     {
-        gMetaGlobal->getEngine()->writeByte(static_cast<std::byte>(iValue), FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeByte(static_cast<std::byte>(iValue), FuncCallType::Hooks);
     }
 
     void pfnWriteChar(int iValue)
     {
-        gMetaGlobal->getEngine()->writeChar(static_cast<char>(iValue), FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeChar(static_cast<char>(iValue), FuncCallType::Hooks);
     }
 
     void pfnWriteShort(int iValue)
     {
-        gMetaGlobal->getEngine()->writeShort(static_cast<std::int16_t>(iValue), FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeShort(static_cast<std::int16_t>(iValue), FuncCallType::Hooks);
     }
 
     void pfnWriteLong(int iValue)
     {
-        gMetaGlobal->getEngine()->writeLong(static_cast<std::int32_t>(iValue), FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeLong(static_cast<std::int32_t>(iValue), FuncCallType::Hooks);
     }
 
     void pfnWriteAngle(float flValue)
     {
-        gMetaGlobal->getEngine()->writeAngle(flValue, FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeAngle(flValue, FuncCallType::Hooks);
     }
 
     void pfnWriteCoord(float flValue)
     {
-        gMetaGlobal->getEngine()->writeCoord(flValue, FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeCoord(flValue, FuncCallType::Hooks);
     }
 
     void pfnWriteString(const char *sz)
     {
-        gMetaGlobal->getEngine()->writeString(sz, FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeString(sz, FuncCallType::Hooks);
     }
 
     void pfnWriteEntity(int iValue)
     {
-        gMetaGlobal->getEngine()->writeEntity(static_cast<std::int16_t>(iValue), FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        engine->writeEntity(static_cast<std::int16_t>(iValue), FuncCallType::Hooks);
     }
 
     int pfnRegUserMsg(const char *pszName, int iSize)
     {
-        return gMetaGlobal->getEngine()->regUserMsg(pszName, static_cast<std::int16_t>(iSize), FuncCallType::Hooks);
+        static Library *engine = gMetaGlobal->getEngine();
+        return engine->regUserMsg(pszName, static_cast<std::int16_t>(iSize), FuncCallType::Hooks);
     }
 
     int pfnGetPlayerUserId(edict_t *e)
@@ -161,7 +175,6 @@ namespace Metamod::Engine::Callbacks::GameDLL
     cvar_t *pfnCVarGetPointer(const char *szVarName)
     {
         static Library *engine = gMetaGlobal->getEngine();
-
         if (Cvar *cvar = engine->getCvar(szVarName, FuncCallType::Hooks); cvar)
         {
             return *cvar;
@@ -173,21 +186,18 @@ namespace Metamod::Engine::Callbacks::GameDLL
     void pfnSetModel(edict_t *e, const char *m)
     {
         static Library *engine = gMetaGlobal->getEngine();
-
         engine->setModel(engine->getEdict(e), m, FuncCallType::Hooks);
     }
 
     edict_t *pfnCreateEntity()
     {
         static Library *engine = gMetaGlobal->getEngine();
-
         return *engine->createEntity(FuncCallType::Hooks);
     }
 
     void pfnRemoveEntity(edict_t *e)
     {
         static Library *engine = gMetaGlobal->getEngine();
-
         engine->removeEntity(engine->getEdict(e), FuncCallType::Hooks);
     }
 }

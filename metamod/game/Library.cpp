@@ -20,7 +20,7 @@
 #include "Library.hpp"
 #include <Metamod.hpp>
 #include <DllExports.hpp>
-#include <game/entities/IEntityHolder.hpp>
+#include <game/IEntityHolder.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -243,7 +243,7 @@ namespace Metamod::Game
             }
             return static_cast<bool>(
                 gEntityInterface.pfnClientConnect(
-                    *dynamic_cast<::Metamod::Engine::Edict *>(pEntity), pszName.data(), pszAddress.data(), szRejectReason.data()
+                    *pEntity, pszName.data(), pszAddress.data(), szRejectReason.data()
                 )
             );
         }, callType, pEntity, pszName, pszAddress, std::ref(szRejectReason));
@@ -253,7 +253,7 @@ namespace Metamod::Game
     {
         static ClientPutinServerHookRegistry *hookchain = m_hooks->clientPutinServer();
         _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity) {
-            gEntityInterface.pfnClientPutInServer(*dynamic_cast<::Metamod::Engine::Edict *>(pEntity));
+            gEntityInterface.pfnClientPutInServer(*pEntity);
         }, callType, pEntity);
     }
 
@@ -261,7 +261,7 @@ namespace Metamod::Game
     {
         static ClientCmdHookRegistry *hookchain = m_hooks->clientCmd();
         _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity) {
-            gEntityInterface.pfnClientCommand(*dynamic_cast<::Metamod::Engine::Edict *>(pEntity));
+            gEntityInterface.pfnClientCommand(*pEntity);
         }, callType, pEntity);
     }
 
@@ -269,7 +269,7 @@ namespace Metamod::Game
     {
         static ClientInfoChangedHookRegistry *hookchain = m_hooks->clientInfoChanged();
         _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity, char *infobuffer) {
-            gEntityInterface.pfnClientUserInfoChanged(*dynamic_cast<::Metamod::Engine::Edict *>(pEntity), infobuffer);
+            gEntityInterface.pfnClientUserInfoChanged(*pEntity, infobuffer);
         }, callType, pEntity, infobuffer);
     }
 
@@ -316,12 +316,12 @@ namespace Metamod::Game
         return *m_gameLibrary;
     }
 
-    Entities::IBaseEntity *Library::getBaseEntity(Engine::IEdict *edict)
+    IBaseEntity *Library::getBaseEntity(Engine::IEdict *edict)
     {
         return m_entityHolder->getBaseEntity(edict);
     }
 
-    Entities::IBasePlayer *Library::getBasePlayer(Engine::IEdict *edict)
+    IBasePlayer *Library::getBasePlayer(Engine::IEdict *edict)
     {
         std::uint32_t idx = edict->getIndex();
         if (idx > m_maxClients || !idx)

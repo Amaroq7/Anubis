@@ -57,7 +57,7 @@ namespace Metamod::Engine
         virtual void changeLevel(std::string_view level1, std::string_view level2, FuncCallType callType = FuncCallType::Direct) const = 0;
         virtual void serverCommand(std::string_view cmd, FuncCallType callType = FuncCallType::Direct) const = 0;
         virtual void serverExecute(FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType = FuncCallType::Direct) const = 0;
+        virtual void registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType = FuncCallType::Direct) = 0;
         virtual void messageBegin(MsgDest msgDest,
                                   MsgType msgType,
                                   const float *pOrigin,
@@ -84,6 +84,7 @@ namespace Metamod::Engine
         virtual IEdict *createEntity(FuncCallType callType) = 0;
         virtual void removeEntity(IEdict *pEdict, FuncCallType callType) = 0;
         virtual void alert(AlertType alertType, std::string_view msg, FuncCallType callType) = 0;
+        virtual void removeCmd(std::string_view cmd_name) = 0;
 
         /* Engine globals */
         virtual float getTime() const = 0;

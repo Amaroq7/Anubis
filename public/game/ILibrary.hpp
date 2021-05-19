@@ -33,11 +33,8 @@ namespace Metamod::Engine
 
 namespace Metamod::Game
 {
-    namespace Entities
-    {
-        class IBaseEntity;
-        class IBasePlayer;
-    }
+    class IBaseEntity;
+    class IBasePlayer;
     class IHooks;
     class IBasePlayerHooks;
 
@@ -92,14 +89,14 @@ namespace Metamod::Game
          *
          * @return Edict's base entity representation.
          */
-        virtual Entities::IBaseEntity *getBaseEntity(Engine::IEdict *edict) = 0;
+        virtual IBaseEntity *getBaseEntity(Engine::IEdict *edict) = 0;
 
         /**
          * @brief Returns player entity.
          *
          * @return Edict's player entity representation.
          */
-        virtual Entities::IBasePlayer *getBasePlayer(Engine::IEdict *edict) = 0;
+        virtual IBasePlayer *getBasePlayer(Engine::IEdict *edict) = 0;
 
         virtual IBasePlayerHooks *getCBasePlayerHooks() = 0;
     };

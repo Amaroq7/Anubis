@@ -28,7 +28,7 @@
 
 #if defined META_CORE
     #include <unordered_map>
-    #include <game/entities/IEntityHolder.hpp>
+    #include <game/IEntityHolder.hpp>
 #endif
 
 namespace Metamod
@@ -101,7 +101,7 @@ namespace Metamod
     using fnGetBasePlayerHooks = Game::IBasePlayerHooks *(*)();
     C_DLLEXPORT Game::IBasePlayerHooks *GetBasePlayerHooks();
 
-    using fnGetEntityHolder = Game::Entities::IEntityHolder *(*)();
-    C_DLLEXPORT Metamod::Game::Entities::IEntityHolder *GetEntityHolder();
+    using fnGetEntityHolder = Game::IEntityHolder *(*)();
+    C_DLLEXPORT Metamod::Game::IEntityHolder *GetEntityHolder();
 #endif
 }
