@@ -93,6 +93,7 @@ namespace Metamod::Engine
         const std::array<std::uint32_t, 2> &getReHLDSVersion() const;
         bool addExtDll(void *hModule) const override;
         void removeExtDll(void *hModule) const override;
+        std::uint32_t getWorldmapCrc() const final;
 
         const enginefuncs_t *getEngineFuncs() const override;
         void clear(bool uninstallHooks = false);
@@ -123,6 +124,7 @@ namespace Metamod::Engine
         std::unique_ptr<Hooks> m_hooks;
         const RehldsFuncs_t *m_reHLDSFuncs;
         IRehldsHookchains *m_reHookchains;
+        IRehldsServerData *m_reServerData;
         std::array<std::uint32_t, 2> m_rehldsVersion;
         std::array<std::unique_ptr<Edict>, MAX_EDICTS> m_edicts;
         std::forward_list<std::unique_ptr<TraceResult>> m_traceResults;

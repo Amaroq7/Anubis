@@ -318,11 +318,21 @@ namespace Metamod::Game
 
     IBaseEntity *Library::getBaseEntity(Engine::IEdict *edict)
     {
+        if (!m_entityHolder)
+        {
+            return nullptr;
+        }
+
         return m_entityHolder->getBaseEntity(edict);
     }
 
     IBasePlayer *Library::getBasePlayer(Engine::IEdict *edict)
     {
+        if (!m_entityHolder)
+        {
+            return nullptr;
+        }
+
         std::uint32_t idx = edict->getIndex();
         if (idx > m_maxClients || !idx)
         {

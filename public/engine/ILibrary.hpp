@@ -52,26 +52,26 @@ namespace Metamod::Engine
         virtual IHooks *getHooks() = 0;
 
         /* Engine funcs */
-        virtual PrecacheId precacheModel(std::string_view model, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual PrecacheId precacheSound(std::string_view sound, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void changeLevel(std::string_view level1, std::string_view level2, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void serverCommand(std::string_view cmd, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void serverExecute(FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual PrecacheId precacheModel(std::string_view model, FuncCallType callType) const = 0;
+        virtual PrecacheId precacheSound(std::string_view sound, FuncCallType callType) const = 0;
+        virtual void changeLevel(std::string_view level1, std::string_view level2, FuncCallType callType) const = 0;
+        virtual void serverCommand(std::string_view cmd, FuncCallType callType) const = 0;
+        virtual void serverExecute(FuncCallType callType) const = 0;
+        virtual void registerSrvCommand(std::string_view cmd, ServerCmdCallback cb, FuncCallType callType) = 0;
         virtual void messageBegin(MsgDest msgDest,
                                   MsgType msgType,
                                   const float *pOrigin,
-                                  IEdict *pEdict, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void messageEnd(FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeByte(std::byte byteArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeChar(char charArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeShort(std::int16_t shortArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeLong(std::int32_t longArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeEntity(MsgEntity entArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeAngle(MsgAngle angleArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeCoord(MsgCoord coordArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual void writeString(std::string_view strArg, FuncCallType callType = FuncCallType::Direct) const = 0;
-        virtual MsgType regUserMsg(std::string_view name, std::int16_t size, FuncCallType callType = FuncCallType::Direct) const = 0;
+                                  IEdict *pEdict, FuncCallType callType) const = 0;
+        virtual void messageEnd(FuncCallType callType) const = 0;
+        virtual void writeByte(std::byte byteArg, FuncCallType callType) const = 0;
+        virtual void writeChar(char charArg, FuncCallType callType) const = 0;
+        virtual void writeShort(std::int16_t shortArg, FuncCallType callType) const = 0;
+        virtual void writeLong(std::int32_t longArg, FuncCallType callType) const = 0;
+        virtual void writeEntity(MsgEntity entArg, FuncCallType callType) const = 0;
+        virtual void writeAngle(MsgAngle angleArg, FuncCallType callType) const = 0;
+        virtual void writeCoord(MsgCoord coordArg, FuncCallType callType) const = 0;
+        virtual void writeString(std::string_view strArg, FuncCallType callType) const = 0;
+        virtual MsgType regUserMsg(std::string_view name, std::int16_t size, FuncCallType callType) const = 0;
         virtual std::string_view getPlayerAuthID(IEdict *pEdict, FuncCallType callType) const = 0;
         virtual UserID getPlayerUserID(IEdict *pEdict, FuncCallType callType) const = 0;
         virtual std::string_view infoKeyValue(InfoBuffer infobuffer, std::string_view key, FuncCallType callType) const = 0;
@@ -94,6 +94,9 @@ namespace Metamod::Engine
         virtual bool addExtDll(void *hModule) const = 0;
         virtual void removeExtDll(void *hModule) const = 0;
         virtual void removeCmd(std::string_view cmd_name) = 0;
+
+        /* ReHLDS server data */
+        virtual std::uint32_t getWorldmapCrc() const = 0;
 
 #if defined META_CORE
         virtual IEdict *getEdict(edict_t *edict) = 0;

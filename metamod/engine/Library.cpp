@@ -185,6 +185,7 @@ namespace Metamod::Engine
         }
 
         m_reHookchains = reHLDSApi->GetHookchains();
+        m_reServerData = reHLDSApi->GetServerData();
         return reHLDSApi->GetFuncs();
     }
 
@@ -569,5 +570,10 @@ namespace Metamod::Engine
     {
         m_reHLDSFuncs->Cmd_RemoveCmd(cmd_name.data());
         m_srvCmds.erase(cmd_name.data());
+    }
+
+    std::uint32_t Library::getWorldmapCrc() const
+    {
+        return m_reServerData->GetWorldmapCrc();
     }
 } // namespace Metamod::Engine
