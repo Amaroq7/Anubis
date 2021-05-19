@@ -29,7 +29,7 @@ Metamod::Engine::ILibrary *gEngineLib;
 Metamod::IMetamod *gMetamod;
 std::unordered_map<std::string, std::uint32_t> gVOffsets;
 
-void InitGameEntitiesDLL(
+C_DLLEXPORT void InitGameEntitiesDLL(
     Metamod::IMetamod *api,
     const std::unordered_map<std::string, std::uint32_t> &vOffsets)
 {
@@ -76,12 +76,12 @@ void InitGameEntitiesDLL(
     }
 }
 
-Metamod::Game::IBasePlayerHooks *GetBasePlayerHooks()
+C_DLLEXPORT Metamod::Game::IBasePlayerHooks *GetBasePlayerHooks()
 {
     return gBasePlayerHooks.get();
 }
 
-Metamod::Game::Entities::IEntityHolder *GetEntityHolder()
+C_DLLEXPORT Metamod::Game::Entities::IEntityHolder *GetEntityHolder()
 {
     return &gEntityHolder;
 }

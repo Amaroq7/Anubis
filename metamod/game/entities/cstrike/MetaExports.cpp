@@ -88,7 +88,7 @@ bool _initReGameDLL_API()
     return true;
 }
 
-void InitGameEntitiesDLL(
+C_DLLEXPORT void InitGameEntitiesDLL(
     Metamod::IMetamod *api,
     const std::unordered_map<std::string, std::uint32_t> &vOffsets [[maybe_unused]])
 {
@@ -135,12 +135,12 @@ void InitGameEntitiesDLL(
     gBasePlayerHooks = std::make_unique<Metamod::Game::CStrike::BasePlayerHooks>();
 }
 
-Metamod::Game::IBasePlayerHooks *GetBasePlayerHooks()
+C_DLLEXPORT Metamod::Game::IBasePlayerHooks *GetBasePlayerHooks()
 {
     return gBasePlayerHooks.get();
 }
 
-Metamod::Game::Entities::IEntityHolder *GetEntityHolder()
+C_DLLEXPORT Metamod::Game::Entities::IEntityHolder *GetEntityHolder()
 {
     return &gEntityHolder;
 }
