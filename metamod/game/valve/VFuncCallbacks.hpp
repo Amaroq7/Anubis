@@ -53,4 +53,12 @@ namespace Metamod::Game::VFunc
         ::TraceResult *ptr,
         std::int32_t bitsDamageType
     );
+
+    void vKilled(
+#if defined __linux__
+        void *instance,
+#endif
+        entvars_t *pevAttacker,
+        int iGib
+    );
 } // namespace

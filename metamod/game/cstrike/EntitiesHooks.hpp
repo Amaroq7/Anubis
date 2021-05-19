@@ -46,13 +46,13 @@ namespace Metamod::Game::CStrike
         BasePlayerSpawnHookRegistry *spawn() final;
         BasePlayerTakeDamageHookRegistry *takeDamage() final;
         BasePlayerTraceAttackHookRegistry *traceAttack() final;
-        //BasePlayerKilledHookRegistry *killed() final;
+        BasePlayerKilledHookRegistry *killed() final;
 
     private:
         BasePlayerSpawnHookRegistry m_spawn;
         BasePlayerTakeDamageHookRegistry m_takeDamage;
         BasePlayerTraceAttackHookRegistry m_traceAttack;
-        //BasePlayerKilledHookRegistry m_killed;
+        BasePlayerKilledHookRegistry m_killed;
     };
 }
 

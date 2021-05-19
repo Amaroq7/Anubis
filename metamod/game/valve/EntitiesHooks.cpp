@@ -28,7 +28,8 @@ namespace Metamod::Game::Valve
     BasePlayerHooks::BasePlayerHooks(const std::unordered_map<std::string, std::uint32_t> &vOffsets) :
         m_spawn(IBasePlayer::VTable, vOffsets.at("spawn"), reinterpret_cast<intptr_t>(VFunc::vSpawnHook)),
         m_takeDamage(IBasePlayer::VTable, vOffsets.at("takedamage"), reinterpret_cast<intptr_t>(VFunc::vTakeDamageHook)),
-        m_traceAttack(IBasePlayer::VTable, vOffsets.at("traceattack"), reinterpret_cast<intptr_t>(VFunc::vTraceAttack))
+        m_traceAttack(IBasePlayer::VTable, vOffsets.at("traceattack"), reinterpret_cast<intptr_t>(VFunc::vTraceAttack)),
+        m_killed(IBasePlayer::VTable, vOffsets.at("killed"), reinterpret_cast<intptr_t>(VFunc::vKilled))
     {}
 
     BasePlayerSpawnHookRegistry *BasePlayerHooks::spawn()
@@ -46,8 +47,8 @@ namespace Metamod::Game::Valve
         return &m_traceAttack;
     }
 
-    /*BasePlayerKilledHookRegistry *BasePlayerHooks::killed()
+    BasePlayerKilledHookRegistry *BasePlayerHooks::killed()
     {
         return &m_killed;
-    }*/
+    }
 }

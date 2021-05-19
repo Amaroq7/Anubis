@@ -43,4 +43,7 @@ namespace Metamod::Game::VFunc
         ::TraceResult *ptr,
         std::int32_t bitsDamageType
     );
+
+    void vCBasePlayerKilled(IReGameHook_CBasePlayer_Killed *hook,
+                            CBasePlayer *player, entvars_t *pevAttacker, int iGib);
 } // namespace

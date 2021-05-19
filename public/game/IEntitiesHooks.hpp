@@ -55,6 +55,6 @@ namespace Metamod::Game
         virtual IBasePlayerSpawnHookRegistry *spawn() = 0;
         virtual IBasePlayerTakeDamageHookRegistry *takeDamage() = 0;
         virtual IBasePlayerTraceAttackHookRegistry *traceAttack() = 0;
-        //virtual IBasePlayerKilledHookRegistry *killed() = 0;
+        virtual IBasePlayerKilledHookRegistry *killed() = 0;
     };
 }

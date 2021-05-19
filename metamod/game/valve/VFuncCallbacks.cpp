@@ -119,22 +119,22 @@ namespace Metamod::Game::VFunc
     /*void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int
  * bitsDamageType); */
     void vTraceAttack(
-    #if defined __linux__
+#if defined __linux__
         void *instance,
-    #endif
+#endif
         entvars_t *pevAttacker,
         float flDamage,
         Vector vecDir,
         ::TraceResult *ptr,
         std::int32_t bitsDamageType)
     {
-    #if defined _WIN32
+#if defined _WIN32
         void *instance;
         __asm
         {
             mov [instance], ecx
         }
-    #endif
+#endif
         if (getVTable(instance) == IBasePlayer::VTable)
         {
             static Game::Valve::BasePlayerTraceAttackHookRegistry *hookchain = gBasePlayerHooks->traceAttack();
@@ -149,6 +149,35 @@ namespace Metamod::Game::VFunc
             flDamage, &vecDir.x, metaTr, bitsDamageType);
 
             gEngineLib->freeTraceResult(metaTr);
+        }
+    }
+
+    void vKilled(
+#if defined __linux__
+        void *instance,
+#endif
+        entvars_t *pevAttacker,
+        int iGib
+    )
+    {
+#if defined _WIN32
+        void *instance;
+        __asm
+        {
+            mov [instance], ecx
+        }
+#endif
+
+        if (getVTable(instance) == IBasePlayer::VTable)
+        {
+            static Game::Valve::BasePlayerKilledHookRegistry *hookchain = gBasePlayerHooks->killed();
+
+            hookchain->callChain([instance](IBasePlayer *, Engine::IEntVars *pevAttacker, GibType gibType) {
+               VFuncHelpers::execOriginalFunc<void, entvars_t *, int>(
+                   hookchain->getVFuncAddr(), instance, *pevAttacker, static_cast<int>(gibType)
+               );
+            },
+            instanceToType<IBasePlayer>(instance), gEngineLib->getEntVars(pevAttacker), static_cast<GibType>(iGib));
         }
     }
 }

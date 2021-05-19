@@ -59,7 +59,6 @@ namespace Metamod::Game::VFunc
         }, instanceToType<IBasePlayer>(player));
     }
 
-    /*int TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType); */
     BOOL vCBasePlayerTakeDamage(IReGameHook_CBasePlayer_TakeDamage *hook,
                                     CBasePlayer *player,
                                     entvars_t *pevInflictor,
@@ -80,8 +79,6 @@ namespace Metamod::Game::VFunc
             gEngineLib->getEntVars(pevAttacker), flDamage, bitsDamageType);
     }
 
-    /*void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int
- * bitsDamageType); */
     void vCBasePlayerTraceAttack(IReGameHook_CBasePlayer_TraceAttack *hook,
         CBasePlayer *player,
         entvars_t *pevAttacker,
@@ -93,11 +90,11 @@ namespace Metamod::Game::VFunc
         static Game::CStrike::BasePlayerTraceAttackHookRegistry *hookchain = gBasePlayerHooks->traceAttack();
         Engine::ITraceResult *metaTr = gEngineLib->createTraceResult(ptr);
 
-        hookchain->callChain([hook, player, &vecDir] (IBasePlayer *, Engine::IEntVars *pevAttacker,
+        hookchain->callChain([hook, player, &vecDir](IBasePlayer *, Engine::IEntVars *pevAttacker,
                                             float flDamage, float *, Engine::ITraceResult *metatr,
                                             std::int32_t bitsDamageType) {
             hook->callNext(player, *pevAttacker, flDamage, vecDir, *metatr, bitsDamageType);
-        }, [hook, player, &vecDir] (IBasePlayer *, Engine::IEntVars *pevAttacker,
+        }, [hook, player, &vecDir](IBasePlayer *, Engine::IEntVars *pevAttacker,
                                     float flDamage, float *, Engine::ITraceResult *metatr,
                                     std::int32_t bitsDamageType) {
             hook->callOriginal(player, *pevAttacker, flDamage, vecDir, *metatr, bitsDamageType);
@@ -106,5 +103,17 @@ namespace Metamod::Game::VFunc
         flDamage, &vecDir.x, metaTr, bitsDamageType);
 
         gEngineLib->freeTraceResult(metaTr);
+    }
+
+    void vCBasePlayerKilled(IReGameHook_CBasePlayer_Killed *hook, CBasePlayer *player,
+                            entvars_t *pevAttacker, int iGib)
+    {
+        static Game::CStrike::BasePlayerKilledHookRegistry *hookchain = gBasePlayerHooks->killed();
+
+        hookchain->callChain([hook, player](IBasePlayer *, Engine::IEntVars *pevAttacker, GibType gibType) {
+            hook->callNext(player, *pevAttacker, static_cast<int>(gibType));
+        }, [hook, player](IBasePlayer *, Engine::IEntVars *pevAttacker, GibType gibType) {
+            hook->callOriginal(player, *pevAttacker, static_cast<int>(gibType));
+        }, instanceToType<IBasePlayer>(player), gEngineLib->getEntVars(pevAttacker), static_cast<GibType>(iGib));
     }
 }

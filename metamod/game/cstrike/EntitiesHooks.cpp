@@ -40,6 +40,11 @@ namespace Metamod::Game::CStrike
             gReGameAPI->GetHookchains()->CBasePlayer_TraceAttack()->registerHook(Game::VFunc::vCBasePlayerTraceAttack);
         }, []() {
             gReGameAPI->GetHookchains()->CBasePlayer_TraceAttack()->unregisterHook(Game::VFunc::vCBasePlayerTraceAttack);
+        }),
+        m_killed([]() {
+            gReGameAPI->GetHookchains()->CBasePlayer_Killed()->registerHook(Game::VFunc::vCBasePlayerKilled);
+        }, []() {
+            gReGameAPI->GetHookchains()->CBasePlayer_Killed()->unregisterHook(Game::VFunc::vCBasePlayerKilled);
         })
     {}
 
@@ -58,8 +63,8 @@ namespace Metamod::Game::CStrike
         return &m_traceAttack;
     }
 
-    /*BasePlayerKilledHookRegistry *BasePlayerHooks::killed()
+    BasePlayerKilledHookRegistry *BasePlayerHooks::killed()
     {
         return &m_killed;
-    }*/
+    }
 }
