@@ -18,12 +18,18 @@
  */
 
 #include "TraceResult.hpp"
-#include "Metamod.hpp"
+
+#include <engine/IEdict.hpp>
+#include <extdll.h>
 
 namespace Metamod::Engine
 {
-    TraceResult::TraceResult() : m_traceResult(std::make_unique<::TraceResult>()) {}
-    TraceResult::TraceResult(::TraceResult *traceResult) : m_traceResult(traceResult) {}
+    TraceResult::TraceResult(ILibrary *engine)
+        : m_traceResult(std::make_unique<::TraceResult>()), m_engine(engine)
+    {}
+    TraceResult::TraceResult(::TraceResult *traceResult, ILibrary *engine)
+        : m_traceResult(traceResult), m_engine(engine)
+    {}
 
     bool TraceResult::getAllSolid() const
     {
@@ -57,16 +63,14 @@ namespace Metamod::Engine
     {
         return operator ::TraceResult *()->vecPlaneNormal;
     }
-    Edict *TraceResult::getHit() const
+    IEdict *TraceResult::getHit() const
     {
-        static Library *engineAPI = gMetaGlobal->getEngine();
-        return engineAPI->getEdict(operator ::TraceResult *()->pHit);
+        return m_engine->getEdict(operator ::TraceResult *()->pHit);
     }
     HitGroup TraceResult::getHitGroup() const
     {
         return static_cast<HitGroup>(operator ::TraceResult *()->iHitgroup);
     }
-
     void TraceResult::setAllSolid(bool allSolid)
     {
         operator ::TraceResult *()->fAllSolid = allSolid;
@@ -101,7 +105,7 @@ namespace Metamod::Engine
     }
     void TraceResult::setHit(IEdict *hit)
     {
-        operator ::TraceResult *()->pHit = *static_cast<Edict *>(hit);
+        operator ::TraceResult *()->pHit = static_cast<edict_t *>(*hit);
     }
     void TraceResult::setHitGroup(HitGroup hitGroup)
     {

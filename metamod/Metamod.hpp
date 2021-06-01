@@ -20,9 +20,7 @@
 #pragma once
 
 #include <IMetamod.hpp>
-
-#include "game/Library.hpp"
-#include "engine/Library.hpp"
+#include <engine/Common.hpp>
 #include "MetaConfig.hpp"
 
 #include <fmt/format.h>
@@ -33,16 +31,28 @@ namespace Metamod
 {
     constexpr const char *LOG_TAG = "MM-CPP";
 
+    namespace Game
+    {
+        class Library;
+    }
+
+    namespace Engine
+    {
+        class Library;
+    }
+
+    class Module;
+
     class Metamod final : public IMetamod
     {
     public:
-        Metamod(std::unique_ptr<Config> &&config);
-        ~Metamod();
+        explicit Metamod(std::unique_ptr<Config> &&config);
+        ~Metamod() final;
 
-        std::uint32_t getInterfaceVersion() const final;
-        Engine::Library *getEngine() const final;
-        Game::Library *getGame() const final;
-        const RegMsg *getMsgInfo(std::string_view name) const final;
+        [[nodiscard]] std::uint32_t getInterfaceVersion() const final;
+        [[nodiscard]] Engine::ILibrary *getEngine() const final;
+        [[nodiscard]] Game::ILibrary *getGame() const final;
+        [[nodiscard]] const RegMsg *getMsgInfo(std::string_view name) const final;
         void logMsg(IPlugin *plugin, LogLevel level, LogDest dest, std::string_view msg) final;
 
         void logMsg(LogLevel level, LogDest dest, std::string_view msg) final;

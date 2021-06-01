@@ -19,9 +19,15 @@
 
 #include <Metamod.hpp>
 
+#include "Hooks.hpp"
 #include "Library.hpp"
 #include "Callbacks.hpp"
+
+#include <rehlds_api.h>
+#include <engine_hlds_api.h>
+
 #include "ReHooks.hpp"
+
 #include <MetaCvars.hpp>
 
 #include <memory>
@@ -34,6 +40,8 @@ namespace Metamod::Engine
         : m_hooks(std::make_unique<Hooks>()),
           m_reHLDSFuncs(_initReHLDSAPI())
     {
+        Callbacks::GameDLL::init(this);
+        ReHooks::init(this);
         _replaceFuncs();
         _installHooks();
 
@@ -76,7 +84,7 @@ namespace Metamod::Engine
 
     TraceResult *Library::createTraceResult()
     {
-        return m_traceResults.emplace_front().get();
+        return m_traceResults.emplace_front(std::make_unique<Engine::TraceResult>(this)).get();
     }
 
     EntVars *Library::getEntVars(entvars_t *vars)
@@ -99,7 +107,7 @@ namespace Metamod::Engine
 
     TraceResult *Library::createTraceResult(::TraceResult *tr)
     {
-        return m_traceResults.emplace_front(std::make_unique<TraceResult>(tr)).get();
+        return m_traceResults.emplace_front(std::make_unique<TraceResult>(tr, this)).get();
     }
 
     void Library::freeTraceResult(ITraceResult *tr)
@@ -340,7 +348,7 @@ namespace Metamod::Engine
     {
         static GetPlayerAuthIDHookRegistry *hookchain = m_hooks->getPlayerAuthID();
         return _execEngineFunc(hookchain, [](IEdict *pEdict) -> std::string_view {
-            return GETPLAYERAUTHID(*pEdict);
+            return GETPLAYERAUTHID(static_cast<edict_t *>(*pEdict));
         }, callType, pEdict);
     }
     
@@ -348,7 +356,7 @@ namespace Metamod::Engine
     {
         static GetPlayerUserIDHookRegistry *hookchain = m_hooks->getPlayerUserID();
         return _execEngineFunc(hookchain, [](IEdict *pEdict) {
-            return UserID(GETPLAYERUSERID(*pEdict));
+            return UserID(GETPLAYERUSERID(static_cast<edict_t *>(*pEdict)));
         }, callType, pEdict);
     }
     
@@ -408,7 +416,7 @@ namespace Metamod::Engine
         static RegisterCvarHookRegistry *hookchain = m_hooks->registerCvar();
         return _execEngineFunc(hookchain, [this](std::string_view name, std::string_view value) {
             auto cvar = std::make_unique<Cvar>(name, value);
-            CVAR_REGISTER(*cvar);
+            CVAR_REGISTER(static_cast<cvar_t *>(*cvar));
 
             if (CVAR_GET_POINTER(name.data()))
             {
@@ -421,14 +429,14 @@ namespace Metamod::Engine
     {
         static SetModelHookRegistry *hookchain = m_hooks->setModel();
         return _execEngineFunc(hookchain, [](IEdict *edict, std::string_view model) {
-            SET_MODEL(*dynamic_cast<Edict *>(edict), model.data());
+            SET_MODEL(static_cast<edict_t *>(*edict), model.data());
         }, callType, pEdict, model);
     }
 
     Edict *Library::createEntity(FuncCallType callType)
     {
         static CreateEntityHookRegistry *hookchain = m_hooks->createEntity();
-        return static_cast<Edict *>(_execEngineFunc(hookchain, [this]() -> IEdict * {
+        return dynamic_cast<Edict *>(_execEngineFunc(hookchain, [this]() -> IEdict * {
             return getEdict(CREATE_ENTITY());
         }, callType));
     }
@@ -437,7 +445,7 @@ namespace Metamod::Engine
     {
         static RemoveEntityHookRegistry *hookchain = m_hooks->removeEntity();
         return _execEngineFunc(hookchain, [](IEdict *edict) {
-            REMOVE_ENTITY(*dynamic_cast<Edict *>(edict));
+            REMOVE_ENTITY(static_cast<edict_t *>(*edict));
         }, callType, pEdict);
     }
 
@@ -535,7 +543,7 @@ namespace Metamod::Engine
         return m_edictList;
     }
 
-    const std::array<std::uint32_t, 2> &Library::getReHLDSVersion() const
+    std::array<std::uint32_t, 2> Library::getReHLDSVersion() const
     {
         return m_rehldsVersion;
     }

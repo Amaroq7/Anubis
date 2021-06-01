@@ -22,7 +22,6 @@
 #include "Common.hpp"
 
 #include <string_view>
-
 #include <cinttypes>
 #include <cstddef>
 
@@ -30,7 +29,7 @@
 typedef struct edict_s edict_t;
 typedef struct entvars_s entvars_t;
 typedef struct enginefuncs_s enginefuncs_t;
-struct TraceResult;
+typedef struct TraceResult TraceResult;
 #endif
 
 namespace Metamod::Engine
@@ -50,10 +49,11 @@ namespace Metamod::Engine
         virtual ITraceResult *createTraceResult() = 0;
         virtual void freeTraceResult(ITraceResult *tr) = 0;
         virtual IHooks *getHooks() = 0;
+        [[nodiscard]] virtual std::array<std::uint32_t, 2> getReHLDSVersion() const = 0;
 
         /* Engine funcs */
-        virtual PrecacheId precacheModel(std::string_view model, FuncCallType callType) const = 0;
-        virtual PrecacheId precacheSound(std::string_view sound, FuncCallType callType) const = 0;
+        [[nodiscard]] virtual PrecacheId precacheModel(std::string_view model, FuncCallType callType) const = 0;
+        [[nodiscard]] virtual PrecacheId precacheSound(std::string_view sound, FuncCallType callType) const = 0;
         virtual void changeLevel(std::string_view level1, std::string_view level2, FuncCallType callType) const = 0;
         virtual void serverCommand(std::string_view cmd, FuncCallType callType) const = 0;
         virtual void serverExecute(FuncCallType callType) const = 0;
@@ -71,13 +71,13 @@ namespace Metamod::Engine
         virtual void writeAngle(MsgAngle angleArg, FuncCallType callType) const = 0;
         virtual void writeCoord(MsgCoord coordArg, FuncCallType callType) const = 0;
         virtual void writeString(std::string_view strArg, FuncCallType callType) const = 0;
-        virtual MsgType regUserMsg(std::string_view name, std::int16_t size, FuncCallType callType) const = 0;
+        [[nodiscard]] virtual MsgType regUserMsg(std::string_view name, std::int16_t size, FuncCallType callType) const = 0;
         virtual std::string_view getPlayerAuthID(IEdict *pEdict, FuncCallType callType) const = 0;
         virtual UserID getPlayerUserID(IEdict *pEdict, FuncCallType callType) const = 0;
-        virtual std::string_view infoKeyValue(InfoBuffer infobuffer, std::string_view key, FuncCallType callType) const = 0;
-        virtual std::string_view cmdArgs(FuncCallType callType) const = 0;
-        virtual std::string_view cmdArgv(std::uint8_t argc, FuncCallType callType) const = 0;
-        virtual std::uint8_t cmdArgc(FuncCallType callType) const = 0;
+        [[nodiscard]] virtual std::string_view infoKeyValue(InfoBuffer infobuffer, std::string_view key, FuncCallType callType) const = 0;
+        [[nodiscard]] virtual std::string_view cmdArgs(FuncCallType callType) const = 0;
+        [[nodiscard]] virtual std::string_view cmdArgv(std::uint8_t argc, FuncCallType callType) const = 0;
+        [[nodiscard]] virtual std::uint8_t cmdArgc(FuncCallType callType) const = 0;
         virtual void registerCvar(std::string_view name, std::string_view value, FuncCallType callType) = 0;
         virtual ICvar *getCvar(std::string_view name, FuncCallType callType) = 0;
         virtual void setModel(IEdict *pEdict, std::string_view model, FuncCallType callType) = 0;
@@ -87,8 +87,8 @@ namespace Metamod::Engine
         virtual void print(std::string_view szMsg, FuncCallType callType) = 0;
 
         /* Engine globals */
-        virtual float getTime() const = 0;
-        virtual std::string_view getMapName() const = 0;
+        [[nodiscard]] virtual float getTime() const = 0;
+        [[nodiscard]] virtual std::string_view getMapName() const = 0;
 
         /* ReFuncs */
         virtual bool addExtDll(void *hModule) const = 0;
@@ -96,13 +96,15 @@ namespace Metamod::Engine
         virtual void removeCmd(std::string_view cmd_name) = 0;
 
         /* ReHLDS server data */
-        virtual std::uint32_t getWorldmapCrc() const = 0;
+        [[nodiscard]] virtual std::uint32_t getWorldmapCrc() const = 0;
 
 #if defined META_CORE
         virtual IEdict *getEdict(edict_t *edict) = 0;
         virtual IEntVars *getEntVars(entvars_t *vars) = 0;
         virtual ITraceResult *createTraceResult(::TraceResult *tr) = 0;
-        virtual const enginefuncs_t *getEngineFuncs() const = 0;
+        [[nodiscard]] virtual const enginefuncs_t *getEngineFuncs() const = 0;
+        virtual void initializeEdicts(edict_t *pEdictList, std::uint32_t edictCount, std::uint32_t clientMax) = 0;
+        [[nodiscard]] virtual edict_t *getEngineEdictList() const = 0;
 #endif
     };
 } // namespace Metamod::Engine

@@ -19,12 +19,12 @@
 
 #pragma once
 
+#include "StdFSWrapper.hpp"
+
 #include "Common.hpp"
 #include "IHelpers.hpp"
 #include "IPlugin.hpp"
 #include "IHookChains.hpp"
-#include "engine/ILibrary.hpp"
-#include "game/ILibrary.hpp"
 
 #if defined META_CORE
     #include <unordered_map>
@@ -55,6 +55,17 @@ namespace Metamod
         Configs = 3,
         Plugins = 4
     };
+
+    namespace Game
+    {
+        class ILibrary;
+        class IBasePlayerHooks;
+    }
+
+    namespace Engine
+    {
+        class ILibrary;
+    }
 
     class IMetamod
     {

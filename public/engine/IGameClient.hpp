@@ -19,6 +19,10 @@
 
 #pragma once
 
+#if defined META_CORE
+class IGameClient;
+#endif
+
 namespace Metamod::Engine
 {
     class IEdict;
@@ -28,6 +32,10 @@ namespace Metamod::Engine
     public:
         virtual ~IGameClient() = default;
 
-        virtual IEdict *getEdict() const = 0;
+        [[nodiscard]] virtual IEdict *getEdict() const = 0;
+
+#if defined META_CORE
+        virtual explicit operator ::IGameClient *() const = 0;
+#endif
     };
 }

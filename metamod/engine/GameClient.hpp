@@ -22,21 +22,22 @@
 #include <engine/IGameClient.hpp>
 #include "Edict.hpp"
 
-class IGameClient;
-
 namespace Metamod::Engine
 {
+    class Library;
+
     class GameClient final : public IGameClient
     {
     public:
-        GameClient(::IGameClient *gameClient);
-        ~GameClient() override = default;
+        explicit GameClient(::IGameClient *gameClient, Library *engine);
+        ~GameClient() final = default;
 
-        Edict *getEdict() const override;
+        [[nodiscard]] Edict *getEdict() const final;
 
-        operator ::IGameClient *() const;
+        explicit operator ::IGameClient *() const final;
 
     private:
         ::IGameClient *m_gameClient;
+        Library *m_engine;
     };
 }

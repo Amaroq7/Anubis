@@ -20,7 +20,6 @@
 #pragma once
 
 #include <game/ILibrary.hpp>
-#include <EngineExports.hpp>
 #include <Module.hpp>
 #include "Callbacks.hpp"
 #include "Hooks.hpp"
@@ -69,7 +68,7 @@ namespace Metamod::Game
                                       FuncCallType callType) override;
         void pfnClientPutInServer(Engine::IEdict *pEntity, FuncCallType callType) override;
         void pfnClientCommand(Engine::IEdict *pEntity, FuncCallType callType) override;
-        void pfnClientUserInfoChanged(Engine::IEdict *pEntity, char *infobuffer, FuncCallType callType) override;
+        void pfnClientUserInfoChanged(Engine::IEdict *pEntity, Engine::InfoBuffer infobuffer, FuncCallType callType) override;
 
         void pfnServerActivate(std::uint32_t edictCount, std::uint32_t clientMax, FuncCallType callType) override;
         void pfnServerDeactivate(FuncCallType callType) override;
@@ -81,9 +80,9 @@ namespace Metamod::Game
         IBasePlayerHooks *getCBasePlayerHooks() override;
         void initVFuncHooks();
 
-        const DLL_FUNCTIONS *getDllFuncs() const;
-        const NEW_DLL_FUNCTIONS *getNewDllFuncs() const;
-        Module::SystemHandle getSystemHandle() const;
+        void *getDllFuncs() final;
+        void *getNewDllFuncs() final;
+        Module::SystemHandle getSystemHandle() const final;
         void setMaxClients(std::uint32_t maxClients);
 
     private:

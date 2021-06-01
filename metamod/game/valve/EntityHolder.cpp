@@ -20,14 +20,17 @@
 #include "EntityHolder.hpp"
 #include "BasePlayer.hpp"
 
-Metamod::Game::EntityHolder gEntityHolder;
-
-Metamod::Game::IBaseEntity *Metamod::Game::EntityHolder::getBaseEntity(Metamod::Engine::IEdict *edict)
+namespace Metamod::Game
 {
-    return _getEntity<Valve::BaseEntity>(edict);
-}
+    EntityHolder gEntityHolder;
 
-Metamod::Game::IBasePlayer *Metamod::Game::EntityHolder::getBasePlayer(Metamod::Engine::IEdict *edict)
-{
-    return _getEntity<Valve::BasePlayer>(edict);
+    IBaseEntity *EntityHolder::getBaseEntity(Engine::IEdict *edict)
+    {
+        return _getEntity<Valve::BaseEntity>(edict);
+    }
+
+    IBasePlayer *EntityHolder::getBasePlayer(Engine::IEdict *edict)
+    {
+        return _getEntity<Valve::BasePlayer>(edict);
+    }
 }

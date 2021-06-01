@@ -106,7 +106,7 @@ namespace Metamod::Game::VFunc
                 {
                     return VFuncHelpers::execOriginalFunc<int, entvars_t *, entvars_t *, float, int>(
                         hookchain->getVFuncAddr(), instance,
-                        *pevInflictor, *pevAttacker,
+                        static_cast<entvars_t *>(*pevInflictor), static_cast<entvars_t *>(*pevAttacker),
                         flDamage, bitsDamageType);
                 },
                 instanceToType<IBasePlayer>(instance), gEngineLib->getEntVars(pevInflictor),
@@ -142,7 +142,7 @@ namespace Metamod::Game::VFunc
 
             hookchain->callChain([instance](IBasePlayer *, Engine::IEntVars *pevAttacker, float flDamage, float *vec, Engine::ITraceResult *metatr, std::int32_t bitsDamageType) {
                 VFuncHelpers::execOriginalFunc<void, entvars_t *, float, float *, ::TraceResult *, int>(
-                     hookchain->getVFuncAddr(), instance, *pevAttacker, flDamage, vec, *metatr, bitsDamageType
+                     hookchain->getVFuncAddr(), instance, static_cast<entvars_t *>(*pevAttacker), flDamage, vec, *metatr, bitsDamageType
                 );
             },
             instanceToType<IBasePlayer>(instance), gEngineLib->getEntVars(pevAttacker),
@@ -174,7 +174,7 @@ namespace Metamod::Game::VFunc
 
             hookchain->callChain([instance](IBasePlayer *, Engine::IEntVars *pevAttacker, GibType gibType) {
                VFuncHelpers::execOriginalFunc<void, entvars_t *, int>(
-                   hookchain->getVFuncAddr(), instance, *pevAttacker, static_cast<int>(gibType)
+                   hookchain->getVFuncAddr(), instance, static_cast<entvars_t *>(*pevAttacker), static_cast<int>(gibType)
                );
             },
             instanceToType<IBasePlayer>(instance), gEngineLib->getEntVars(pevAttacker), static_cast<GibType>(iGib));

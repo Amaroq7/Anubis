@@ -18,10 +18,24 @@
  */
 #pragma once
 
-#include <extdll.h>
+typedef int qboolean;
+typedef struct edict_s edict_t;
+
+namespace Metamod
+{
+    namespace Game
+    {
+        class Library;
+    }
+    namespace Engine
+    {
+        class ILibrary;
+    }
+}
 
 namespace Metamod::Game::Callbacks::Engine
 {
+    void init(Library *game, ::Metamod::Engine::ILibrary *engine);
     void pfnGameInit();
     int pfnSpawn(edict_t *pent);
     qboolean pfnClientConnect(edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[128]);

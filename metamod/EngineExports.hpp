@@ -19,9 +19,8 @@
 
 #pragma once
 
-#include <extdll.h>
-#include <enginecallback.h>
-#include <util.h>
+typedef struct enginefuncs_s enginefuncs_t;
+typedef struct globalvars_s globalvars_t;
 
 namespace Metamod::Engine
 {

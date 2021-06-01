@@ -20,8 +20,14 @@
 
 #include <rehlds_api.h>
 
+namespace Metamod::Engine
+{
+    class Library;
+}
+
 namespace Metamod::Engine::ReHooks
 {
+    void init(Library *engine);
     void SV_DropClientHook(IRehldsHook_SV_DropClient *chain, ::IGameClient *client, bool crash, const char *string);
     void Cvar_DirectSetHook(IRehldsHook_Cvar_DirectSet *chain, cvar_t *cvar, const char *value);
 }

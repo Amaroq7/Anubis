@@ -18,15 +18,20 @@
  */
 
 #include "GameClient.hpp"
-#include <Metamod.hpp>
+#include "Library.hpp"
+
+#include <osconfig.h>
+#include <usercmd.h>
+#include <rehlds_api.h>
 
 namespace Metamod::Engine
 {
-    GameClient::GameClient(::IGameClient *gameClient) : m_gameClient(gameClient) {}
+    GameClient::GameClient(::IGameClient *gameClient, Library *engine)
+        : m_gameClient(gameClient), m_engine(engine) {}
+
     Edict *GameClient::getEdict() const
     {
-        static Library *engine = gMetaGlobal->getEngine();
-        return engine->getEdict(m_gameClient->GetEdict());
+        return m_engine->getEdict(m_gameClient->GetEdict());
     }
 
     GameClient::operator ::IGameClient *() const

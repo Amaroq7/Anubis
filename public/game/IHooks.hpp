@@ -24,6 +24,8 @@
 #include <string>
 #include <any>
 
+#include <engine/Common.hpp>
+
 namespace Metamod::Engine
 {
     class IEdict;
@@ -46,8 +48,8 @@ namespace Metamod::Game
     using IClientCmdHook = IHook<void, Engine::IEdict *>;
     using IClientCmdHookRegistry = IHookRegistry<void, Engine::IEdict *>;
 
-    using IClientInfoChangedHook = IHook<void, Engine::IEdict *, char *>;
-    using IClientInfoChangedHookRegistry = IHookRegistry<void, Engine::IEdict *, char *>;
+    using IClientInfoChangedHook = IHook<void, Engine::IEdict *, Engine::InfoBuffer>;
+    using IClientInfoChangedHookRegistry = IHookRegistry<void, Engine::IEdict *, Engine::InfoBuffer>;
 
     using IServerActivateHook = IHook<void, std::uint32_t, std::uint32_t>;
     using IServerActivateHookRegistry = IHookRegistry<void, std::uint32_t, std::uint32_t>;

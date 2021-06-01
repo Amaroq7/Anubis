@@ -20,46 +20,51 @@
 #pragma once
 
 #include <engine/ITraceResult.hpp>
-#include <extdll.h>
+#include <engine/ILibrary.hpp>
+
+#include <memory>
 #include <variant>
-#include "Edict.hpp"
+
+typedef struct TraceResult TraceResult;
 
 namespace Metamod::Engine
 {
-    class TraceResult : public ITraceResult
+    class TraceResult final : public ITraceResult
     {
     public:
-        TraceResult();
+        TraceResult() = delete;
+        explicit TraceResult(ILibrary *engine);
         TraceResult(const TraceResult &other) = delete;
         TraceResult(TraceResult &&other) = delete;
-        TraceResult(::TraceResult *traceResult);
-        ~TraceResult() = default;
+        TraceResult(::TraceResult *traceResult, ILibrary *engine);
+        ~TraceResult() final = default;
 
-        bool getAllSolid() const;
-        bool getStartSolid() const;
-        bool getInOpen() const;
-        bool getInWater() const;
-        float getFraction() const;
-        const float *getEndPos() const;
-        float getPlaneDist() const;
-        const float *getPlaneNormal() const;
-        Edict *getHit() const;
-        HitGroup getHitGroup() const;
+        [[nodiscard]] bool getAllSolid() const final;
+        [[nodiscard]] bool getStartSolid() const final;
+        [[nodiscard]] bool getInOpen() const final;
+        [[nodiscard]] bool getInWater() const final;
+        [[nodiscard]] float getFraction() const final;
+        [[nodiscard]] const float *getEndPos() const final;
+        [[nodiscard]] float getPlaneDist() const final;
+        [[nodiscard]] const float *getPlaneNormal() const final;
+        [[nodiscard]] IEdict *getHit() const final;
+        [[nodiscard]] HitGroup getHitGroup() const final;
 
-        void setAllSolid(bool allSolid);
-        void setStartSolid(bool startSolid);
-        void setInOpen(bool inOpen);
-        void setInWater(bool inWater);
-        void setFraction(float fraction);
-        void setEndPos(const float *endPos);
-        void setPlaneDist(float planeDist);
-        void setPlaneNormal(const float *planeNormal);
-        void setHit(IEdict *hit);
-        void setHitGroup(HitGroup hitGroup);
+        void setAllSolid(bool allSolid) final;
+        void setStartSolid(bool startSolid) final;
+        void setInOpen(bool inOpen) final;
+        void setInWater(bool inWater) final;
+        void setFraction(float fraction) final;
+        void setEndPos(const float *endPos) final;
+        void setPlaneDist(float planeDist) final;
+        void setPlaneNormal(const float *planeNormal) final;
+        void setHit(IEdict *hit) final;
+        void setHitGroup(HitGroup hitGroup) final;
 
-        operator ::TraceResult *() const;
+        explicit operator ::TraceResult *() const final;
 
     private:
         std::variant<::TraceResult *, std::unique_ptr<::TraceResult>> m_traceResult;
+        ILibrary *m_engine;
     };
 } // namespace SPMod::Engine

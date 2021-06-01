@@ -20,6 +20,8 @@
 #include "DllExports.hpp"
 #include <Common.hpp>
 #include "Metamod.hpp"
+#include <game/ILibrary.hpp>
+#include <engine/ILibrary.hpp>
 
 DLL_FUNCTIONS gEntityInterface;
 NEW_DLL_FUNCTIONS gNewDLLFunctions;
@@ -37,7 +39,7 @@ C_DLLEXPORT int GetEntityAPI2(DLL_FUNCTIONS *pFunctionTable, int *interfaceVersi
         return 0;
     }
 
-    *pFunctionTable = *const_cast<DLL_FUNCTIONS *>(Metamod::gMetaGlobal->getGame()->getDllFuncs());
+    *pFunctionTable = *reinterpret_cast<DLL_FUNCTIONS *>(Metamod::gMetaGlobal->getGame()->getDllFuncs());
     Metamod::gMetaGlobal->getEngine()->addExtDll(Metamod::gMetaGlobal->getGame()->getSystemHandle());
     return 1;
 }
@@ -54,6 +56,6 @@ C_DLLEXPORT int GetNewDLLFunctions(NEW_DLL_FUNCTIONS *pNewFunctionTable, int *in
         return 0;
     }
 
-    *pNewFunctionTable = *const_cast<NEW_DLL_FUNCTIONS *>(Metamod::gMetaGlobal->getGame()->getNewDllFuncs());
+    *pNewFunctionTable = *reinterpret_cast<NEW_DLL_FUNCTIONS *>(Metamod::gMetaGlobal->getGame()->getNewDllFuncs());
     return 1;
 }

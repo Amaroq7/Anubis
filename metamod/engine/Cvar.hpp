@@ -20,7 +20,6 @@
 #pragma once
 
 #include <engine/ICvar.hpp>
-#include <cvardef.h>
 #include <memory>
 #include <variant>
 #include <string>
@@ -30,20 +29,20 @@ namespace Metamod::Engine
     class Cvar final : public ICvar
     {
     public:
-        Cvar(cvar_t *cvar);
+        explicit Cvar(cvar_t *cvar);
         Cvar(std::string_view name, std::string_view value);
         ~Cvar() override = default;
 
-        std::string_view getName() const override;
-        std::string_view getString() const override;
-        Flags getFlags() const override;
-        float getValue() const override;
+        [[nodiscard]] std::string_view getName() const override;
+        [[nodiscard]] std::string_view getString() const override;
+        [[nodiscard]] Flags getFlags() const override;
+        [[nodiscard]] float getValue() const override;
 
         void setString(std::string_view string) override;
         void setFlags(Flags flags) override;
         void setValue(float value) override;
 
-        operator cvar_t *() const;
+        explicit operator cvar_t *() const final;
 
     private:
         std::string m_name;

@@ -22,6 +22,10 @@
 #include <cinttypes>
 #include <string_view>
 
+#if defined META_CORE
+typedef struct cvar_s cvar_t;
+#endif
+
 namespace Metamod::Engine
 {
     class ICvar
@@ -67,13 +71,17 @@ namespace Metamod::Engine
     public:
         virtual ~ICvar() = default;
 
-        virtual std::string_view getName() const = 0;
-        virtual std::string_view getString() const = 0;
-        virtual Flags getFlags() const = 0;
-        virtual float getValue() const = 0;
+        [[nodiscard]] virtual std::string_view getName() const = 0;
+        [[nodiscard]] virtual std::string_view getString() const = 0;
+        [[nodiscard]] virtual Flags getFlags() const = 0;
+        [[nodiscard]] virtual float getValue() const = 0;
 
         virtual void setString(std::string_view string) = 0;
         virtual void setFlags(Flags flags) = 0;
         virtual void setValue(float value) = 0;
+
+#if defined META_CORE
+        virtual explicit operator cvar_t *() const = 0;
+#endif
     };
 }

@@ -43,9 +43,9 @@ namespace Metamod
 #endif
 
     public:
-        Module(const fs::path &path);
+        explicit Module(const fs::path &path);
 
-        bool isLoaded() const;
+        [[nodiscard]] bool isLoaded() const;
         void unload();
         static std::string_view getError();
 
@@ -63,7 +63,7 @@ namespace Metamod
 #endif
         }
 
-        operator SystemHandle();
+        explicit operator SystemHandle();
 
 #if defined _WIN32
         ~Module();

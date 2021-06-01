@@ -19,11 +19,14 @@
 #pragma once
 
 #include <engine/Common.hpp>
-#include <engine/IEdict.hpp>
-#include <extdll.h>
-#include <cinttypes>
-#include <string_view>
-#include <functional>
+
+typedef struct edict_s edict_t;
+typedef struct cvar_s cvar_t;
+
+namespace Metamod::Engine
+{
+    class Library;
+}
 
 /*
  * These will be called by GameDLL directly.
@@ -36,6 +39,8 @@
  */
 namespace Metamod::Engine::Callbacks::GameDLL
 {
+    void init(Engine::Library *engine);
+
     int	pfnPrecacheModel(const char *s);
     int	pfnPrecacheSound(const char *s);
     void pfnChangeLevel(const char *s1, const char *s2);

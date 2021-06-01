@@ -39,8 +39,8 @@ namespace Metamod::Game
     using ClientCmdHook = Hook<void, Engine::IEdict *>;
     using ClientCmdHookRegistry = HookRegistry<void, Engine::IEdict *>;
 
-    using ClientInfoChangedHook = Hook<void, Engine::IEdict *, char *>;
-    using ClientInfoChangedHookRegistry = HookRegistry<void, Engine::IEdict *, char *>;
+    using ClientInfoChangedHook = Hook<void, Engine::IEdict *, Engine::InfoBuffer>;
+    using ClientInfoChangedHookRegistry = HookRegistry<void, Engine::IEdict *, Engine::InfoBuffer>;
 
     using ServerActivateHook = Hook<void, std::uint32_t, std::uint32_t>;
     using ServerActivateHookRegistry = HookRegistry<void, std::uint32_t, std::uint32_t>;

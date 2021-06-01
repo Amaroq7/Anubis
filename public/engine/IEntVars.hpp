@@ -55,13 +55,13 @@ namespace Metamod::Engine
         public:
             virtual ~IEntVars() = default;
 
-            virtual EntFlags getFlags() const = 0;
+            [[nodiscard]] virtual EntFlags getFlags() const = 0;
             virtual void setFlags(EntFlags flags) = 0;
 
-            virtual std::uint32_t getIndex() const = 0;
+            [[nodiscard]] virtual std::uint32_t getIndex() const = 0;
 
 #if defined META_CORE
-            virtual operator entvars_t *() const = 0;
+            virtual explicit operator entvars_t *() const = 0;
 #endif
     };
 }

@@ -57,7 +57,7 @@ namespace Metamod
             m_state = state;
         }
         
-        HookPriority getPriority() const override
+        [[nodiscard]] HookPriority getPriority() const override
         {
             return m_priority;
         }
@@ -67,7 +67,7 @@ namespace Metamod
             return m_hookFunc;
         }
         
-        bool isEnabled() const
+        [[nodiscard]] bool isEnabled() const
         {
             return m_state == State::Enabled;
         }
@@ -148,7 +148,7 @@ namespace Metamod
                 while (iter != m_hooks.end() && !(*iter)->isEnabled())
                 {
                     ++iter;
-                };
+                }
 
                 Hook<t_ret, t_args...> chain(iter, m_hooks, origFunc);
                 return chain.callNext(std::forward<t_args>(args)...);
@@ -166,7 +166,7 @@ namespace Metamod
                 while (iter != m_hooks.end() && !(*iter)->isEnabled())
                 {
                     ++iter;
-                };
+                }
                 
                 Hook<t_ret, t_args...> chain(iter, m_hooks, origFunc, lastFunc);
                 return chain.callNext(std::forward<t_args>(args)...);
@@ -175,7 +175,7 @@ namespace Metamod
             return lastFunc(std::forward<t_args>(args)...);
         }
 
-        bool hasHooks() const
+        [[nodiscard]] bool hasHooks() const
         {
             return !m_hooks.empty();
         }
@@ -232,7 +232,7 @@ namespace Metamod
             m_state = state;
         }
         
-        HookPriority getPriority() const override
+        [[nodiscard]] HookPriority getPriority() const override
         {
             return m_priority;
         }
@@ -242,7 +242,7 @@ namespace Metamod
             return m_hookFunc;
         }
         
-        bool isEnabled() const
+        [[nodiscard]] bool isEnabled() const
         {
             return m_state == State::Enabled;
         }
@@ -307,18 +307,17 @@ namespace Metamod
     class ClassHookRegistry final : public IClassHookRegistry<t_ret, t_entity, t_args...>
     {
     public:
-        using vFuncCallback = std::function<void(ClassHookRegistry<t_ret, t_entity, t_args...> *)>;
-    public:
         ClassHookRegistry(std::function<void()> registerFn, std::function<void()> unregisterFn)
-        : m_registerFn(registerFn), m_unregisterFn(unregisterFn) {}
+        : m_registerFn(std::move(registerFn)), m_unregisterFn(std::move(unregisterFn)) {}
 
         ClassHookRegistry(std::intptr_t vTable, std::uint32_t offset, std::intptr_t callbackFn)
             : m_vTable(vTable), m_vOffset(offset), m_vCallback(callbackFn), m_hookVTable(true) {}
         ~ClassHookRegistry() final
         {
-            _restoreOriginalVFunc();
-            if (m_unregisterFn && !m_hooks.empty())
-                std::invoke(m_unregisterFn);
+            if (!m_hooks.empty())
+            {
+                _restoreOriginalVFunc();
+            }
         }
 
         t_ret callChain(std::function<t_ret(t_entity, t_args...)> lastFn, t_entity entity, t_args... args)
@@ -328,7 +327,7 @@ namespace Metamod
             while (iter != m_hooks.end() && !(*iter)->isEnabled())
             {
                 ++iter;
-            };
+            }
                 
             ClassHook<t_ret, t_entity, t_args...> chain(iter, m_hooks, lastFn);
             return chain.callNext(entity, std::forward<t_args>(args)...);
@@ -345,7 +344,7 @@ namespace Metamod
                 while (iter != m_hooks.end() && !(*iter)->isEnabled())
                 {
                     ++iter;
-                };
+                }
 
                 ClassHook<t_ret, t_entity, t_args...> chain(iter, m_hooks, lastFunc, origFunc);
                 return chain.callNext(entity, std::forward<t_args>(args)...);
@@ -354,7 +353,7 @@ namespace Metamod
             return lastFunc(entity, std::forward<t_args>(args)...);
         }
 
-        bool hasHooks() const
+        [[nodiscard]] bool hasHooks() const
         {
             return !m_hooks.empty();
         }
@@ -420,23 +419,11 @@ namespace Metamod
             bool shouldRemoveHook = wereHooksPresent && m_hooks.empty();
             if (shouldRemoveHook)
             {
-                if (m_hookVTable && m_origVFunc)
-                {
-                    std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
-                    std::int32_t memProtection = _unprotect(vFunc);
-                    *(reinterpret_cast<std::intptr_t *>(vFunc)) = m_origVFunc;
-                    _protect(vFunc, memProtection);
-
-                    m_origVFunc = 0;
-                }
-                else if (m_unregisterFn)
-                {
-                    std::invoke(m_unregisterFn);
-                }
+                _restoreOriginalVFunc();
             }
         }
 
-        std::intptr_t getVFuncAddr() const
+        [[nodiscard]] std::intptr_t getVFuncAddr() const
         {
             return m_origVFunc;
         }
@@ -472,6 +459,11 @@ namespace Metamod
     private:
         void _restoreOriginalVFunc()
         {
+            if (m_hooks.empty())
+            {
+                return;
+            }
+
             if (m_origVFunc)
             {
                 std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
@@ -481,11 +473,15 @@ namespace Metamod
 
                 m_origVFunc = 0;
             }
+            else if (m_unregisterFn)
+            {
+                std::invoke(m_unregisterFn);
+            }
         }
 
     private:
         std::intptr_t m_vTable = 0;
-        std::intptr_t m_vOffset = 0;
+        std::uint32_t m_vOffset = 0;
         std::intptr_t m_vCallback = 0;
         std::intptr_t m_origVFunc = 0;
         std::function<void()> m_registerFn;

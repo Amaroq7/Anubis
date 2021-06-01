@@ -34,16 +34,16 @@ namespace Metamod::Engine
     public:
         virtual ~ITraceResult() = default;
 
-        virtual bool getAllSolid() const = 0;
-        virtual bool getStartSolid() const = 0;
-        virtual bool getInOpen() const = 0;
-        virtual bool getInWater() const = 0;
-        virtual float getFraction() const = 0;
-        virtual const float *getEndPos() const = 0;
-        virtual float getPlaneDist() const = 0;
-        virtual const float *getPlaneNormal() const = 0;
-        virtual IEdict *getHit() const = 0;
-        virtual HitGroup getHitGroup() const = 0;
+        [[nodiscard]] virtual bool getAllSolid() const = 0;
+        [[nodiscard]] virtual bool getStartSolid() const = 0;
+        [[nodiscard]] virtual bool getInOpen() const = 0;
+        [[nodiscard]] virtual bool getInWater() const = 0;
+        [[nodiscard]] virtual float getFraction() const = 0;
+        [[nodiscard]] virtual const float *getEndPos() const = 0;
+        [[nodiscard]] virtual float getPlaneDist() const = 0;
+        [[nodiscard]] virtual const float *getPlaneNormal() const = 0;
+        [[nodiscard]] virtual IEdict *getHit() const = 0;
+        [[nodiscard]] virtual HitGroup getHitGroup() const = 0;
 
         virtual void setAllSolid(bool allSolid) = 0;
         virtual void setStartSolid(bool startSolid) = 0;

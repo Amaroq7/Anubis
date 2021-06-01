@@ -18,8 +18,10 @@
  */
 
 #include "Edict.hpp"
+#include "EntVars.hpp"
 
-#include <Metamod.hpp>
+#include <extdll.h>
+#include <util.h>
 
 namespace Metamod::Engine
 {

@@ -28,46 +28,46 @@ namespace Metamod::Engine
     Cvar::Cvar(cvar_t *cvar) : m_cvar(cvar) {}
     Cvar::Cvar(std::string_view name, std::string_view value) : m_name(name), m_cvar(std::make_unique<cvar_t>())
     {
-        operator ::cvar_t *()->name = m_name.data();
-        operator ::cvar_t *()->string = const_cast<char *>(value.data());
+        operator cvar_t *()->name = m_name.data();
+        operator cvar_t *()->string = const_cast<char *>(value.data());
     }
 
     std::string_view Cvar::getName() const
     {
-        return operator ::cvar_t *()->name;
+        return operator cvar_t *()->name;
     }
 
     std::string_view Cvar::getString() const
     {
-        return operator ::cvar_t *()->string;
+        return operator cvar_t *()->string;
     }
 
     Cvar::Flags Cvar::getFlags() const
     {
-        return static_cast<Flags>(operator ::cvar_t *()->flags);
+        return static_cast<Flags>(operator cvar_t *()->flags);
     }
 
     float Cvar::getValue() const
     {
-        return operator ::cvar_t *()->value;
+        return operator cvar_t *()->value;
     }
 
     void Cvar::setString(std::string_view string)
     {
-        std::invoke(g_engfuncs.pfnCvar_DirectSet, operator ::cvar_t *(), string.data());
+        std::invoke(g_engfuncs.pfnCvar_DirectSet, operator cvar_t *(), string.data());
     }
 
     void Cvar::setFlags(ICvar::Flags flags)
     {
-        operator ::cvar_t *()->flags = static_cast<int>(flags);
+        operator cvar_t *()->flags = static_cast<int>(flags);
     }
 
     void Cvar::setValue(float value)
     {
-        std::invoke(g_engfuncs.pfnCvar_DirectSet, operator ::cvar_t *(), std::to_string(value).c_str());
+        std::invoke(g_engfuncs.pfnCvar_DirectSet, operator cvar_t *(), std::to_string(value).c_str());
     }
 
-    Cvar::operator ::cvar_t *() const
+    Cvar::operator cvar_t *() const
     {
         return std::visit(
             [](auto &&arg) {

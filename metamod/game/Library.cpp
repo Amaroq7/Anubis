@@ -17,10 +17,18 @@
  *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <extdll.h>
+#include <enginecallback.h>
+#include <util.h>
+
+#include "../EngineExports.hpp"
+
 #include "Library.hpp"
 #include <Metamod.hpp>
 #include <DllExports.hpp>
 #include <game/IEntityHolder.hpp>
+#include <engine/IEntVars.hpp>
+#include <engine/ILibrary.hpp>
 
 #include <yaml-cpp/yaml.h>
 
@@ -177,12 +185,12 @@ namespace Metamod::Game
 #undef ASSIGN_NEW_DLL_FUNC
     }
 
-    const DLL_FUNCTIONS *Library::getDllFuncs() const
+    void *Library::getDllFuncs()
     {
         return &m_dllApiTable;
     }
 
-    const NEW_DLL_FUNCTIONS *Library::getNewDllFuncs() const
+    void *Library::getNewDllFuncs()
     {
         return &m_newDllApiTable;
     }
@@ -208,7 +216,7 @@ namespace Metamod::Game
             return false;
         }
 
-        std::invoke(pfnEntity, *dynamic_cast<Engine::EntVars *>(pev));
+        std::invoke(pfnEntity, static_cast<entvars_t *>(*pev));
         return true;
     }
 
@@ -224,7 +232,7 @@ namespace Metamod::Game
     {
         static SpawnHookRegistry *hookchain = m_hooks->spawn();
         return _execGameDLLFunc(hookchain, [](Engine::IEdict *edict) {
-            return gEntityInterface.pfnSpawn(*edict);
+            return gEntityInterface.pfnSpawn(static_cast<edict_t *>(*edict));
         }, callType, edict);
     }
 
@@ -243,7 +251,7 @@ namespace Metamod::Game
             }
             return static_cast<bool>(
                 gEntityInterface.pfnClientConnect(
-                    *pEntity, pszName.data(), pszAddress.data(), szRejectReason.data()
+                    static_cast<edict_t *>(*pEntity), pszName.data(), pszAddress.data(), szRejectReason.data()
                 )
             );
         }, callType, pEntity, pszName, pszAddress, std::ref(szRejectReason));
@@ -253,7 +261,7 @@ namespace Metamod::Game
     {
         static ClientPutinServerHookRegistry *hookchain = m_hooks->clientPutinServer();
         _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity) {
-            gEntityInterface.pfnClientPutInServer(*pEntity);
+            gEntityInterface.pfnClientPutInServer(static_cast<edict_t *>(*pEntity));
         }, callType, pEntity);
     }
 
@@ -261,15 +269,15 @@ namespace Metamod::Game
     {
         static ClientCmdHookRegistry *hookchain = m_hooks->clientCmd();
         _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity) {
-            gEntityInterface.pfnClientCommand(*pEntity);
+            gEntityInterface.pfnClientCommand(static_cast<edict_t *>(*pEntity));
         }, callType, pEntity);
     }
 
-    void Library::pfnClientUserInfoChanged(Engine::IEdict *pEntity, char *infobuffer, FuncCallType callType)
+    void Library::pfnClientUserInfoChanged(Engine::IEdict *pEntity, Engine::InfoBuffer infobuffer, FuncCallType callType)
     {
         static ClientInfoChangedHookRegistry *hookchain = m_hooks->clientInfoChanged();
-        _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity, char *infobuffer) {
-            gEntityInterface.pfnClientUserInfoChanged(*pEntity, infobuffer);
+        _execGameDLLFunc(hookchain, [](Engine::IEdict *pEntity, Engine::InfoBuffer infobuffer) {
+            gEntityInterface.pfnClientUserInfoChanged(static_cast<edict_t *>(*pEntity), infobuffer);
         }, callType, pEntity, infobuffer);
     }
 
@@ -313,7 +321,7 @@ namespace Metamod::Game
 
     Module::SystemHandle Library::getSystemHandle() const
     {
-        return *m_gameLibrary;
+        return static_cast<Module::SystemHandle >(*m_gameLibrary);
     }
 
     IBaseEntity *Library::getBaseEntity(Engine::IEdict *edict)

@@ -20,7 +20,7 @@
 #pragma once
 
 #include <engine/IEdict.hpp>
-#include <extdll.h>
+
 #include "EntVars.hpp"
 
 #include <cinttypes>
@@ -29,24 +29,26 @@
 
 namespace Metamod::Engine
 {
+    class EntVars;
+
     class Edict final : public IEdict
     {
         public:
             Edict() = delete;
-            Edict(edict_t *edict);
+            explicit Edict(edict_t *edict);
             ~Edict() override = default;
 
             // IEdict
-            std::uint32_t getIndex() const override;
-            std::uint32_t getSerialNumber() const override;
-            bool isValid() const override;
+            [[nodiscard]] std::uint32_t getIndex() const final;
+            [[nodiscard]] std::uint32_t getSerialNumber() const final;
+            [[nodiscard]] bool isValid() const final;
 
-            EntVars *getEntVars() const override;
+            [[nodiscard]] EntVars *getEntVars() const final;
 
             // Edict
-            operator edict_t *() const final;
+            explicit operator edict_t *() const final;
 
-            void *getPrivateData() const final;
+            [[nodiscard]] void *getPrivateData() const final;
 
         private:
             edict_t *m_edict = nullptr;

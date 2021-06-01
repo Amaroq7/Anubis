@@ -21,6 +21,11 @@
 #include "Utils.hpp"
 #include "Metamod.hpp"
 
+#include <osconfig.h>
+#include <extdll.h>
+#include <util.h>
+#include <usercmd.h>
+
 namespace Metamod::CvarListener
 {
     void metaLogLevel(const char *pszNewValue)

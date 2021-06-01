@@ -40,32 +40,32 @@ namespace Metamod::Engine
          *
          * @return Edict's index.
          */
-        virtual std::uint32_t getIndex() const = 0;
+        [[nodiscard]] virtual std::uint32_t getIndex() const = 0;
 
         /**
          * @brief Returns edict's index.
          *
          * @return Edict's index.
          */
-        virtual std::uint32_t getSerialNumber() const = 0;
+        [[nodiscard]] virtual std::uint32_t getSerialNumber() const = 0;
 
         /**
          * @brief Checks if edict is freed.
          *
          * @return True if edict is freed, false otherwise.
          */
-        virtual bool isValid() const = 0;
+        [[nodiscard]] virtual bool isValid() const = 0;
 
         /**
          * @brief Returns entity's variables.
          *
          * @return Enitity's variables.
          */
-        virtual IEntVars *getEntVars() const = 0;
+        [[nodiscard]] virtual IEntVars *getEntVars() const = 0;
 
 #if defined META_CORE
-        virtual void *getPrivateData() const = 0;
-        virtual operator edict_t *() const = 0;
+        [[nodiscard]] virtual void *getPrivateData() const = 0;
+        virtual explicit operator edict_t *() const = 0;
 #endif
     };
 }

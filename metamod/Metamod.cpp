@@ -18,8 +18,9 @@
  */
 
 #include "Metamod.hpp"
+#include "EngineExports.hpp"
+#include "engine/Library.hpp"
 #include "game/Library.hpp"
-#include <EngineExports.hpp>
 #include <MetaInfo.hpp>
 #include <Utils.hpp>
 #include <MetaCvars.hpp>
@@ -28,6 +29,8 @@
 #include <fmt/format.h>
 #include <fmt/color.h>
 #include <fmt/ostream.h>
+
+#include <fstream>
 
 namespace
 {
@@ -89,12 +92,12 @@ namespace Metamod
         return VERSION;
     }
 
-    Engine::Library *Metamod::getEngine() const
+    Engine::ILibrary *Metamod::getEngine() const
     {
         return m_engineLib.get();
     }
 
-    Game::Library *Metamod::getGame() const
+    Game::ILibrary *Metamod::getGame() const
     {
         return m_gameLib.get();
     }

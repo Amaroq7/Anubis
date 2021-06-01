@@ -24,6 +24,11 @@
 #include <fmt/format.h>
 #include <fmt/color.h>
 
+#include <extdll.h>
+#include <enginecallback.h>
+
+#include <engine/ILibrary.hpp>
+
 enginefuncs_t g_engfuncs;
 globalvars_t *gpGlobals;
 

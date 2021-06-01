@@ -19,16 +19,17 @@
 
 #pragma once
 
-#include <Common.hpp>
+#include "../Common.hpp"
+#include "../StdFSWrapper.hpp"
 
 #include <string_view>
-#include <StdFSWrapper.hpp>
 
 namespace Metamod::Engine
 {
     class IEdict;
     class IEntVars;
     class ITraceResult;
+    class InfoBuffer;
 }
 
 namespace Metamod::Game
@@ -66,23 +67,23 @@ namespace Metamod::Game
 
         virtual bool callGameEntity(std::string_view name, Engine::IEntVars *pev) = 0;
 
-        virtual void pfnGameInit(FuncCallType callType = FuncCallType::Direct) = 0;
+        virtual void pfnGameInit(FuncCallType callType) = 0;
         virtual std::int32_t pfnSpawn(Engine::IEdict *edict, FuncCallType callType) = 0;
         virtual bool pfnClientConnect(Engine::IEdict *pEntity, std::string_view pszName,
                                       std::string_view pszAddress, std::string &szRejectReason,
-                                      FuncCallType callType = FuncCallType::Direct) = 0;
-        virtual void pfnClientPutInServer(Engine::IEdict *pEntity, FuncCallType callType = FuncCallType::Direct) = 0;
-        virtual void pfnClientCommand(Engine::IEdict *pEntity, FuncCallType callType = FuncCallType::Direct) = 0;
+                                      FuncCallType callType) = 0;
+        virtual void pfnClientPutInServer(Engine::IEdict *pEntity, FuncCallType callType) = 0;
+        virtual void pfnClientCommand(Engine::IEdict *pEntity, FuncCallType callType) = 0;
         virtual void pfnClientUserInfoChanged(Engine::IEdict *pEntity,
-                                              char *infobuffer,
-                                              FuncCallType callType = FuncCallType::Direct) = 0;
+                                              Engine::InfoBuffer infobuffer,
+                                              FuncCallType callType) = 0;
 
         virtual void pfnServerActivate(std::uint32_t edictCount,
                                        std::uint32_t clientMax,
-                                       FuncCallType callType = FuncCallType::Direct) = 0;
-        virtual void pfnServerDeactivate(FuncCallType callType = FuncCallType::Direct) = 0;
-        virtual void pfnStartFrame(FuncCallType callType = FuncCallType::Direct) = 0;
-        virtual void pfnGameShutdown(FuncCallType callType = FuncCallType::Direct) = 0;
+                                       FuncCallType callType) = 0;
+        virtual void pfnServerDeactivate(FuncCallType callType) = 0;
+        virtual void pfnStartFrame(FuncCallType callType) = 0;
+        virtual void pfnGameShutdown(FuncCallType callType) = 0;
 
         /**
          * @brief Returns entity.
@@ -99,5 +100,15 @@ namespace Metamod::Game
         virtual IBasePlayer *getBasePlayer(Engine::IEdict *edict) = 0;
 
         virtual IBasePlayerHooks *getCBasePlayerHooks() = 0;
+
+#if defined META_CORE
+        [[nodiscard]] virtual void *getDllFuncs() = 0;
+        [[nodiscard]] virtual void *getNewDllFuncs() = 0;
+#if defined __linux__
+        [[nodiscard]] virtual void *getSystemHandle() const = 0;
+#elif defined _WIN32
+        [[nodiscard]] virtual HMODULE getSystemHandle() const = 0;
+#endif
+#endif
     };
 }

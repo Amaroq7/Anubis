@@ -70,7 +70,9 @@ namespace Metamod::Game::Valve
                                 float flDamage,
                                 std::int32_t bitsDamageType)
     {
-        return operator CBaseEntity *()->TakeDamage(*pevInflictor, *pevAttacker, flDamage, bitsDamageType) == TRUE;
+        return operator CBaseEntity *()->TakeDamage(static_cast<entvars_t *>(*pevInflictor),
+                                                    static_cast<entvars_t *>(*pevAttacker),
+                                                    flDamage, bitsDamageType) == TRUE;
     }
 
     BaseEntity::operator CBaseEntity *() const
