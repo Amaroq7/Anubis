@@ -102,6 +102,9 @@ namespace Metamod
     using fnMetaInit = bool (*)(IMetamod *api);
     C_DLLEXPORT bool MetaInit(IMetamod *api);
 
+    using fnMetaShutdown = void (*)();
+    C_DLLEXPORT void MetaShutdown();
+
 #if defined META_CORE
     using fnInitGameEntityDLL = void (*)(IMetamod *api,
                                          const std::unordered_map<std::string, std::uint32_t> &vOffsets);

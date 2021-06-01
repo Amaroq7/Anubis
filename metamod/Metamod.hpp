@@ -20,8 +20,10 @@
 #pragma once
 
 #include <IMetamod.hpp>
+#include <game/ILibrary.hpp>
 #include <engine/Common.hpp>
 #include "MetaConfig.hpp"
+#include "Module.hpp"
 
 #include <fmt/format.h>
 
@@ -31,23 +33,11 @@ namespace Metamod
 {
     constexpr const char *LOG_TAG = "MM-CPP";
 
-    namespace Game
-    {
-        class Library;
-    }
-
-    namespace Engine
-    {
-        class Library;
-    }
-
-    class Module;
-
     class Metamod final : public IMetamod
     {
     public:
         explicit Metamod(std::unique_ptr<Config> &&config);
-        ~Metamod() final;
+        ~Metamod() final = default;
 
         [[nodiscard]] std::uint32_t getInterfaceVersion() const final;
         [[nodiscard]] Engine::ILibrary *getEngine() const final;
@@ -59,6 +49,8 @@ namespace Metamod
         bool addNewMsg(Engine::MsgType id, std::string_view name, std::int16_t size);
         bool setLogLevel(std::string_view logLevel);
         fs::path getPath(PathType pathType) final;
+
+        void freePluginsResources();
 
         template<typename... t_args>
         void logMsg(LogLevel level, LogDest dest, std::string_view format, t_args&&... args)
@@ -92,8 +84,8 @@ namespace Metamod
 
     private:
         std::unique_ptr<Config> m_config;
-        std::unique_ptr<Engine::Library> m_engineLib;
-        std::unique_ptr<Game::Library> m_gameLib;
+        std::unique_ptr<Engine::ILibrary> m_engineLib;
+        std::unique_ptr<Game::ILibrary> m_gameLib;
         std::vector<std::unique_ptr<Module>> m_plugins;
         std::array<RegMsg, 256> m_regMsgs = {
             RegMsg{"svc_bad", -1},

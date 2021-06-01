@@ -19,13 +19,11 @@
 
 #include "Callbacks.hpp"
 
-#include <extdll.h>
-#include <enginecallback.h>
-#include <util.h>
-
-#include "Library.hpp"
-
 #include <engine/ILibrary.hpp>
+#include "../Metamod.hpp"
+
+#include <extdll.h>
+#include "Library.hpp"
 
 #include <cstring>
 
@@ -116,5 +114,7 @@ namespace Metamod::Game::Callbacks::Engine
     void pfnGameShutdown()
     {
         gGame->pfnGameShutdown(FuncCallType::Hooks);
+        gMetaGlobal->freePluginsResources();
+        gEngine->removeExtDll(gGame->getSystemHandle());
     }
 }

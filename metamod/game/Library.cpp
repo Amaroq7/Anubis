@@ -310,8 +310,7 @@ namespace Metamod::Game
     void Library::pfnGameShutdown(FuncCallType callType)
     {
         static GameShutdownHookRegistry *hookchain = m_hooks->gameShutdown();
-        _execGameDLLFunc(hookchain, [this]() {
-            gMetaGlobal->getEngine()->removeExtDll(getSystemHandle());
+        _execGameDLLFunc(hookchain, []() {
             if (gNewDLLFunctions.pfnGameShutdown)
             {
                 gNewDLLFunctions.pfnGameShutdown();

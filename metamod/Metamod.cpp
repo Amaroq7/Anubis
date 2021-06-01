@@ -261,8 +261,9 @@ namespace Metamod
             return;
         }
 
-        auto sendToFileFn = std::bind(&Metamod::_sendToFile, m_config->getPath(PathType::Logs),
-                                          std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+        auto sendToFileFn = [this](std::string_view logTag, LogLevel level, std::string_view msg) {
+            _sendToFile(m_config->getPath(PathType::Logs), logTag, level, msg);
+        };
 
         if (dest & (LogDest::Console | LogDest::File))
         {
@@ -345,11 +346,6 @@ namespace Metamod
         return false;
     }
 
-    Metamod::~Metamod()
-    {
-        m_engineLib->removeExtDll(m_gameLib->getSystemHandle());
-    }
-
     fs::path Metamod::getPath(PathType pathType)
     {
         return m_config->getPath(pathType);
@@ -358,5 +354,16 @@ namespace Metamod
     void Metamod::logMsg(LogLevel level, LogDest dest, std::string_view msg)
     {
         logMsg(level, dest, msg, 0);
+    }
+
+    void Metamod::freePluginsResources()
+    {
+        for (const auto &plugin : m_plugins)
+        {
+            if (auto metaShutdownFn = plugin->getSymbol<fnMetaShutdown>("MetaShutdown"); metaShutdownFn)
+            {
+                std::invoke(metaShutdownFn);
+            }
+        }
     }
 }
