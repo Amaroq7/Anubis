@@ -43,6 +43,7 @@ namespace Metamod
         [[nodiscard]] Engine::ILibrary *getEngine() const final;
         [[nodiscard]] Game::ILibrary *getGame() const final;
         [[nodiscard]] const RegMsg *getMsgInfo(std::string_view name) const final;
+        [[nodiscard]] const RegMsg *getMsgInfo(std::uint8_t id) const final;
         void logMsg(IPlugin *plugin, LogLevel level, LogDest dest, std::string_view msg) final;
 
         void logMsg(LogLevel level, LogDest dest, std::string_view msg) final;

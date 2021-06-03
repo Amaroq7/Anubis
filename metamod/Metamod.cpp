@@ -114,6 +114,18 @@ namespace Metamod
         return nullptr;
     }
 
+    const IMetamod::RegMsg *Metamod::getMsgInfo(std::uint8_t id) const
+    {
+        for (const auto &msg : m_regMsgs)
+        {
+            if (msg.id == id)
+            {
+                return &msg;
+            }
+        }
+        return nullptr;
+    }
+
     bool Metamod::addNewMsg(Engine::MsgType id, std::string_view name, std::int16_t size)
     {
         if (_findMessage(id))

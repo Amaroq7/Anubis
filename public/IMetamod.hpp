@@ -88,6 +88,7 @@ namespace Metamod
         virtual Engine::ILibrary *getEngine() const = 0;
         virtual Game::ILibrary *getGame() const = 0;
         virtual const RegMsg *getMsgInfo(std::string_view name) const = 0;
+        virtual const RegMsg *getMsgInfo(std::uint8_t id) const = 0;
         virtual void logMsg(IPlugin *plugin, LogLevel level, LogDest dest, std::string_view msg) = 0;
         virtual fs::path getPath(PathType pathType) = 0;
 
