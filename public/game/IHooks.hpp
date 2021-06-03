@@ -24,7 +24,7 @@
 #include <string>
 #include <any>
 
-#include <engine/Common.hpp>
+#include "../engine/Common.hpp"
 
 namespace Metamod::Engine
 {

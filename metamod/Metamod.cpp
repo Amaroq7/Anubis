@@ -219,6 +219,8 @@ namespace Metamod
                 continue;
             }
 
+            pluginInfo->setPath(std::move(pluginPath));
+
             std::uint32_t metaInterfaceVersion = getInterfaceVersion();
             std::uint32_t pluginInterfaceVersion = pluginInfo->getInterfaceVersion();
 
@@ -277,16 +279,11 @@ namespace Metamod
             _sendToFile(m_config->getPath(PathType::Logs), logTag, level, msg);
         };
 
-        if (dest & (LogDest::Console | LogDest::File))
-        {
-            _sendToConsole(plugin->getLogTag(), level, msg);
-            sendToFileFn(plugin->getLogTag(), level, msg);
-        }
-        else if (dest & LogDest::Console)
+        if ((dest & LogDest::Console) == LogDest::Console)
         {
             _sendToConsole(plugin->getLogTag(), level, msg);
         }
-        else if (dest & LogDest::File)
+        if ((dest & LogDest::File) == LogDest::File)
         {
             sendToFileFn(plugin->getLogTag(), level, msg);
         }

@@ -67,11 +67,11 @@ namespace Metamod
                 Metamod::_sendToFile(m_config->getPath(PathType::Logs), logTag, logLevel, msg);
             };
 
-            if (dest & LogDest::Console)
+            if ((dest & LogDest::Console) == LogDest::Console)
             {
                 _sendToConsole(LOG_TAG, level, msg);
             }
-            if (dest & LogDest::File)
+            if ((dest & LogDest::File) == LogDest::File)
             {
                 sendToFileFn(LOG_TAG, level, msg);
             }

@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "StdFSWrapper.hpp"
 #include <string_view>
 
 namespace Metamod 
@@ -34,5 +35,20 @@ namespace Metamod
             virtual std::string_view getAuthor() const = 0;
             virtual std::string_view getUrl() const = 0;
             virtual std::string_view getLogTag() const = 0;
+
+            [[nodiscard]] const fs::path &getPath() const
+            {
+                return m_path;
+            }
+
+#if defined META_CORE
+            void setPath(fs::path &&pluginPath)
+            {
+                m_path = std::move(pluginPath);
+            }
+#endif
+
+        protected:
+            fs::path m_path;
     };
 }
