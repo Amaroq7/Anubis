@@ -20,7 +20,7 @@
 #pragma once
 
 #include "Common.hpp"
-#include "IHookChains.hpp"
+#include "../IHookChains.hpp"
 
 #include <string_view>
 

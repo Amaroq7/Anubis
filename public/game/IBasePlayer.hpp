@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <IHookChains.hpp>
+#include "../IHookChains.hpp"
 #include "IBaseMonster.hpp"
 
 namespace Metamod::Game

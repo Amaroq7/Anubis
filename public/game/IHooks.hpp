@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <IHookChains.hpp>
+#include "../IHookChains.hpp"
 
 #include <string>
 #include <any>

@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include <game/ILibrary.hpp>
-#include <IHookChains.hpp>
+#include "ILibrary.hpp"
+#include "../IHookChains.hpp"
 #include <string>
 
 namespace Metamod::Engine
