@@ -31,6 +31,9 @@ namespace Metamod::Engine
     using PrecacheSoundHook = Hook<PrecacheId, std::string_view>;
     using PrecacheSoundHookRegistry = HookRegistry<PrecacheId, std::string_view>;
 
+    using PrecacheGenericHook = Hook<PrecacheId, std::string_view>;
+    using PrecacheGenericHookRegistry = HookRegistry<PrecacheId, std::string_view>;
+
     using ChangeLevelHook = Hook<void, std::string_view, std::string_view>;
     using ChangeLevelHookRegistry = HookRegistry<void, std::string_view, std::string_view>;
 
@@ -124,44 +127,46 @@ namespace Metamod::Engine
     class Hooks final : public IHooks
     {
     public:
-        ~Hooks() override = default;
+        ~Hooks() final = default;
 
-        PrecacheModelHookRegistry *precacheModel() override;
-        PrecacheSoundHookRegistry *precacheSound() override;
-        ChangeLevelHookRegistry *changeLevel() override;
-        SrvCmdHookRegistry *srvCmd() override;
-        SrvExecHookRegistry *srvExec() override;
-        RegSrvCmdHookRegistry *regSrvCmd() override;
-        MessageBeginHookRegistry *messageBegin() override;
-        MessageEndHookRegistry *messageEnd() override;
-        WriteByteHookRegistry *writeByte() override;
-        WriteCharHookRegistry *writeChar() override;
-        WriteShortHookRegistry *writeShort() override;
-        WriteLongHookRegistry *writeLong() override;
-        WriteEntityHookRegistry *writeEntity() override;
-        WriteAngleHookRegistry *writeAngle() override;
-        WriteCoordHookRegistry *writeCoord() override;
-        WriteStringHookRegistry *writeString() override;
-        RegUserMsgHookRegistry *regUserMsg() override;
-        GetPlayerAuthIDHookRegistry *getPlayerAuthID() override;
-        GetPlayerUserIDHookRegistry *getPlayerUserID() override;
-        SVDropClientHookRegistry *svDropClient() override;
-        CvarDirectSetHookRegistry *cvarDirectSet() override;
-        InfoKeyValueHookRegistry *infoKeyValue() override;
-        CmdArgvHookRegistry *cmdArgv() override;
-        CmdArgsHookRegistry *cmdArgs() override;
-        CmdArgcHookRegistry *cmdArgc() override;
-        RegisterCvarHookRegistry *registerCvar() override;
-        GetCvarHookRegistry *getCvar() override;
-        SetModelHookRegistry *setModel() override;
-        CreateEntityHookRegistry *createEntity() override;
-        RemoveEntityHookRegistry *removeEntity() override;
+        PrecacheModelHookRegistry *precacheModel() final;
+        PrecacheSoundHookRegistry *precacheSound() final;
+        PrecacheGenericHookRegistry *precacheGeneric() final;
+        ChangeLevelHookRegistry *changeLevel() final;
+        SrvCmdHookRegistry *srvCmd() final;
+        SrvExecHookRegistry *srvExec() final;
+        RegSrvCmdHookRegistry *regSrvCmd() final;
+        MessageBeginHookRegistry *messageBegin() final;
+        MessageEndHookRegistry *messageEnd() final;
+        WriteByteHookRegistry *writeByte() final;
+        WriteCharHookRegistry *writeChar() final;
+        WriteShortHookRegistry *writeShort() final;
+        WriteLongHookRegistry *writeLong() final;
+        WriteEntityHookRegistry *writeEntity() final;
+        WriteAngleHookRegistry *writeAngle() final;
+        WriteCoordHookRegistry *writeCoord() final;
+        WriteStringHookRegistry *writeString() final;
+        RegUserMsgHookRegistry *regUserMsg() final;
+        GetPlayerAuthIDHookRegistry *getPlayerAuthID() final;
+        GetPlayerUserIDHookRegistry *getPlayerUserID() final;
+        SVDropClientHookRegistry *svDropClient() final;
+        CvarDirectSetHookRegistry *cvarDirectSet() final;
+        InfoKeyValueHookRegistry *infoKeyValue() final;
+        CmdArgvHookRegistry *cmdArgv() final;
+        CmdArgsHookRegistry *cmdArgs() final;
+        CmdArgcHookRegistry *cmdArgc() final;
+        RegisterCvarHookRegistry *registerCvar() final;
+        GetCvarHookRegistry *getCvar() final;
+        SetModelHookRegistry *setModel() final;
+        CreateEntityHookRegistry *createEntity() final;
+        RemoveEntityHookRegistry *removeEntity() final;
         AlertHookRegistry *alert() final;
         ServerPrintHookRegistry *serverPrint() final;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
         PrecacheSoundHookRegistry m_precacheSoundRegistry;
+        PrecacheGenericHookRegistry m_precacheGeneric;
         ChangeLevelHookRegistry m_changeLevelRegistry;
         SrvCmdHookRegistry m_srvCmdRegistry;
         SrvExecHookRegistry m_srvExecRegistry;

@@ -36,6 +36,9 @@ namespace Metamod::Engine
     using IPrecacheSoundHook = IHook<PrecacheId, std::string_view>;
     using IPrecacheSoundHookRegistry = IHookRegistry<PrecacheId, std::string_view>;
 
+    using IPrecacheGenericHook = IHook<PrecacheId, std::string_view>;
+    using IPrecacheGenericHookRegistry = IHookRegistry<PrecacheId, std::string_view>;
+
     using IChangeLevelHook = IHook<void, std::string_view, std::string_view>;
     using IChangeLevelHookRegistry = IHookRegistry<void, std::string_view, std::string_view>;
 
@@ -133,6 +136,7 @@ namespace Metamod::Engine
 
         virtual IPrecacheModelHookRegistry *precacheModel() = 0;
         virtual IPrecacheSoundHookRegistry *precacheSound() = 0;
+        virtual IPrecacheGenericHookRegistry *precacheGeneric() = 0;
         virtual IChangeLevelHookRegistry *changeLevel() = 0;
         virtual ISrvCmdHookRegistry *srvCmd() = 0;
         virtual ISrvExecHookRegistry *srvExec() = 0;

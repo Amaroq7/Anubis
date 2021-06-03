@@ -43,6 +43,7 @@ namespace Metamod::Engine::Callbacks::GameDLL
 
     int	pfnPrecacheModel(const char *s);
     int	pfnPrecacheSound(const char *s);
+    int	pfnPrecacheGeneric(const char *s);
     void pfnChangeLevel(const char *s1, const char *s2);
     void pfnServerCommand(const char *str);
     void pfnServerExecute();

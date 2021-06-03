@@ -54,6 +54,7 @@ namespace Metamod::Engine
         /* Engine funcs */
         [[nodiscard]] virtual PrecacheId precacheModel(std::string_view model, FuncCallType callType) const = 0;
         [[nodiscard]] virtual PrecacheId precacheSound(std::string_view sound, FuncCallType callType) const = 0;
+        [[nodiscard]] virtual PrecacheId precacheGeneric(std::string_view generic, FuncCallType callType) const = 0;
         virtual void changeLevel(std::string_view level1, std::string_view level2, FuncCallType callType) const = 0;
         virtual void serverCommand(std::string_view cmd, FuncCallType callType) const = 0;
         virtual void serverExecute(FuncCallType callType) const = 0;

@@ -31,6 +31,11 @@ namespace Metamod::Engine
         return &m_precacheSoundRegistry;
     }
 
+    PrecacheGenericHookRegistry *Hooks::precacheGeneric()
+    {
+        return &m_precacheGeneric;
+    }
+
     ChangeLevelHookRegistry *Hooks::changeLevel()
     {
         return &m_changeLevelRegistry;

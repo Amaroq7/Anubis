@@ -40,6 +40,11 @@ namespace Metamod::Engine::Callbacks::GameDLL
         return static_cast<int>(gEngine->precacheSound(s, FuncCallType::Hooks));
     }
 
+    int	pfnPrecacheGeneric(const char *s)
+    {
+        return static_cast<int>(gEngine->precacheGeneric(s, FuncCallType::Hooks));
+    }
+
     void pfnChangeLevel(const char *s1, const char *s2)
     {
         gEngine->changeLevel(s1, s2 ? s2 : std::string_view(), FuncCallType::Hooks);

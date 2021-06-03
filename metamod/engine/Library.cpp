@@ -212,10 +212,18 @@ namespace Metamod::Engine
 
     PrecacheId Library::precacheSound(std::string_view sound, FuncCallType callType) const
     {
-        static PrecacheModelHookRegistry *hookchain = m_hooks->precacheSound();
+        static PrecacheSoundHookRegistry *hookchain = m_hooks->precacheSound();
         return _execEngineFunc(hookchain, [](std::string_view sound) {
             return PrecacheId(PRECACHE_SOUND(sound.data()));
         }, callType, sound);
+    }
+
+    PrecacheId Library::precacheGeneric(std::string_view generic, FuncCallType callType) const
+    {
+        static PrecacheGenericHookRegistry *hookchain = m_hooks->precacheGeneric();
+        return _execEngineFunc(hookchain, [](std::string_view generic) {
+            return PrecacheId(PRECACHE_GENERIC(generic.data()));
+        }, callType, generic);
     }
 
     void Library::changeLevel(std::string_view level1, std::string_view level2, FuncCallType callType) const
@@ -488,6 +496,7 @@ namespace Metamod::Engine
 #define ASSIGN_ENG_FUNCS(func) (m_engineFuncs.func = Callbacks::GameDLL::func)
         ASSIGN_ENG_FUNCS(pfnPrecacheModel);
         ASSIGN_ENG_FUNCS(pfnPrecacheSound);
+        ASSIGN_ENG_FUNCS(pfnPrecacheGeneric);
         ASSIGN_ENG_FUNCS(pfnChangeLevel);
         ASSIGN_ENG_FUNCS(pfnServerCommand);
         ASSIGN_ENG_FUNCS(pfnServerExecute);
