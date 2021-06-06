@@ -50,6 +50,7 @@ namespace Metamod
         bool addNewMsg(Engine::MsgType id, std::string_view name, std::int16_t size);
         bool setLogLevel(std::string_view logLevel);
         fs::path getPath(PathType pathType) final;
+        void loadPlugins();
 
         void freePluginsResources();
 
@@ -79,7 +80,6 @@ namespace Metamod
 
     private:
         bool _findMessage(Engine::MsgType id);
-        void _loadPlugins();
         static void _sendToConsole(std::string_view logTag, LogLevel level, std::string_view msg);
         static void _sendToFile(const fs::path &logsPath, std::string_view logTag, LogLevel level, std::string_view msg);
 

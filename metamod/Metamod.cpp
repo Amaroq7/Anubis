@@ -83,8 +83,6 @@ namespace Metamod
         {
             m_regMsgs.at(i).id = i;
         }
-
-        _loadPlugins();
     }
 
     std::uint32_t Metamod::getInterfaceVersion() const
@@ -147,7 +145,7 @@ namespace Metamod
         return !m_regMsgs.at(id).name.empty();
     }
 
-    void Metamod::_loadPlugins()
+    void Metamod::loadPlugins()
     {
         fs::path metaPluginsFilePath(m_config->getPath(PathType::Configs) / "plugins.yaml");
 

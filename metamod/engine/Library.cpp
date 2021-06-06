@@ -40,6 +40,11 @@ namespace Metamod::Engine
         : m_hooks(std::make_unique<Hooks>()),
           m_reHLDSFuncs(_initReHLDSAPI())
     {
+        m_reHookchains = m_reHLDSAPI->GetHookchains();
+        m_reServerData = m_reHLDSAPI->GetServerData();
+        m_rehldsVersion = {static_cast<std::uint32_t>(m_reHLDSAPI->GetMajorVersion()),
+                           static_cast<std::uint32_t>(m_reHLDSAPI->GetMinorVersion())};
+
         Callbacks::GameDLL::init(this);
         ReHooks::init(this);
         _replaceFuncs();
@@ -163,16 +168,14 @@ namespace Metamod::Engine
             throw std::runtime_error("Failed to locate interface factory in engine module");
         }
 
-        auto reHLDSApi = reinterpret_cast<IRehldsApi *>(ifaceFactory(VREHLDS_HLDS_API_VERSION, nullptr));
-        if (!reHLDSApi)
+        m_reHLDSAPI = reinterpret_cast<IRehldsApi *>(ifaceFactory(VREHLDS_HLDS_API_VERSION, nullptr));
+        if (!m_reHLDSAPI)
         {
             throw std::runtime_error("Failed to retrieve ReHLDS API interface");
         }
 
-        std::uint32_t majorVersion = reHLDSApi->GetMajorVersion();
-        std::uint32_t minorVersion = reHLDSApi->GetMinorVersion();
-
-        m_rehldsVersion = {majorVersion, minorVersion};
+        std::uint32_t majorVersion = m_reHLDSAPI->GetMajorVersion();
+        std::uint32_t minorVersion = m_reHLDSAPI->GetMinorVersion();
 
         if (majorVersion != REHLDS_API_VERSION_MAJOR)
         {
@@ -192,9 +195,7 @@ namespace Metamod::Engine
                 " got " + std::to_string(minorVersion));
         }
 
-        m_reHookchains = reHLDSApi->GetHookchains();
-        m_reServerData = reHLDSApi->GetServerData();
-        return reHLDSApi->GetFuncs();
+        return m_reHLDSAPI->GetFuncs();
     }
 
     Hooks *Library::getHooks()

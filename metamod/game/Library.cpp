@@ -55,6 +55,8 @@ namespace Metamod::Game
             throw std::runtime_error("Game mod not recognized");
         }
 
+        Callbacks::Engine::init(this, engine);
+
         auto modId = static_cast<std::underlying_type_t<Mod>>(m_modType);
 
         m_gameDir = fs::current_path() / gameDir;

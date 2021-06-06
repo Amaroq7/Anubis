@@ -67,12 +67,12 @@ namespace
         serverPrint(textStyle, "   under certain conditions; type `meta gpl' for details.\n");
         serverPrint("\n");
 
-        serverPrint(textStyle,"{} v{}  {}\n", META_NAME, META_VERSION, __DATE__);
+        serverPrint(textStyle, "{} v{}  {}\n", META_NAME, META_VERSION, __DATE__);
         serverPrint(textStyle, "by {}", META_AUTHOR);
-        serverPrint(textStyle,"   {}\n", META_HOMEPAGE);
+        serverPrint(textStyle, "   {}\n", META_HOMEPAGE);
         serverPrint(textStyle, "compiled: {} ({})\n", __TIME__ " " __DATE__, META_RELEASE_MODE);
 
-        const auto& [majorVer, minorVer] = Metamod::gMetaGlobal->getEngine()->getReHLDSVersion();
+        const auto [majorVer, minorVer] = Metamod::gMetaGlobal->getEngine()->getReHLDSVersion();
         serverPrint(textStyle, "ReHLDS API: {}.{}\n", majorVer, minorVer);
     }
 }
@@ -100,4 +100,6 @@ C_DLLEXPORT void WINAPI GiveFnptrsToDll(enginefuncs_t *pengfuncsFromEngine, glob
         serverPrint(textStyle, "[{}] FATAL ERROR: {}\n", LOG_TAG, e.what());
         throw;
     }
+
+    gMetaGlobal->loadPlugins();
 }

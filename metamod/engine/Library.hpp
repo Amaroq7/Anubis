@@ -25,6 +25,7 @@
 class RehldsFuncs_t;
 class IRehldsHookchains;
 class IRehldsServerData;
+class IRehldsApi;
 
 #include <osconfig.h>
 #include <extdll.h>
@@ -137,6 +138,7 @@ namespace Metamod::Engine
     private:
         std::unique_ptr<Hooks> m_hooks;
         const RehldsFuncs_t *m_reHLDSFuncs = nullptr;
+        IRehldsApi *m_reHLDSAPI = nullptr;
         IRehldsHookchains *m_reHookchains = nullptr;
         IRehldsServerData *m_reServerData = nullptr;
         std::array<std::uint32_t, 2> m_rehldsVersion = {0u, 0u};
