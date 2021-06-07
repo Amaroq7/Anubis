@@ -92,9 +92,9 @@ namespace Metamod::Engine
         [[nodiscard]] std::string_view cmdArgv(std::uint8_t argc, FuncCallType callType) const final;
         [[nodiscard]] std::uint8_t cmdArgc(FuncCallType callType) const final;
         void registerCvar(std::string_view name, std::string_view value, FuncCallType callType) final;
-        Cvar *getCvar(std::string_view name, FuncCallType callType) final;
+        ICvar *getCvar(std::string_view name, FuncCallType callType) final;
         void setModel(IEdict *pEdict, std::string_view model, FuncCallType callType) final;
-        Edict *createEntity(FuncCallType callType) final;
+        IEdict *createEntity(FuncCallType callType) final;
         void removeEntity(IEdict *pEdict, FuncCallType callType) final;
         void alert(AlertType alertType, std::string_view msg, FuncCallType callType) final;
         void removeCmd(std::string_view cmd_name) final;
@@ -137,8 +137,8 @@ namespace Metamod::Engine
 
     private:
         std::unique_ptr<Hooks> m_hooks;
+        IRehldsApi *m_reHLDSAPI;
         const RehldsFuncs_t *m_reHLDSFuncs = nullptr;
-        IRehldsApi *m_reHLDSAPI = nullptr;
         IRehldsHookchains *m_reHookchains = nullptr;
         IRehldsServerData *m_reServerData = nullptr;
         std::array<std::uint32_t, 2> m_rehldsVersion = {0u, 0u};

@@ -44,7 +44,8 @@ namespace Metamod
     enum class LogDest : std::uint8_t
     {
         Console = (1 << 0),
-        File = (1 << 1)
+        File = (1 << 1),
+        ConsoleFile = Console | File
     };
 
     enum class PathType : std::uint8_t

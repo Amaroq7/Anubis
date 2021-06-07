@@ -38,6 +38,7 @@ namespace Metamod::Engine
 {
     Library::Library()
         : m_hooks(std::make_unique<Hooks>()),
+          m_reHLDSAPI(nullptr),
           m_reHLDSFuncs(_initReHLDSAPI())
     {
         m_reHookchains = m_reHLDSAPI->GetHookchains();
@@ -401,10 +402,10 @@ namespace Metamod::Engine
         }, callType);
     }
     
-    Cvar *Library::getCvar(std::string_view name, FuncCallType callType)
+    ICvar *Library::getCvar(std::string_view name, FuncCallType callType)
     {
         static GetCvarHookRegistry *hookchain = m_hooks->getCvar();
-        return dynamic_cast<Cvar *>(_execEngineFunc(hookchain, [this](std::string_view name) -> ICvar * {
+        return _execEngineFunc(hookchain, [this](std::string_view name) -> ICvar * {
             if (auto it = m_cvars.find(name.data()); it != m_cvars.end())
             {
                 return it->second.get();
@@ -412,12 +413,12 @@ namespace Metamod::Engine
 
             if (cvar_t *cvar = CVAR_GET_POINTER(name.data()); cvar)
             {
-                const auto &[iter, inserted] = m_cvars.emplace(name, std::make_unique<Cvar>(cvar));
+                const auto &[iter, inserted] = m_cvars.try_emplace(name.data(), std::make_unique<Cvar>(cvar));
                 return iter->second.get();
             }
 
             return nullptr;
-        }, callType, name));
+        }, callType, name);
     }
 
     void Library::registerCvar(std::string_view name, std::string_view value, FuncCallType callType)
@@ -429,7 +430,7 @@ namespace Metamod::Engine
 
             if (CVAR_GET_POINTER(name.data()))
             {
-                m_cvars.emplace(name, std::move(cvar));
+                m_cvars.try_emplace(name.data(), std::move(cvar));
             }
         }, callType, name, value);
     }
@@ -442,12 +443,12 @@ namespace Metamod::Engine
         }, callType, pEdict, model);
     }
 
-    Edict *Library::createEntity(FuncCallType callType)
+    IEdict *Library::createEntity(FuncCallType callType)
     {
         static CreateEntityHookRegistry *hookchain = m_hooks->createEntity();
-        return dynamic_cast<Edict *>(_execEngineFunc(hookchain, [this]() -> IEdict * {
+        return _execEngineFunc(hookchain, [this]() -> IEdict * {
             return getEdict(CREATE_ENTITY());
-        }, callType));
+        }, callType);
     }
 
     void Library::removeEntity(IEdict *pEdict, FuncCallType callType)

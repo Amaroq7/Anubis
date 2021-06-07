@@ -69,6 +69,7 @@ namespace Metamod::Game::Callbacks::Engine
         {
             rejectReason.reserve(REASON_REJECT_MAX_LEN);
         }
+        rejectReason.clear();
 
         if (!gGame->pfnClientConnect(gEngine->getEdict(pEntity), pszName, pszAddress, rejectReason, FuncCallType::Hooks))
         {
