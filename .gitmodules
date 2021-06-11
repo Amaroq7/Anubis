@@ -1,3 +1,6 @@
 [submodule "regamedll_cs_sdk"]
 	path = regamedll_cs_sdk
 	url = https://github.com/Amaroq7/ReGameDLL_CS_SDK.git
+[submodule "rehlds"]
+	path = rehlds
+	url = https://github.com/Amaroq7/ReHLDS_SDK.git
