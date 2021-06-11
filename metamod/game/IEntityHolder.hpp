@@ -23,6 +23,7 @@
 #include <engine/IEdict.hpp>
 
 #include <memory>
+#include <unordered_map>
 
 namespace Metamod::Game
 {

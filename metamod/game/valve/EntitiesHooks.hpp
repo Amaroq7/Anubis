@@ -23,6 +23,8 @@
 #include <HookChains.hpp>
 #include <game/VFuncHelpers.hpp>
 
+#include <unordered_map>
+
 namespace Metamod::Game::Valve
 {
     using BasePlayerSpawnHook = ClassHook<void, IBasePlayer *>;

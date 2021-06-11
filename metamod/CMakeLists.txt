@@ -4,7 +4,7 @@ string(TIMESTAMP CURRENT_YEAR %Y)
 
 set(META_RELEASE_MODE ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} ${CMAKE_BUILD_TYPE})
 
-if (BUILD_DYNAMIC)
+if (DYNAMIC_BUILD)
     string(APPEND META_RELEASE_MODE ";Dynamic")
 else()
     string(APPEND META_RELEASE_MODE ";Static")
@@ -34,8 +34,6 @@ set(SRC_FILES
 
 add_library(${PROJECT_NAME} MODULE ${SRC_FILES})
 
-include(${CMAKE_SOURCE_DIR}/cmake/CompilerSetup.cmake)
-
 target_include_directories(${PROJECT_NAME}
         SYSTEM
         PRIVATE
@@ -52,13 +50,29 @@ target_include_directories(${PROJECT_NAME}
         
 target_include_directories(${PROJECT_NAME}
         PRIVATE
-        .
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 if (UNIX)
-    target_link_options(${PROJECT_NAME} PRIVATE -m32 -Wl,--as-needed)
+    target_link_options(${PROJECT_NAME} PRIVATE -m32)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
     target_compile_options(${PROJECT_NAME} PRIVATE -m32 -Wall -Werror -Wextra -Wpedantic -pedantic-errors)
+
+    if (IS_CLANG_COMPILER)
+        target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
+        target_link_options(${PROJECT_NAME} PRIVATE -stdlib=libc++ --rtlib=compiler-rt -fuse-ld=${LLD} -Wl,--as-needed)
+    endif()
+
+    if (NOT DYNAMIC_BUILD)
+        if (NOT IS_CLANG_COMPILER)
+            target_link_options(${PROJECT_NAME} PRIVATE -static-libgcc -static-libstdc++)
+            if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
+                target_link_libraries(${PROJECT_NAME} PRIVATE stdc++fs)
+            endif()
+        else()
+            target_link_libraries(${PROJECT_NAME} PRIVATE c++.a c++abi.a unwind.a)
+        endif()
+    endif()
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
@@ -68,6 +82,8 @@ endif()
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
         VISIBILITY_INLINES_HIDDEN ON
+        SKIP_BUILD_RPATH OFF
+        BUILD_WITH_INSTALL_RPATH ON
         INSTALL_RPATH $ORIGIN/../libs
         CXX_VISIBILITY_PRESET hidden)
 

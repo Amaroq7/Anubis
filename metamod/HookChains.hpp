@@ -360,7 +360,6 @@ namespace Metamod
 
         ClassHookInfo<t_ret, t_entity, t_args...> *registerHook(ClassHookFunc<t_ret, t_entity, t_args...> hook, HookPriority priority) final
         {
-            using namespace std::string_literals;
             if (!hook)
             {
                 // TODO: Error message

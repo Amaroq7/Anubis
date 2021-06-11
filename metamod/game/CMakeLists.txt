@@ -27,6 +27,10 @@ target_include_directories(${PROJECT_NAME}
 if (UNIX)
     target_compile_options(${PROJECT_NAME} PRIVATE -m32 -Werror -Wall -Wextra -Wpedantic -pedantic-errors)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _vsnprintf=vsnprintf)
+
+    if (IS_CLANG_COMPILER)
+        target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
+    endif()
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
@@ -34,5 +38,6 @@ endif()
 
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
         VISIBILITY_INLINES_HIDDEN ON
         CXX_VISIBILITY_PRESET hidden)

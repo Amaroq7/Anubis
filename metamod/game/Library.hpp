@@ -26,6 +26,7 @@
 
 #include <unordered_map>
 #include <limits>
+#include <array>
 
 namespace Metamod::Engine
 {

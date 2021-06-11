@@ -12,43 +12,35 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
-SET(CMAKE_SKIP_BUILD_RPATH FALSE)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-SET(CMAKE_INSTALL_RPATH "$ORIGIN/../libs")
-
-option(BUILD_DYNAMIC "Build project linked dynamically with other libs" ON)
+option(DYNAMIC_BUILD "Build project linked dynamically with other libs" ON)
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 endif()
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set(LLVM_BUILD ON)
-endif()
-
-if (UNIX)
-    if (LLVM_BUILD)
-        include(cmake/BuildYAMLClang.cmake)
-        include(cmake/BuildFMTClang.cmake)
-    else()
-        include(cmake/BuildYAMLGCC.cmake)
-        include(cmake/BuildFMTGCC.cmake)
+if (WIN32)
+    if (NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        message(FATAL_ERROR "Only MSVC is supported.")
     endif()
-else()
-    include(cmake/BuildYAMLMSVC.cmake)
-endif()
 
-add_compile_definitions(META_CORE)
-add_subdirectory(metamod)
-
-if (UNIX)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -O0")
-else()
-    if (NOT BUILD_DYNAMIC)
+    if (NOT DYNAMIC_BUILD)
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     else()
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
     endif()
 endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(IS_CLANG_COMPILER ON)
+
+    string(FIND ${CMAKE_CXX_COMPILER_VERSION} "." FIRST_DOT)
+    string(SUBSTRING ${CMAKE_CXX_COMPILER_VERSION} 0 ${FIRST_DOT} CLANG_MAJOR_VER)
+    find_program(LLD NAMES lld-${CLANG_MAJOR_VER} lld REQUIRED)
+    get_filename_component(LLD ${LLD} NAME)
+endif()
+
+include(cmake/BuildFMT.cmake)
+include(cmake/BuildYAML.cmake)
+
+add_compile_definitions(META_CORE)
+add_subdirectory(metamod)
