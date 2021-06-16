@@ -17,7 +17,8 @@ FetchContent_MakeAvailable(fmtlib)
 
 if (UNIX)
     target_compile_options(fmt PUBLIC -m32)
-    target_link_options(fmt PUBLIC -m32)
+    target_link_options(fmt PUBLIC -m32
+                            PRIVATE -Wl,--disable-new-dtags)
 
     if (NOT DYNAMIC_BUILD)
         set_target_properties(fmt PROPERTIES
@@ -35,3 +36,14 @@ endif()
 
 set(FMT_INCLUDE_DIR ${fmtlib_SOURCE_DIR}/include)
 set(FMT_LIBRARIES fmt)
+
+set_target_properties(fmt
+        PROPERTIES
+        SKIP_BUILD_RPATH OFF
+        BUILD_WITH_INSTALL_RPATH ON
+        BUILD_RPATH_USE_ORIGIN ON
+        INSTALL_RPATH $ORIGIN)
+
+install(TARGETS fmt
+        RUNTIME DESTINATION bin/libs
+        LIBRARY DESTINATION bin/libs)

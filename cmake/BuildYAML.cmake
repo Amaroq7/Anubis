@@ -13,6 +13,7 @@ set(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "")
 set(YAML_CPP_BUILD_CONTRIB OFF CACHE INTERNAL "")
 set(YAML_BUILD_SHARED_LIBS ${DYNAMIC_BUILD} CACHE INTERNAL "")
+set(YAML_CPP_INSTALL OFF CACHE INTERNAL "")
 
 if (WIN32)
     set(YAML_MSVC_SHARED_RT ${DYNAMIC_BUILD} CACHE INTERNAL "")
@@ -24,7 +25,8 @@ if (UNIX)
     target_compile_options(yaml-cpp PRIVATE -Wno-shadow)
 
     target_compile_options(yaml-cpp PUBLIC -m32)
-    target_link_options(yaml-cpp PUBLIC -m32)
+    target_link_options(yaml-cpp PUBLIC -m32
+                                 PRIVATE -Wl,--disable-new-dtags)
 
     if (NOT DYNAMIC_BUILD)
         set_target_properties(yaml-cpp PROPERTIES
@@ -44,3 +46,25 @@ endif()
 
 set(YAML_CPP_INCLUDE_DIR ${yamlcpp_SOURCE_DIR}/include)
 set(YAML_CPP_LIBRARIES yaml-cpp)
+set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB32_PATHS ON)
+
+set_target_properties(yaml-cpp
+        PROPERTIES
+        SKIP_BUILD_RPATH OFF
+        BUILD_WITH_INSTALL_RPATH ON
+        BUILD_RPATH_USE_ORIGIN ON
+        INSTALL_RPATH $ORIGIN)
+
+install(TARGETS yaml-cpp
+        RUNTIME DESTINATION bin/libs
+        LIBRARY DESTINATION bin/libs)
+
+#SDK
+install(TARGETS yaml-cpp
+        RUNTIME DESTINATION sdk/lib
+        LIBRARY DESTINATION sdk/lib
+        ARCHIVE DESTINATION sdk/lib)
+
+install(DIRECTORY ${yamlcpp_SOURCE_DIR}/include/
+        DESTINATION sdk/include
+        FILES_MATCHING PATTERN "*.h")

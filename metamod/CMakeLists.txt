@@ -54,7 +54,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 if (UNIX)
-    target_link_options(${PROJECT_NAME} PRIVATE -m32)
+    target_link_options(${PROJECT_NAME} PRIVATE -m32 -Wl,--disable-new-dtags)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
     target_compile_options(${PROJECT_NAME} PRIVATE -m32 -Wall -Werror -Wextra -Wpedantic -pedantic-errors)
 
@@ -84,8 +84,26 @@ set_target_properties(${PROJECT_NAME}
         VISIBILITY_INLINES_HIDDEN ON
         SKIP_BUILD_RPATH OFF
         BUILD_WITH_INSTALL_RPATH ON
-        INSTALL_RPATH $ORIGIN/../libs
+        BUILD_RPATH_USE_ORIGIN ON
+        INSTALL_RPATH ../libs
         CXX_VISIBILITY_PRESET hidden)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE engine_api gamelib_api ${YAML_CPP_LIBRARIES} ${FMT_LIBRARIES})
 add_dependencies(${PROJECT_NAME} engine_api gamelib_api ${YAML_CPP_LIBRARIES} ${FMT_LIBRARIES})
+
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin/dlls
+        LIBRARY DESTINATION bin/dlls
+)
+
+install(
+        DIRECTORY ${CMAKE_SOURCE_DIR}/configs
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)
+
+#SDK
+install(
+        DIRECTORY ${CMAKE_SOURCE_DIR}/public/
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/sdk/include/metamod
+        FILES_MATCHING PATTERN "*.hpp"
+)

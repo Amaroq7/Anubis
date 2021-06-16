@@ -23,7 +23,7 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_SOURCE_DIR}/rehlds/public)
 
 if (UNIX)
-    target_link_options(${PROJECT_NAME} PRIVATE -m32)
+    target_link_options(${PROJECT_NAME} PRIVATE -m32 -Wl,--disable-new-dtags)
     target_compile_options(${PROJECT_NAME} PRIVATE -m32 -Wall -Werror -Wextra -Wpedantic -pedantic-errors)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _vsnprintf=vsnprintf)
 
@@ -50,4 +50,13 @@ endif()
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
         VISIBILITY_INLINES_HIDDEN ON
+        SKIP_BUILD_RPATH OFF
+        BUILD_WITH_INSTALL_RPATH ON
+        BUILD_RPATH_USE_ORIGIN ON
+        INSTALL_RPATH ../libs
         CXX_VISIBILITY_PRESET hidden)
+
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin/dlls
+        LIBRARY DESTINATION bin/dlls
+)
