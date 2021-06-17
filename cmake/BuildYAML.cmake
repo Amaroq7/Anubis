@@ -38,6 +38,7 @@ if (UNIX)
 
         if (DYNAMIC_BUILD)
             target_link_options(yaml-cpp PUBLIC -fuse-ld=${LLD} -stdlib=libc++ --rtlib=compiler-rt)
+            target_link_libraries(yaml-cpp PUBLIC c++ c++abi unwind)
         endif()
     else()
         target_compile_options(yaml-cpp PRIVATE -Wno-effc++)
@@ -55,9 +56,11 @@ set_target_properties(yaml-cpp
         BUILD_RPATH_USE_ORIGIN ON
         INSTALL_RPATH $ORIGIN)
 
-install(TARGETS yaml-cpp
+if (DYNAMIC_BUILD)
+    install(TARGETS yaml-cpp
         RUNTIME DESTINATION bin/libs
         LIBRARY DESTINATION bin/libs)
+endif()
 
 #SDK
 install(TARGETS yaml-cpp

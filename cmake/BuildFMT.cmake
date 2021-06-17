@@ -30,6 +30,7 @@ if (UNIX)
 
         if (DYNAMIC_BUILD)
             target_link_options(fmt PUBLIC -fuse-ld=${LLD} -stdlib=libc++ --rtlib=compiler-rt)
+            target_link_libraries(fmt c++ c++abi unwind)
         endif()
     endif()
 endif()
@@ -44,6 +45,8 @@ set_target_properties(fmt
         BUILD_RPATH_USE_ORIGIN ON
         INSTALL_RPATH $ORIGIN)
 
-install(TARGETS fmt
+if (DYNAMIC_BUILD)
+    install(TARGETS fmt
         RUNTIME DESTINATION bin/libs
         LIBRARY DESTINATION bin/libs)
+endif()

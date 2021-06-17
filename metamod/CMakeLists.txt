@@ -47,7 +47,7 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_SOURCE_DIR}/rehlds/engine
         ${CMAKE_SOURCE_DIR}/rehlds/pm_shared
         ${CMAKE_SOURCE_DIR}/rehlds/public)
-        
+
 target_include_directories(${PROJECT_NAME}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -58,11 +58,6 @@ if (UNIX)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
     target_compile_options(${PROJECT_NAME} PRIVATE -m32 -Wall -Werror -Wextra -Wpedantic -pedantic-errors)
 
-    if (IS_CLANG_COMPILER)
-        target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
-        target_link_options(${PROJECT_NAME} PRIVATE -stdlib=libc++ --rtlib=compiler-rt -fuse-ld=${LLD} -Wl,--as-needed)
-    endif()
-
     if (NOT DYNAMIC_BUILD)
         if (NOT IS_CLANG_COMPILER)
             target_link_options(${PROJECT_NAME} PRIVATE -static-libgcc -static-libstdc++)
@@ -70,7 +65,15 @@ if (UNIX)
                 target_link_libraries(${PROJECT_NAME} PRIVATE stdc++fs)
             endif()
         else()
-            target_link_libraries(${PROJECT_NAME} PRIVATE c++.a c++abi.a unwind.a)
+            target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
+            target_link_options(${PROJECT_NAME} PRIVATE -stdlib=libc++ --rtlib=compiler-rt -fuse-ld=${LLD} -Wl,--as-needed)
+            target_link_libraries(${PROJECT_NAME} PRIVATE c++.a c++abi.a unwind.a m)
+        endif()
+    else()
+        if (IS_CLANG_COMPILER)
+            target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
+            target_link_options(${PROJECT_NAME} PRIVATE -stdlib=libc++ --rtlib=compiler-rt -fuse-ld=${LLD} -Wl,--as-needed)
+            target_link_libraries(${PROJECT_NAME} PRIVATE c++ c++abi unwind)
         endif()
     endif()
 else()
@@ -107,3 +110,18 @@ install(
         DESTINATION ${CMAKE_INSTALL_PREFIX}/sdk/include/metamod
         FILES_MATCHING PATTERN "*.hpp"
 )
+
+# TODO: Come up with better solution than just hardcoding paths
+if (IS_CLANG_COMPILER)
+    if (DYNAMIC_BUILD)
+        file(GLOB_RECURSE LIBCXX_LIBS FOLLOW_SYMLINKS
+            LIST_DIRECTORIES false
+            /usr/lib32/libc++*.so*
+            /usr/lib32/libunwind.so
+            /usr/lib32/libunwind.so.1*)
+        install(FILES ${LIBCXX_LIBS} DESTINATION bin/libs)
+    else()
+        set(LIBCXX_LIBS /usr/lib32/libc++.a /usr/lib32/libc++abi.a /usr/lib32/libunwind.a)
+    endif()
+    install(FILES ${LIBCXX_LIBS} DESTINATION sdk/lib)
+endif()
