@@ -9,7 +9,6 @@ project(MetamodCPP
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 
 option(DYNAMIC_BUILD "Build project linked dynamically with other libs" ON)
@@ -49,7 +48,8 @@ find_package(Doxygen)
 
 # Generate docs if doxygen is present
 if (DOXYGEN_FOUND)
-    execute_process(COMMAND Doxygen::doxygen
+    get_target_property(DoxygenBin Doxygen::doxygen LOCATION)
+    execute_process(COMMAND ${DoxygenBin}
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/docs)
 
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/docs/html
