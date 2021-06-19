@@ -44,3 +44,18 @@ include(cmake/BuildYAML.cmake)
 
 add_compile_definitions(META_CORE)
 add_subdirectory(metamod)
+
+find_package(Doxygen)
+
+# Generate docs if doxygen is present
+if (DOXYGEN_FOUND)
+    execute_process(COMMAND Doxygen::doxygen
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/docs)
+
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/docs/html
+            DESTINATION sdk/docs)
+
+    install(FILES ${CMAKE_SOURCE_DIR}/docs/index_placeholder.html
+            DESTINATION sdk/docs
+            RENAME index.html)
+endif()
