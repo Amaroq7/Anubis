@@ -1,0 +1,36 @@
+var IEntVars_8hpp =
+[
+    [ "IEntVars", "classMetamod_1_1Engine_1_1IEntVars.html", "classMetamod_1_1Engine_1_1IEntVars" ],
+    [ "EntFlags", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577", [
+      [ "FLY", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a327c84b33a8b5e93858289478b0202b4", null ],
+      [ "SWIM", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a03b8271feadf6d6d8669b00982853848", null ],
+      [ "CONVEYOR", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a37f5340a54b65f2de39e59748e388905", null ],
+      [ "CLIENT", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577aef10c650df47bffd6399e5e78da2a9b1", null ],
+      [ "INWATER", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a5a15972550c4be1a2ae1e630ecb5aebb", null ],
+      [ "MONSTER", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577afdd3a8eb3032c0124c1c43dec883b670", null ],
+      [ "GODMODE", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a823705bbcd80f0bba71f00d791efef69", null ],
+      [ "NOTARGET", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577ad03896bc7868a5b61a52541e0893bbdc", null ],
+      [ "SKIPLOCALHOST", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a79838e82a6c06d02b47f077987aa129f", null ],
+      [ "ONGROUND", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577abecfec6c1e554bdd8ad740cc40dd9dc0", null ],
+      [ "PARTIALGROUND", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a302ee2c20531e16fd0a100148f416ca0", null ],
+      [ "WATERJUMP", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a3b8188b9d73a4daa4b4a62ee074819b8", null ],
+      [ "FROZEN", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a081912e034fd835fdda076251f2cd586", null ],
+      [ "FAKECLIENT", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577ab5d9a4494ee314da5dad44e9d0ba07a0", null ],
+      [ "DUCKING", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a01b273b8cc2ed37ffd8098a4fa4c7457", null ],
+      [ "FLOAT", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577ae738c26bf4ce1037fa81b039a915cbf6", null ],
+      [ "GRAPHED", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a820af8b254ba2bf2e1660a239c5875e3", null ],
+      [ "IMMUNE_WATER", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a44578456b968197c60bbac27bc85c1e6", null ],
+      [ "IMMUNE_SLIME", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577aa108d6c3e63530c96731bfdeeb2aa8e5", null ],
+      [ "IMMUNE_LAVA", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577aec0d55bbe98804533dcdedefb11a77b3", null ],
+      [ "PROXY", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577ae69e6446e892e3922e76c82e96837920", null ],
+      [ "ALWAYSTHINK", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577ac540d34bef0de8d26a3876c8688dd387", null ],
+      [ "BASEVELOCITY", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a6dc05c5044ae3fe79114e1ae5c81bc9f", null ],
+      [ "MONSTERCLIP", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577adcb29e9ac592305ce088579b090b5f60", null ],
+      [ "ONTRAIN", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577ae1750a508f8fcaffe87e0b928902532f", null ],
+      [ "WORLDBRUSH", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577aed773ed4dd0b8cd673e139d664d3697c", null ],
+      [ "SPECTATOR", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577aad7525991fe98a3b121c1c71df633c19", null ],
+      [ "CUSTOMENTITY", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a7aeb547babb8186266225cbdf3f76a88", null ],
+      [ "KILLME", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577ac6e4be1e68205c62da0a231798fa3564", null ],
+      [ "DORMANT", "IEntVars_8hpp.html#a9a635b7607b6c095aface5544855d577a74605984dbcc9e45eb11813694d31512", null ]
+    ] ]
+];
