@@ -52,7 +52,7 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external
                                                    /external:I ${CMAKE_SOURCE_DIR}/regamedll_cs_sdk
                                                    /external:W0
-                                                   /W4 /WX)
+                                                   /W4 /WX /wd4250)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 endif()
 
