@@ -44,7 +44,9 @@ namespace
             return gEntityHolder.getBasePlayer(gEngineLib->getEdict(ed));
         }
 
+#if defined __linux__
         return nullptr;
+#endif
     }
 
     inline std::intptr_t getVTable(void *instance)

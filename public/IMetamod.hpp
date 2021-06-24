@@ -155,7 +155,7 @@ namespace Metamod
              *
              * Id of the message
              */
-            std::uint8_t id = -1;
+            std::uint8_t id = 0;
         };
 
 #if !defined DOXYGEN_SKIP

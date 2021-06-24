@@ -43,6 +43,8 @@ if (UNIX)
     else()
         target_compile_options(yaml-cpp PRIVATE -Wno-effc++)
     endif()
+else()
+    target_compile_options(yaml-cpp PRIVATE /wd4251 /wd4275)
 endif()
 
 set(YAML_CPP_INCLUDE_DIR ${yamlcpp_SOURCE_DIR}/include)
@@ -58,8 +60,8 @@ set_target_properties(yaml-cpp
 
 if (DYNAMIC_BUILD)
     install(TARGETS yaml-cpp
-        RUNTIME DESTINATION bin/libs
-        LIBRARY DESTINATION bin/libs)
+        RUNTIME DESTINATION bin/lib
+        LIBRARY DESTINATION bin/lib)
 endif()
 
 #SDK

@@ -81,7 +81,7 @@ namespace Metamod
         constexpr std::size_t ENGINE_MSG_NUM = 58;
         for (std::size_t i = 0; i <= ENGINE_MSG_NUM; i++)
         {
-            m_regMsgs.at(i).id = i;
+            m_regMsgs.at(i).id = static_cast<std::uint8_t>(i);
         }
     }
 

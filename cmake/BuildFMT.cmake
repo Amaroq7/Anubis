@@ -47,6 +47,6 @@ set_target_properties(fmt
 
 if (DYNAMIC_BUILD)
     install(TARGETS fmt
-        RUNTIME DESTINATION bin/libs
-        LIBRARY DESTINATION bin/libs)
+        RUNTIME DESTINATION bin/lib
+        LIBRARY DESTINATION bin/lib)
 endif()

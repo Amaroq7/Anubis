@@ -29,6 +29,9 @@
 
 #include <engine/ILibrary.hpp>
 
+#include <cstdlib>
+#include <thread>
+
 enginefuncs_t g_engfuncs;
 globalvars_t *gpGlobals;
 
@@ -96,9 +99,12 @@ C_DLLEXPORT void WINAPI GiveFnptrsToDll(enginefuncs_t *pengfuncsFromEngine, glob
     }
     catch (const std::exception &e)
     {
+        using namespace std::chrono_literals;
+
         fmt::text_style textStyle(fmt::emphasis::bold | fg(fmt::terminal_color::bright_red));
         serverPrint(textStyle, "[{}] FATAL ERROR: {}\n", LOG_TAG, e.what());
-        throw;
+        std::this_thread::sleep_for(3s);
+        std::exit(EXIT_FAILURE);
     }
 
     gMetaGlobal->loadPlugins();

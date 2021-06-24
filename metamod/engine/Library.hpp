@@ -22,7 +22,7 @@
 #include <Common.hpp>
 #include <engine/ILibrary.hpp>
 
-class RehldsFuncs_t;
+struct RehldsFuncs_t;
 class IRehldsHookchains;
 class IRehldsServerData;
 class IRehldsApi;
@@ -41,6 +41,7 @@ class IRehldsApi;
 
 #include <unordered_map>
 #include <forward_list>
+#include <array>
 
 namespace Metamod::Engine
 {

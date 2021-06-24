@@ -29,7 +29,7 @@ namespace Metamod::Engine
     class IEdict;
     class IEntVars;
     class ITraceResult;
-    class InfoBuffer;
+    struct InfoBuffer;
 }
 
 namespace Metamod::Game
@@ -104,11 +104,7 @@ namespace Metamod::Game
 #if defined META_CORE
         [[nodiscard]] virtual void *getDllFuncs() = 0;
         [[nodiscard]] virtual void *getNewDllFuncs() = 0;
-#if defined __linux__
         [[nodiscard]] virtual void *getSystemHandle() const = 0;
-#elif defined _WIN32
-        [[nodiscard]] virtual HMODULE getSystemHandle() const = 0;
-#endif
 #endif
     };
 }

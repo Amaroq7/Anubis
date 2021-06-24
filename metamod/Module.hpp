@@ -36,11 +36,7 @@ namespace Metamod
     class Module
     {
     public:
-#if defined __linux__
         using SystemHandle = void *;
-#elif defined _WIN32
-        using SystemHandle = HMODULE;
-#endif
 
     public:
         explicit Module(const fs::path &path);
@@ -59,21 +55,13 @@ namespace Metamod
 #if defined __linux__
             return reinterpret_cast<T>(dlsym(m_libHandle.get(), name.data()));
 #elif defined _WIN32
-            return reinterpret_cast<T>(GetProcAddress(m_libHandle, name.data()));
+            return reinterpret_cast<T>(GetProcAddress(reinterpret_cast<HMODULE>(m_libHandle.get()), name.data()));
 #endif
         }
 
         explicit operator SystemHandle();
 
-#if defined _WIN32
-        ~Module();
-#endif
-
     private:
-#if defined __linux__
         std::unique_ptr<void, std::function<void(SystemHandle)>> m_libHandle;
-#elif defined _WIN32
-        SystemHandle m_libHandle;
-#endif
     };
 }

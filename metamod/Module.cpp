@@ -33,7 +33,13 @@ namespace Metamod
                 }
             });
 #elif defined _WIN32
-        m_libHandle = LoadLibraryW(path.c_str());
+        m_libHandle = std::unique_ptr<void, std::function<void(void *)>>(
+            LoadLibraryW(path.c_str()), [](void *lib) {
+                if (lib)
+                {
+                    FreeLibrary(reinterpret_cast<HMODULE>(lib));
+                }
+            });
 #endif
     }
 
@@ -46,11 +52,6 @@ namespace Metamod
     {
         if (m_libHandle)
         {
-#if defined __linux__
-            dlclose(m_libHandle.get());
-#elif defined _WIN32
-            FreeLibrary(m_libHandle);
-#endif
             m_libHandle = nullptr;
         }
     }
@@ -72,22 +73,9 @@ namespace Metamod
         return errorMsg;
 #endif
     }
+
     Module::operator SystemHandle()
     {
-        return m_libHandle
-#if defined __linux__
-            .get()
-#endif
-            ;
+        return m_libHandle.get();
     }
-
-#if defined _WIN32
-    Module::~Module()
-    {
-        if (m_libHandle)
-        {
-            FreeLibrary(m_libHandle);
-        }
-    }
-#endif
 }

@@ -134,7 +134,7 @@ namespace Metamod
             rootNode = YAML::LoadFile((getPath(PathType::Configs) / m_configFilename).string().c_str());
 #endif
         }
-        catch (const std::exception &e)
+        catch (const std::exception &e [[maybe_unused]])
         {
             using namespace std::string_literals;
             throw std::runtime_error("Cannot parse "s + m_configFilename + " file");

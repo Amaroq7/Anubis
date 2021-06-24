@@ -37,7 +37,10 @@ if (UNIX)
         target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
     endif()
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+    target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external
+                                                   /external:I ${CMAKE_SOURCE_DIR}/rehlds
+                                                   /external:W0
+                                                   /W4 /WX)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 endif()
 

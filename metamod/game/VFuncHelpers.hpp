@@ -21,7 +21,7 @@
 
 #if defined _WIN32
     #define WIN32_LEAN_AND_MEAN
-    #include "windows.h"
+    #include <windows.h>
 #elif defined __linux__
     #include <sys/mman.h>
     #include <unistd.h>
@@ -49,7 +49,7 @@ namespace Metamod::Game::VFuncHelpers
 #if defined __linux__
             reinterpret_cast<t_ret (*)(void *, t_args...)>(origFunc)(instance, args...);
 #elif defined _WIN32
-            reinterpret_cast<t_ret(__fastcall *)(void *, int, Args...)>(origFunc)(instance, 0, args...);
+            reinterpret_cast<t_ret(__fastcall *)(void *, int, t_args...)>(origFunc)(instance, 0, args...);
 #endif
         }
         else
@@ -57,7 +57,7 @@ namespace Metamod::Game::VFuncHelpers
 #if defined __linux__
             return reinterpret_cast<t_ret (*)(void *, t_args...)>(origFunc)(instance, args...);
 #elif defined _WIN32
-            return reinterpret_cast<t_ret(__fastcall *)(void *, int, Args...)>(origFunc)(instance, 0, args...);
+            return reinterpret_cast<t_ret(__fastcall *)(void *, int, t_args...)>(origFunc)(instance, 0, args...);
 #endif
         }
     }

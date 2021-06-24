@@ -22,6 +22,10 @@ if (WIN32)
         message(FATAL_ERROR "Only MSVC is supported.")
     endif()
 
+    set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
+    set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
+    include(InstallRequiredSystemLibraries)
+
     if (NOT DYNAMIC_BUILD)
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     else()

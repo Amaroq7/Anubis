@@ -393,11 +393,23 @@ namespace Metamod::Game
 
         if (m_modType == Mod::Valve)
         {
+#if defined __linux__
             mmDllPath /= "libvalve_api.so";
+#elif defined _WIN32
+            mmDllPath /= "valve_api.dll";
+#endif
         }
         else if (m_modType == Mod::CStrike || m_modType == Mod::CZero)
         {
+#if defined __linux__
             mmDllPath /= "libcstrike_api.so";
+#elif defined _WIN32
+            mmDllPath /= "cstrike_api.dll";
+#endif
+        }
+        else
+        {
+            mmDllPath.clear();
         }
 
         _initGameEntityDLL(std::move(mmDllPath));
@@ -405,19 +417,27 @@ namespace Metamod::Game
 
     void Library::_initGameEntityDLL(fs::path &&path)
     {
+        if (path.empty())
+        {
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile,
+                                "Cannot find entity library for {}", m_gameDir.filename().string());
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Virtual func hooking is unavailable");
+            return;
+        }
+
         auto entityLib = std::make_unique<Module>(path);
         if (!entityLib->isLoaded())
         {
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot load entity library: {}", path.c_str());
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Cannot load entity library: {}", path.string());
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Virtual func hooking is unavailable");
             return;
         }
 
         auto InitFn = entityLib->getSymbol<fnInitGameEntityDLL>("InitGameEntitiesDLL");
         if (!InitFn)
         {
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot find func: InitGameEntitiesDLL");
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Cannot find func: InitGameEntitiesDLL");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Virtual func hooking is unavailable");
             return;
         }
 
@@ -426,16 +446,16 @@ namespace Metamod::Game
         auto GetBasePlayerHooks = entityLib->getSymbol<fnGetBasePlayerHooks>("GetBasePlayerHooks");
         if (!GetBasePlayerHooks)
         {
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot find: GetBasePlayerHooks");
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Cannot find: GetBasePlayerHooks");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Virtual func hooking is unavailable");
             return;
         }
 
         auto GetEntityHolder = entityLib->getSymbol<fnGetEntityHolder>("GetEntityHolder");
         if (!GetEntityHolder)
         {
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Cannot find: GetEntityHolder");
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console | LogDest::File, "Virtual func hooking is unavailable");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Cannot find: GetEntityHolder");
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Virtual func hooking is unavailable");
             return;
         }
 

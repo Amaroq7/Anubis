@@ -73,7 +73,11 @@ namespace Metamod::Game::Callbacks::Engine
 
         if (!gGame->pfnClientConnect(gEngine->getEdict(pEntity), pszName, pszAddress, rejectReason, FuncCallType::Hooks))
         {
+#if defined __linux__
             strncpy(szRejectReason, rejectReason.data(), REASON_REJECT_MAX_LEN - 1);
+#elif defined _WIN32
+            strncpy_s(szRejectReason, 128, rejectReason.data(), _TRUNCATE);
+#endif
             return FALSE;
         }
         return TRUE;

@@ -77,9 +77,13 @@ if (UNIX)
         endif()
     endif()
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+    target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external
+                                                   /external:I ${CMAKE_SOURCE_DIR}/rehlds
+                                                   /external:W0
+                                                   /W4 /WX)
+
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
-    target_link_options(${PROJECT_NAME} PRIVATE /MACHINE:X86 /EXPORT:GiveFnptrsToDll=_GiveFnptrsToDll@8 /SECTION:.data,RW)
+    target_link_options(${PROJECT_NAME} PRIVATE /EXPORT:GiveFnptrsToDll=_GiveFnptrsToDll@8 /SECTION:.data,RW)
 endif()
 
 set_target_properties(${PROJECT_NAME}
@@ -88,7 +92,7 @@ set_target_properties(${PROJECT_NAME}
         SKIP_BUILD_RPATH OFF
         BUILD_WITH_INSTALL_RPATH ON
         BUILD_RPATH_USE_ORIGIN ON
-        INSTALL_RPATH ../libs
+        INSTALL_RPATH ../lib
         CXX_VISIBILITY_PRESET hidden)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE engine_api gamelib_api ${YAML_CPP_LIBRARIES} ${FMT_LIBRARIES})
@@ -101,13 +105,18 @@ install(TARGETS ${PROJECT_NAME}
 
 install(
         DIRECTORY ${CMAKE_SOURCE_DIR}/configs
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+        DESTINATION bin
+)
+
+install(
+        FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+        DESTINATION bin/lib
 )
 
 #SDK
 install(
         DIRECTORY ${CMAKE_SOURCE_DIR}/public/
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/sdk/include/metamod
+        DESTINATION sdk/include/metamod
         FILES_MATCHING PATTERN "*.hpp"
 )
 
@@ -119,7 +128,7 @@ if (IS_CLANG_COMPILER)
             /usr/lib32/libc++*.so*
             /usr/lib32/libunwind.so
             /usr/lib32/libunwind.so.1*)
-        install(FILES ${LIBCXX_LIBS} DESTINATION bin/libs)
+        install(FILES ${LIBCXX_LIBS} DESTINATION bin/lib)
     else()
         set(LIBCXX_LIBS /usr/lib32/libc++.a /usr/lib32/libc++abi.a /usr/lib32/libunwind.a)
     endif()

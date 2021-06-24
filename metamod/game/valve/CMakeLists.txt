@@ -46,7 +46,10 @@ if (UNIX)
         endif()
     endif()
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+    target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external
+                                                   /external:I ${CMAKE_SOURCE_DIR}/rehlds
+                                                   /external:W0
+                                                   /W4 /WX)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 endif()
 
@@ -56,7 +59,7 @@ set_target_properties(${PROJECT_NAME}
         SKIP_BUILD_RPATH OFF
         BUILD_WITH_INSTALL_RPATH ON
         BUILD_RPATH_USE_ORIGIN ON
-        INSTALL_RPATH ../libs
+        INSTALL_RPATH ../lib
         CXX_VISIBILITY_PRESET hidden)
 
 install(TARGETS ${PROJECT_NAME}

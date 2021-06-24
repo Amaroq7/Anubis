@@ -130,7 +130,7 @@ CSysModule *Sys_LoadModule(const char *pModuleName)
         char str[2048+6]; // room for extension string
 
 #if defined(_WIN32)
-        _snprintf(str, sizeof(str), "%s.dll", pModuleName);
+        _snprintf_s(str, sizeof(str), _TRUNCATE, "%s.dll", pModuleName);
 		hDLL = LoadLibrary(str);
 #elif defined(OSX)
         printf("Error: %s\n", dlerror());
