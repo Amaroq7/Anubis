@@ -110,6 +110,7 @@ namespace Metamod::Engine
         bool addExtDll(void *hModule) const final;
         void removeExtDll(void *hModule) const final;
         [[nodiscard]] std::uint32_t getWorldmapCrc() const final;
+        [[nodiscard]] ServerState getState() const final;
 
         [[nodiscard]] const enginefuncs_t *getEngineFuncs() const final;
         void clear(bool uninstallHooks = false);

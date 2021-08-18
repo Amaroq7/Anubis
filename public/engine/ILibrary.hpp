@@ -20,6 +20,7 @@
 #pragma once
 
 #include "Common.hpp"
+#include "IServerState.hpp"
 
 #include <string_view>
 #include <cinttypes>
@@ -98,6 +99,7 @@ namespace Metamod::Engine
 
         /* ReHLDS server data */
         [[nodiscard]] virtual std::uint32_t getWorldmapCrc() const = 0;
+        [[nodiscard]] virtual ServerState getState() const = 0;
 
 #if defined META_CORE
         virtual IEdict *getEdict(edict_t *edict) = 0;

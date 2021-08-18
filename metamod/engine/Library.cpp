@@ -595,4 +595,9 @@ namespace Metamod::Engine
     {
         return m_reServerData->GetWorldmapCrc();
     }
+
+    ServerState Library::getState() const
+    {
+        return static_cast<ServerState>(m_reServerData->GetState());
+    }
 } // namespace Metamod::Engine
