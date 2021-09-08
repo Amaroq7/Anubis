@@ -56,7 +56,7 @@ namespace Metamod::Engine
         Library();
         Library(const Library &other) = delete;
         Library(Library &&other) = delete;
-        ~Library() final;
+        ~Library() final = default;
 
         // IEngine
         Edict *getEdict(std::uint32_t index) final;
@@ -113,7 +113,6 @@ namespace Metamod::Engine
         [[nodiscard]] ServerState getState() const final;
 
         [[nodiscard]] const enginefuncs_t *getEngineFuncs() const final;
-        void clear(bool uninstallHooks = false);
         void initializeEdicts(edict_t *pEdictList, std::uint32_t edictCount, std::uint32_t clientMax) final;
         [[nodiscard]] edict_t *getEngineEdictList() const final;
         Cvar *addToCache(cvar_t *cvar);
@@ -134,15 +133,13 @@ namespace Metamod::Engine
 
         void _replaceFuncs();
         const RehldsFuncs_t *_initReHLDSAPI();
-        void _installHooks();
-        void _uninstallHooks();
 
     private:
-        std::unique_ptr<Hooks> m_hooks;
         IRehldsApi *m_reHLDSAPI;
         const RehldsFuncs_t *m_reHLDSFuncs = nullptr;
         IRehldsHookchains *m_reHookchains = nullptr;
         IRehldsServerData *m_reServerData = nullptr;
+        std::unique_ptr<Hooks> m_hooks;
         std::array<std::uint32_t, 2> m_rehldsVersion = {0u, 0u};
         std::array<std::unique_ptr<Edict>, MAX_EDICTS> m_edicts;
         std::forward_list<std::unique_ptr<TraceResult>> m_traceResults;

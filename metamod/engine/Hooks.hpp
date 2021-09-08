@@ -23,6 +23,8 @@
 #include <engine/IHooks.hpp>
 #include "HookChains.hpp"
 
+class IRehldsHookchains;
+
 namespace Metamod::Engine
 {
     using PrecacheModelHook = Hook<PrecacheId, std::string_view>;
@@ -127,6 +129,7 @@ namespace Metamod::Engine
     class Hooks final : public IHooks
     {
     public:
+        explicit Hooks(IRehldsHookchains *rehldsHooks);
         ~Hooks() final = default;
 
         PrecacheModelHookRegistry *precacheModel() final;

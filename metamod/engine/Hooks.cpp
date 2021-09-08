@@ -19,8 +19,27 @@
 
 #include "Hooks.hpp"
 
+#include <osconfig.h>
+#include <extdll.h>
+#include <util.h>
+#include <usercmd.h>
+#include "ReHooks.hpp"
+
 namespace Metamod::Engine
 {
+    Hooks::Hooks(IRehldsHookchains *rehldsHooks) :
+          m_svDropClientRegistry([rehldsHooks]() {
+              rehldsHooks->SV_DropClient()->registerHook(ReHooks::SV_DropClientHook);
+          }, [rehldsHooks]() {
+              rehldsHooks->SV_DropClient()->unregisterHook(ReHooks::SV_DropClientHook);
+          }),
+          m_cvarDirectSet([rehldsHooks]() {
+              rehldsHooks->Cvar_DirectSet()->registerHook(ReHooks::Cvar_DirectSetHook);
+          }, [rehldsHooks]() {
+              rehldsHooks->Cvar_DirectSet()->unregisterHook(ReHooks::Cvar_DirectSetHook);
+          })
+    {}
+
     PrecacheModelHookRegistry *Hooks::precacheModel()
     {
         return &m_precacheModelRegistry;

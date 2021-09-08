@@ -37,8 +37,7 @@ using namespace std::string_literals;
 namespace Metamod::Engine
 {
     Library::Library()
-        : m_hooks(std::make_unique<Hooks>()),
-          m_reHLDSAPI(nullptr),
+        : m_reHLDSAPI(nullptr),
           m_reHLDSFuncs(_initReHLDSAPI())
     {
         m_reHookchains = m_reHLDSAPI->GetHookchains();
@@ -46,10 +45,10 @@ namespace Metamod::Engine
         m_rehldsVersion = {static_cast<std::uint32_t>(m_reHLDSAPI->GetMajorVersion()),
                            static_cast<std::uint32_t>(m_reHLDSAPI->GetMinorVersion())};
 
+        m_hooks = std::make_unique<Hooks>(m_reHookchains);
         Callbacks::GameDLL::init(this);
         ReHooks::init(this);
         _replaceFuncs();
-        _installHooks();
 
         m_reHLDSFuncs->AddCvarListener(gMetaLogLevelCvar.name, CvarListener::metaLogLevel);
     }
@@ -131,28 +130,6 @@ namespace Metamod::Engine
     std::string_view Library::getMapName() const
     {
         return STRING(gpGlobals->mapname);
-    }
-
-    void Library::clear(bool uninstallHooks)
-    {
-        m_traceResults.clear();
-
-        if (uninstallHooks)
-        {
-            _uninstallHooks();
-        }
-    }
-
-    void Library::_installHooks()
-    {
-        m_reHookchains->SV_DropClient()->registerHook(ReHooks::SV_DropClientHook);
-        m_reHookchains->Cvar_DirectSet()->registerHook(ReHooks::Cvar_DirectSetHook);
-    }
-
-    void Library::_uninstallHooks()
-    {
-        m_reHookchains->SV_DropClient()->unregisterHook(ReHooks::SV_DropClientHook);
-        m_reHookchains->Cvar_DirectSet()->unregisterHook(ReHooks::Cvar_DirectSetHook);
     }
 
     const RehldsFuncs_t *Library::_initReHLDSAPI()
@@ -567,11 +544,6 @@ namespace Metamod::Engine
     void Library::removeExtDll(void *hModule) const
     {
        m_reHLDSFuncs->RemoveExtDll(hModule);
-    }
-
-    Library::~Library()
-    {
-        _uninstallHooks();
     }
 
     Cvar *Library::addToCache(cvar_t *cvar)

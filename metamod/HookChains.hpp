@@ -36,7 +36,7 @@
 #include <utility>
 
 #if defined _WIN32
-#define WIN32_LEAN_AND_MEAN
+    #define WIN32_LEAN_AND_MEAN
     #include "windows.h"
 #elif defined __linux__
     #include <sys/mman.h>
@@ -137,7 +137,18 @@ namespace Metamod
     class HookRegistry final : public IHookRegistry<t_ret, t_args...>
     {
     public:
-        ~HookRegistry() override = default;
+        HookRegistry() = default;
+
+        HookRegistry(std::function<void()> registerFn, std::function<void()> unregisterFn)
+            : m_registerFn(std::move(registerFn)), m_unregisterFn(std::move(unregisterFn)) {}
+
+        ~HookRegistry()
+        {
+            if (m_unregisterFn && !m_hooks.empty())
+            {
+                std::invoke(m_unregisterFn);
+            }
+        }
 
         t_ret callChain(OriginalFunc<t_ret, t_args...> origFunc, t_args... args)
         {
@@ -192,6 +203,11 @@ namespace Metamod
 
             if (!hasHooks())
             {
+                if (m_registerFn)
+                {
+                    std::invoke(m_registerFn);
+                }
+
                 return m_hooks.emplace_front(std::move(hookInfo)).get();
             }
 
@@ -211,12 +227,21 @@ namespace Metamod
 
         void unregisterHook(IHookInfo *hookInfo) override
         {
+            bool wereHooksPresent = !m_hooks.empty();
             m_hooks.remove_if([hookInfo](const std::unique_ptr<HookInfo<t_ret, t_args...>> &hook) {
                 return hookInfo == hook.get();
             });
+
+            bool shouldRemoveHook = wereHooksPresent && m_hooks.empty() && m_unregisterFn;
+            if (shouldRemoveHook)
+            {
+                std::invoke(m_unregisterFn);
+            }
         }
 
     private:
+        std::function<void()> m_registerFn;
+        std::function<void()> m_unregisterFn;
         std::forward_list<std::unique_ptr<HookInfo<t_ret, t_args...>>> m_hooks;
     };
 
@@ -458,11 +483,6 @@ namespace Metamod
     private:
         void _restoreOriginalVFunc()
         {
-            if (m_hooks.empty())
-            {
-                return;
-            }
-
             if (m_origVFunc)
             {
                 std::intptr_t vFunc = m_vTable + sizeof(std::intptr_t) * m_vOffset;
