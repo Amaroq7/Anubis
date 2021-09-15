@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 
 project(MetamodCPP
-        VERSION 1.0.0
+        VERSION 1.0.1
         DESCRIPTION "HL1 Server Plugin Manager"
         HOMEPAGE_URL "https://github.com/Amaroq7/metamod-cpp"
         LANGUAGES CXX C)
