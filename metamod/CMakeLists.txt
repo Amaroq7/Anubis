@@ -92,7 +92,7 @@ set_target_properties(${PROJECT_NAME}
         SKIP_BUILD_RPATH OFF
         BUILD_WITH_INSTALL_RPATH ON
         BUILD_RPATH_USE_ORIGIN ON
-        INSTALL_RPATH ../lib
+        INSTALL_RPATH \$ORIGIN/../lib
         CXX_VISIBILITY_PRESET hidden)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE engine_api gamelib_api ${YAML_CPP_LIBRARIES} ${FMT_LIBRARIES})
