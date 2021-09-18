@@ -129,6 +129,9 @@ namespace Metamod::Engine
     using IServerPrintHook = IHook<void, std::string_view>;
     using IServerPrintHookRegistry = IHookRegistry<void, std::string_view>;
 
+    using IIsDedicatedHook = IHook<bool>;
+    using IIsDedicatedHookRegistry = IHookRegistry<bool>;
+
     class IHooks
     {
     public:
@@ -167,5 +170,6 @@ namespace Metamod::Engine
         virtual IRemoveEntityHookRegistry *removeEntity() = 0;
         virtual IAlertHookRegistry *alert() = 0;
         virtual IServerPrintHookRegistry *serverPrint() = 0;
+        virtual IIsDedicatedHookRegistry *isDedicated() = 0;
     };
 }

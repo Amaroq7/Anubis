@@ -467,6 +467,14 @@ namespace Metamod::Engine
         }, callType, szMsg);
     }
 
+    bool Library::isDedicatedServer(FuncCallType callType) const
+    {
+        static IsDedicatedHookRegistry *hookchain = m_hooks->isDedicated();
+        return _execEngineFunc(hookchain, []() {
+            return std::invoke(g_engfuncs.pfnIsDedicatedServer) == TRUE;
+        }, callType);
+    }
+
     void Library::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;
@@ -502,6 +510,7 @@ namespace Metamod::Engine
         ASSIGN_ENG_FUNCS(pfnSetModel);
         ASSIGN_ENG_FUNCS(pfnCreateEntity);
         ASSIGN_ENG_FUNCS(pfnRemoveEntity);
+        ASSIGN_ENG_FUNCS(pfnIsDedicatedServer);
 #undef ASSIGN_ENG_FUNCS
     }
 

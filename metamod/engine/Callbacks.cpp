@@ -190,4 +190,9 @@ namespace Metamod::Engine::Callbacks::GameDLL
     {
         gEngine->print(szMsg, FuncCallType::Hooks);
     }
+
+    int pfnIsDedicatedServer()
+    {
+        return static_cast<int>(gEngine->isDedicatedServer(FuncCallType::Hooks));
+    }
 }

@@ -103,7 +103,7 @@ namespace Metamod
          *
          * Should be used to check if provided Metamod API is compatible.
          */
-        static constexpr std::uint16_t MINOR_VERSION = 0;
+        static constexpr std::uint16_t MINOR_VERSION = 1;
 
         /**
          * @brief Metamod API version

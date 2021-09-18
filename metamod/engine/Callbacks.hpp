@@ -71,4 +71,5 @@ namespace Metamod::Engine::Callbacks::GameDLL
     edict_t *pfnCreateEntity();
     void pfnRemoveEntity(edict_t *e);
     void pfnServerPrint(const char *szMsg);
+    int pfnIsDedicatedServer();
 }

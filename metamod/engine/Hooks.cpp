@@ -204,4 +204,9 @@ namespace Metamod::Engine
     {
         return &m_serverPrint;
     }
+
+    IsDedicatedHookRegistry *Hooks::isDedicated()
+    {
+        return &m_isDedicated;
+    }
 }

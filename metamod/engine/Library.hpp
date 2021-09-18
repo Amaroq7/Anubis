@@ -115,6 +115,7 @@ namespace Metamod::Engine
         [[nodiscard]] const enginefuncs_t *getEngineFuncs() const final;
         void initializeEdicts(edict_t *pEdictList, std::uint32_t edictCount, std::uint32_t clientMax) final;
         [[nodiscard]] edict_t *getEngineEdictList() const final;
+        [[nodiscard]] bool isDedicatedServer(FuncCallType callType) const final;
         Cvar *addToCache(cvar_t *cvar);
         void registerCvar(cvar_t *cvar);
 

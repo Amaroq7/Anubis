@@ -101,6 +101,8 @@ namespace Metamod::Engine
         [[nodiscard]] virtual std::uint32_t getWorldmapCrc() const = 0;
         [[nodiscard]] virtual ServerState getState() const = 0;
 
+        [[nodiscard]] virtual bool isDedicatedServer(FuncCallType callType) const = 0;
+
 #if defined META_CORE
         virtual IEdict *getEdict(edict_t *edict) = 0;
         virtual IEntVars *getEntVars(entvars_t *vars) = 0;

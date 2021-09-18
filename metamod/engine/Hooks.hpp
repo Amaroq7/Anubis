@@ -126,6 +126,9 @@ namespace Metamod::Engine
     using ServerPrintHook = Hook<void, std::string_view>;
     using ServerPrintHookRegistry = HookRegistry<void, std::string_view>;
 
+    using IsDedicatedHook = Hook<bool>;
+    using IsDedicatedHookRegistry = HookRegistry<bool>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -165,6 +168,7 @@ namespace Metamod::Engine
         RemoveEntityHookRegistry *removeEntity() final;
         AlertHookRegistry *alert() final;
         ServerPrintHookRegistry *serverPrint() final;
+        IsDedicatedHookRegistry *isDedicated() final;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -200,5 +204,6 @@ namespace Metamod::Engine
         RemoveEntityHookRegistry m_removeEntity;
         AlertHookRegistry m_alert;
         ServerPrintHookRegistry m_serverPrint;
+        IsDedicatedHookRegistry m_isDedicated;
     };
 }
