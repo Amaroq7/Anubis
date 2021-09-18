@@ -214,4 +214,9 @@ namespace Metamod::Engine
     {
         return &m_checkEngParm;
     }
+
+    QueryClientCvarValueHookRegistry *Hooks::queryClientCvarValue()
+    {
+        return &m_queryClientCvarValue;
+    }
 }

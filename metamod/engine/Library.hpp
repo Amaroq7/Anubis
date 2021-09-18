@@ -117,6 +117,7 @@ namespace Metamod::Engine
         [[nodiscard]] edict_t *getEngineEdictList() const final;
         [[nodiscard]] bool isDedicatedServer(FuncCallType callType) const final;
         [[nodiscard]] std::pair<std::size_t, std::string_view> checkEngParm(std::string_view parm, FuncCallType callType) const final;
+        void queryClientCvarValue(const IEdict *player, std::string_view cvarName, std::uint32_t requestID, FuncCallType callType) const final;
         Cvar *addToCache(cvar_t *cvar);
         void registerCvar(cvar_t *cvar);
 

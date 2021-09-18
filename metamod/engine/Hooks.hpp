@@ -132,6 +132,9 @@ namespace Metamod::Engine
     using CheckEngParmHook = Hook<std::pair<std::size_t, std::string_view>, std::string_view>;
     using CheckEngParmHookRegistry = HookRegistry<std::pair<std::size_t, std::string_view>, std::string_view>;
 
+    using QueryClientCvarValueHook = Hook<void, const IEdict *, std::string_view, std::uint32_t>;
+    using QueryClientCvarValueHookRegistry = HookRegistry<void, const IEdict *, std::string_view, std::uint32_t>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -173,6 +176,7 @@ namespace Metamod::Engine
         ServerPrintHookRegistry *serverPrint() final;
         IsDedicatedHookRegistry *isDedicated() final;
         CheckEngParmHookRegistry *checkEngParm() final;
+        QueryClientCvarValueHookRegistry *queryClientCvarValue() final;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -210,5 +214,6 @@ namespace Metamod::Engine
         ServerPrintHookRegistry m_serverPrint;
         IsDedicatedHookRegistry m_isDedicated;
         CheckEngParmHookRegistry m_checkEngParm;
+        QueryClientCvarValueHookRegistry m_queryClientCvarValue;
     };
 }

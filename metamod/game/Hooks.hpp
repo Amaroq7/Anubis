@@ -54,22 +54,26 @@ namespace Metamod::Game
     using GameShutdownHook = Hook<void>;
     using GameShutdownHookRegistry = HookRegistry<void>;
 
-    class Hooks : public IHooks
+    using CvarValueHook = Hook<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
+    using CvarValueHookRegistry = HookRegistry<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
+
+    class Hooks final : public IHooks
     {
     public:
         Hooks() = default;
         ~Hooks() override = default;
 
-        GameInitHookRegistry *gameInit() override;
-        SpawnHookRegistry *spawn() override;
-        ClientConnectHookRegistry *clientConnect() override;
-        ClientPutinServerHookRegistry *clientPutinServer() override;
-        ClientCmdHookRegistry *clientCmd() override;
-        ClientInfoChangedHookRegistry *clientInfoChanged() override;
-        ServerActivateHookRegistry *serverActivate() override;
-        ServerDeactivateHookRegistry *serverDeactivate() override;
-        StartFrameHookRegistry *startFrame() override;
-        GameShutdownHookRegistry *gameShutdown() override;
+        GameInitHookRegistry *gameInit() final;
+        SpawnHookRegistry *spawn() final;
+        ClientConnectHookRegistry *clientConnect() final;
+        ClientPutinServerHookRegistry *clientPutinServer() final;
+        ClientCmdHookRegistry *clientCmd() final;
+        ClientInfoChangedHookRegistry *clientInfoChanged() final;
+        ServerActivateHookRegistry *serverActivate() final;
+        ServerDeactivateHookRegistry *serverDeactivate() final;
+        StartFrameHookRegistry *startFrame() final;
+        GameShutdownHookRegistry *gameShutdown() final;
+        CvarValueHookRegistry *cvarValue() final;
 
     private:
         GameInitHookRegistry m_gameInitRegistry;
@@ -82,5 +86,6 @@ namespace Metamod::Game
         ServerDeactivateHookRegistry m_serverDeactivateRegistry;
         StartFrameHookRegistry m_startFrameRegistry;
         GameShutdownHookRegistry m_gameShutdownRegistry;
+        CvarValueHookRegistry m_cvarValueRegistry;
     };
 }

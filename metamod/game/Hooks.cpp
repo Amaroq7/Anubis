@@ -61,4 +61,9 @@ namespace Metamod::Game
     {
         return &m_spawn;
     }
+
+    CvarValueHookRegistry *Hooks::cvarValue()
+    {
+        return &m_cvarValueRegistry;
+    }
 }

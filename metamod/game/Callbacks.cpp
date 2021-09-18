@@ -122,4 +122,10 @@ namespace Metamod::Game::Callbacks::Engine
         gMetaGlobal->freePluginsResources();
         gEngine->removeExtDll(gGame->getSystemHandle());
     }
+
+    void pfnCvarValue2(const edict_t *pEnt, int requestID, const char *cvarName, const char *value)
+    {
+        gGame->pfnCvarValue(gEngine->getEdict(const_cast<edict_t *>(pEnt)), static_cast<std::uint32_t>(requestID),
+                            cvarName, value, FuncCallType::Hooks);
+    }
 }

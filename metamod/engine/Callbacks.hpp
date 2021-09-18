@@ -73,4 +73,5 @@ namespace Metamod::Engine::Callbacks::GameDLL
     void pfnServerPrint(const char *szMsg);
     int pfnIsDedicatedServer();
     int pfnEngCheckParm(const char *pchCmdLineToken, char **ppnext);
+    void pfnQueryClientCvarValue2(const edict_t *player, const char *cvarName, int requestID);
 }

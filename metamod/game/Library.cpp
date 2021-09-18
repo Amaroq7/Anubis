@@ -184,6 +184,7 @@ namespace Metamod::Game
 #undef ASSIGN_ENT_FUNC
 #define ASSIGN_NEW_DLL_FUNC(func) (m_newDllApiTable.func = Callbacks::Engine::func)
         ASSIGN_NEW_DLL_FUNC(pfnGameShutdown);
+        ASSIGN_NEW_DLL_FUNC(pfnCvarValue2);
 #undef ASSIGN_NEW_DLL_FUNC
     }
 
@@ -318,6 +319,23 @@ namespace Metamod::Game
                 gNewDLLFunctions.pfnGameShutdown();
             }
         }, callType);
+    }
+
+    void Library::pfnCvarValue(const Engine::IEdict *player,
+                               std::uint32_t requestID,
+                               std::string_view cvarName,
+                               std::string_view value,
+                               FuncCallType callType)
+    {
+        static CvarValueHookRegistry *hookchain = m_hooks->cvarValue();
+        _execGameDLLFunc(hookchain,
+            [](const Engine::IEdict *player, std::uint32_t requestID, std::string_view cvarName, std::string_view value) {
+                if (gNewDLLFunctions.pfnCvarValue2)
+                {
+                    gNewDLLFunctions.pfnCvarValue2(static_cast<edict_t *>(*player), static_cast<int>(requestID),
+                                                   cvarName.data(), value.data());
+                }
+        }, callType, player, requestID, cvarName, value);
     }
 
     Module::SystemHandle Library::getSystemHandle() const

@@ -486,6 +486,17 @@ namespace Metamod::Engine
         }, callType, parm);
     }
 
+    void Library::queryClientCvarValue(const IEdict *player,
+                                       std::string_view cvarName,
+                                       std::uint32_t requestID,
+                                       FuncCallType callType) const
+    {
+        static QueryClientCvarValueHookRegistry *hookchain = m_hooks->queryClientCvarValue();
+        _execEngineFunc(hookchain, [](const IEdict *player, std::string_view cvarName, std::uint32_t requestID) {
+            std::invoke(g_engfuncs.pfnQueryClientCvarValue2, static_cast<edict_t *>(*player), cvarName.data(), static_cast<int>(requestID));
+        }, callType, player, cvarName, requestID);
+    }
+
     void Library::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;
@@ -523,6 +534,7 @@ namespace Metamod::Engine
         ASSIGN_ENG_FUNCS(pfnRemoveEntity);
         ASSIGN_ENG_FUNCS(pfnIsDedicatedServer);
         ASSIGN_ENG_FUNCS(pfnEngCheckParm);
+        ASSIGN_ENG_FUNCS(pfnQueryClientCvarValue2);
 #undef ASSIGN_ENG_FUNCS
     }
 

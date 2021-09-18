@@ -204,4 +204,12 @@ namespace Metamod::Engine::Callbacks::GameDLL
 
         return static_cast<int>(pos);
     }
+
+    void pfnQueryClientCvarValue2(const edict_t *player, const char *cvarName, int requestID)
+    {
+        gEngine->queryClientCvarValue(gEngine->getEdict(const_cast<edict_t *>(player)),
+                                      cvarName,
+                                      static_cast<std::uint32_t>(requestID),
+                                      FuncCallType::Hooks);
+    }
 }

@@ -135,6 +135,9 @@ namespace Metamod::Engine
     using ICheckEngParmHook = IHook<std::pair<std::size_t, std::string_view>, std::string_view>;
     using ICheckEngParmHookRegistry = IHookRegistry<std::pair<std::size_t, std::string_view>, std::string_view>;
 
+    using IQueryClientCvarValueHook = IHook<void, const IEdict *, std::string_view, std::uint32_t>;
+    using IQueryClientCvarValueHookRegistry = IHookRegistry<void, const IEdict *, std::string_view, std::uint32_t>;
+
     class IHooks
     {
     public:
@@ -175,5 +178,6 @@ namespace Metamod::Engine
         virtual IServerPrintHookRegistry *serverPrint() = 0;
         virtual IIsDedicatedHookRegistry *isDedicated() = 0;
         virtual ICheckEngParmHookRegistry *checkEngParm() = 0;
+        virtual IQueryClientCvarValueHookRegistry *queryClientCvarValue() = 0;
     };
 }

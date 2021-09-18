@@ -75,6 +75,11 @@ namespace Metamod::Game
         void pfnServerDeactivate(FuncCallType callType) override;
         void pfnStartFrame(FuncCallType callType) override;
         void pfnGameShutdown(FuncCallType callType) override;
+        void pfnCvarValue(const Engine::IEdict *player,
+                          std::uint32_t requestID,
+                          std::string_view cvarName,
+                          std::string_view value,
+                          FuncCallType callType) final;
 
         IBaseEntity *getBaseEntity(Engine::IEdict *edict) override;
         IBasePlayer *getBasePlayer(Engine::IEdict *edict) override;
