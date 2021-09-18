@@ -102,6 +102,7 @@ namespace Metamod::Engine
         [[nodiscard]] virtual ServerState getState() const = 0;
 
         [[nodiscard]] virtual bool isDedicatedServer(FuncCallType callType) const = 0;
+        [[nodiscard]] virtual std::pair<std::size_t, std::string_view> checkEngParm(std::string_view parm, FuncCallType callType) const = 0;
 
 #if defined META_CORE
         virtual IEdict *getEdict(edict_t *edict) = 0;

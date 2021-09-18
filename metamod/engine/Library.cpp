@@ -475,6 +475,17 @@ namespace Metamod::Engine
         }, callType);
     }
 
+    std::pair<std::size_t, std::string_view> Library::checkEngParm(std::string_view parm, FuncCallType callType) const
+    {
+        static CheckEngParmHookRegistry *hookchain = m_hooks->checkEngParm();
+        return _execEngineFunc(hookchain, [](std::string_view parm) -> std::pair<std::size_t, std::string_view> {
+            char *nextParam;
+            auto pos = static_cast<std::size_t>(std::invoke(g_engfuncs.pfnEngCheckParm, parm.data(), &nextParam));
+
+            return { pos, nextParam ? nextParam : std::string_view() };
+        }, callType, parm);
+    }
+
     void Library::_replaceFuncs()
     {
         m_engineFuncs = g_engfuncs;
@@ -511,6 +522,7 @@ namespace Metamod::Engine
         ASSIGN_ENG_FUNCS(pfnCreateEntity);
         ASSIGN_ENG_FUNCS(pfnRemoveEntity);
         ASSIGN_ENG_FUNCS(pfnIsDedicatedServer);
+        ASSIGN_ENG_FUNCS(pfnEngCheckParm);
 #undef ASSIGN_ENG_FUNCS
     }
 

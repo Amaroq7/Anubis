@@ -72,4 +72,5 @@ namespace Metamod::Engine::Callbacks::GameDLL
     void pfnRemoveEntity(edict_t *e);
     void pfnServerPrint(const char *szMsg);
     int pfnIsDedicatedServer();
+    int pfnEngCheckParm(const char *pchCmdLineToken, char **ppnext);
 }

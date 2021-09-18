@@ -132,6 +132,9 @@ namespace Metamod::Engine
     using IIsDedicatedHook = IHook<bool>;
     using IIsDedicatedHookRegistry = IHookRegistry<bool>;
 
+    using ICheckEngParmHook = IHook<std::pair<std::size_t, std::string_view>, std::string_view>;
+    using ICheckEngParmHookRegistry = IHookRegistry<std::pair<std::size_t, std::string_view>, std::string_view>;
+
     class IHooks
     {
     public:
@@ -171,5 +174,6 @@ namespace Metamod::Engine
         virtual IAlertHookRegistry *alert() = 0;
         virtual IServerPrintHookRegistry *serverPrint() = 0;
         virtual IIsDedicatedHookRegistry *isDedicated() = 0;
+        virtual ICheckEngParmHookRegistry *checkEngParm() = 0;
     };
 }

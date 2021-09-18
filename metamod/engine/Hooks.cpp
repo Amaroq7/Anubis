@@ -209,4 +209,9 @@ namespace Metamod::Engine
     {
         return &m_isDedicated;
     }
+
+    CheckEngParmHookRegistry *Hooks::checkEngParm()
+    {
+        return &m_checkEngParm;
+    }
 }

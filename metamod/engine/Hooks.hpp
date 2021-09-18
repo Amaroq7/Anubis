@@ -129,6 +129,9 @@ namespace Metamod::Engine
     using IsDedicatedHook = Hook<bool>;
     using IsDedicatedHookRegistry = HookRegistry<bool>;
 
+    using CheckEngParmHook = Hook<std::pair<std::size_t, std::string_view>, std::string_view>;
+    using CheckEngParmHookRegistry = HookRegistry<std::pair<std::size_t, std::string_view>, std::string_view>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -169,6 +172,7 @@ namespace Metamod::Engine
         AlertHookRegistry *alert() final;
         ServerPrintHookRegistry *serverPrint() final;
         IsDedicatedHookRegistry *isDedicated() final;
+        CheckEngParmHookRegistry *checkEngParm() final;
 
     private:
         PrecacheModelHookRegistry m_precacheModelRegistry;
@@ -205,5 +209,6 @@ namespace Metamod::Engine
         AlertHookRegistry m_alert;
         ServerPrintHookRegistry m_serverPrint;
         IsDedicatedHookRegistry m_isDedicated;
+        CheckEngParmHookRegistry m_checkEngParm;
     };
 }

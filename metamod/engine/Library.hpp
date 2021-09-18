@@ -116,6 +116,7 @@ namespace Metamod::Engine
         void initializeEdicts(edict_t *pEdictList, std::uint32_t edictCount, std::uint32_t clientMax) final;
         [[nodiscard]] edict_t *getEngineEdictList() const final;
         [[nodiscard]] bool isDedicatedServer(FuncCallType callType) const final;
+        [[nodiscard]] std::pair<std::size_t, std::string_view> checkEngParm(std::string_view parm, FuncCallType callType) const final;
         Cvar *addToCache(cvar_t *cvar);
         void registerCvar(cvar_t *cvar);
 
