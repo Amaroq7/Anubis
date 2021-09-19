@@ -200,7 +200,10 @@ namespace Metamod::Engine::Callbacks::GameDLL
     {
         const auto &[pos, nextParam] = gEngine->checkEngParm(pchCmdLineToken, FuncCallType::Hooks);
 
-        *ppnext = nextParam.empty() ? nullptr : const_cast<char *>(nextParam.data());
+        if (ppnext)
+        {
+            *ppnext = nextParam.empty() ? nullptr : const_cast<char *>(nextParam.data());
+        }
 
         return static_cast<int>(pos);
     }
