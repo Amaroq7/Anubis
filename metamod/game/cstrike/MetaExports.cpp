@@ -30,9 +30,10 @@ Metamod::Game::ILibrary *gGameLib;
 Metamod::Engine::ILibrary *gEngineLib;
 Metamod::IMetamod *gMetamod;
 IReGameApi *gReGameAPI;
+CSysModule *gGameModule;
 //std::unordered_map<std::string, std::uint32_t> gVOffsets;
 
-bool _initReGameDLL_API()
+static bool initReGameDLL_API()
 {
     fs::path regameDllPath = gMetamod->getPath(Metamod::PathType::Game) / "dlls";
 #if defined __linux__
@@ -42,12 +43,12 @@ bool _initReGameDLL_API()
 #endif
 
 #if defined __linux__
-    CSysModule *gameModule = Sys_LoadModule(regameDllPath.c_str());
+    gGameModule = Sys_LoadModule(regameDllPath.c_str());
 #elif defined _WIN32
-    CSysModule *gameModule = Sys_LoadModule(regameDllPath.string().c_str());
+    gGameModule = Sys_LoadModule(regameDllPath.string().c_str());
 #endif
 
-    CreateInterfaceFn ifaceFactory = Sys_GetFactory(gameModule);
+    CreateInterfaceFn ifaceFactory = Sys_GetFactory(gGameModule);
     if (!ifaceFactory)
     {
         gMetamod->logMsg(Metamod::LogLevel::Error, Metamod::LogDest::File | Metamod::LogDest::Console, "Failed to locate engine module");
@@ -127,7 +128,7 @@ C_DLLEXPORT void InitGameEntitiesDLL(
         return vTable;
     };*/
 
-    if (!_initReGameDLL_API())
+    if (!initReGameDLL_API())
     {
         return;
     }
@@ -143,4 +144,9 @@ C_DLLEXPORT Metamod::Game::IBasePlayerHooks *GetBasePlayerHooks()
 C_DLLEXPORT Metamod::Game::IEntityHolder *GetEntityHolder()
 {
     return &gEntityHolder;
+}
+
+C_DLLEXPORT void FreeGameEntitiesDLL()
+{
+    Sys_UnloadModule(gGameModule);
 }

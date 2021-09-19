@@ -39,6 +39,9 @@ class IRehldsApi;
 #include "GameClient.hpp"
 #include "Cvar.hpp"
 
+#include <rehlds_api.h>
+#include <engine_hlds_api.h>
+
 #include <unordered_map>
 #include <forward_list>
 #include <array>
@@ -56,7 +59,7 @@ namespace Metamod::Engine
         Library();
         Library(const Library &other) = delete;
         Library(Library &&other) = delete;
-        ~Library() final = default;
+        ~Library();
 
         // IEngine
         Edict *getEdict(std::uint32_t index) final;
@@ -150,5 +153,6 @@ namespace Metamod::Engine
         std::unordered_map<std::string, ServerCmdCallback> m_srvCmds;
         enginefuncs_t m_engineFuncs = {};
         edict_t *m_edictList = nullptr;
+        CSysModule *m_engineLibrary;
     };
 } // namespace Metamod::Engine

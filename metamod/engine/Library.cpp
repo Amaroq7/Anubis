@@ -23,9 +23,6 @@
 #include "Library.hpp"
 #include "Callbacks.hpp"
 
-#include <rehlds_api.h>
-#include <engine_hlds_api.h>
-
 #include "ReHooks.hpp"
 
 #include <MetaCvars.hpp>
@@ -51,6 +48,11 @@ namespace Metamod::Engine
         _replaceFuncs();
 
         m_reHLDSFuncs->AddCvarListener(gMetaLogLevelCvar.name, CvarListener::metaLogLevel);
+    }
+
+    Library::~Library()
+    {
+        Sys_UnloadModule(m_engineLibrary);
     }
 
     Edict *Library::getEdict(std::uint32_t index)
@@ -134,13 +136,13 @@ namespace Metamod::Engine
 
     const RehldsFuncs_t *Library::_initReHLDSAPI()
     {
-        CSysModule *engineModule = Sys_LoadModule(ENGINE_LIB);
-        if (!engineModule)
+        m_engineLibrary = Sys_LoadModule(ENGINE_LIB);
+        if (!m_engineLibrary)
         {
             throw std::runtime_error("Failed to locate engine module");
         }
 
-        CreateInterfaceFn ifaceFactory = Sys_GetFactory(engineModule);
+        CreateInterfaceFn ifaceFactory = Sys_GetFactory(m_engineLibrary);
         if (!ifaceFactory)
         {
             throw std::runtime_error("Failed to locate interface factory in engine module");

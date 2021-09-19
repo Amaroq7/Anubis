@@ -18,15 +18,12 @@
  */
 
 #include "Metamod.hpp"
-#include "EngineExports.hpp"
 #include "engine/Library.hpp"
 #include "game/Library.hpp"
 #include <MetaInfo.hpp>
 #include <Utils.hpp>
-#include <MetaCvars.hpp>
 
 #include <yaml-cpp/yaml.h>
-#include <fmt/format.h>
 #include <fmt/color.h>
 #include <fmt/ostream.h>
 
@@ -176,7 +173,7 @@ namespace Metamod
                 continue;
             }
 
-            std::string pluginPathStr = pluginsIt->second["path"].as<std::string>();
+            auto pluginPathStr = pluginsIt->second["path"].as<std::string>();
             fs::path pluginPath(pluginPathStr);
 
             if (!pluginPath.is_absolute())
@@ -299,7 +296,7 @@ namespace Metamod
     {
         time_t currentTime;
         time(&currentTime);
-        tm convertedTime;
+        tm convertedTime = {};
 
         static std::int8_t lastOpenedFileDay = -1;
         static std::ofstream logFile;

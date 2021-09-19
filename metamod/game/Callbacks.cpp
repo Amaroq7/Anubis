@@ -121,6 +121,7 @@ namespace Metamod::Game::Callbacks::Engine
         gGame->pfnGameShutdown(FuncCallType::Hooks);
         gMetaGlobal->freePluginsResources();
         gEngine->removeExtDll(gGame->getSystemHandle());
+        gGame->freeEntitiesDLL();
     }
 
     void pfnCvarValue2(const edict_t *pEnt, int requestID, const char *cvarName, const char *value)

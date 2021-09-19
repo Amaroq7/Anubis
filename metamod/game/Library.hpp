@@ -53,12 +53,12 @@ namespace Metamod::Game
             const fs::path &metaConfigsDir
         );
 
-        std::string_view getName() const override;
-        std::string_view getDesc() const override;
-        const fs::path &getGameDir() const override;
-        const fs::path &getPathname() const override;
-        Mod getMod() const final;
-        Hooks *getHooks() const override;
+        [[nodiscard]] std::string_view getName() const final;
+        [[nodiscard]] std::string_view getDesc() const final;
+        [[nodiscard]] const fs::path &getGameDir() const final;
+        [[nodiscard]] const fs::path &getPathname() const final;
+        [[nodiscard]] Mod getMod() const final;
+        [[nodiscard]] Hooks *getHooks() const final;
 
         bool callGameEntity(std::string_view name, Engine::IEntVars *pev) override;
 
@@ -88,8 +88,9 @@ namespace Metamod::Game
 
         void *getDllFuncs() final;
         void *getNewDllFuncs() final;
-        Module::SystemHandle getSystemHandle() const final;
+        [[nodiscard]] Module::SystemHandle getSystemHandle() const final;
         void setMaxClients(std::uint32_t maxClients);
+        void freeEntitiesDLL();
 
     private:
         void _loadGameDLL();

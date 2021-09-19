@@ -18,7 +18,6 @@
  */
 
 #include <extdll.h>
-#include <enginecallback.h>
 #include <util.h>
 
 #include "../EngineExports.hpp"
@@ -481,5 +480,14 @@ namespace Metamod::Game
         m_entityHolder = std::invoke(GetEntityHolder);
 
         m_entityLibrary = std::move(entityLib);
+    }
+
+    void Library::freeEntitiesDLL()
+    {
+        auto fnFreeResources = m_entityLibrary->getSymbol<fnFreeResourcesEntityDLL>("FreeGameEntitiesDLL");
+        if (fnFreeResources)
+        {
+            std::invoke(fnFreeResources);
+        }
     }
 }

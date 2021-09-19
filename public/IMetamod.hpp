@@ -289,5 +289,8 @@ namespace Metamod
 
     using fnGetEntityHolder = Game::IEntityHolder *(*)();
     C_DLLEXPORT Metamod::Game::IEntityHolder *GetEntityHolder();
+
+    using fnFreeResourcesEntityDLL = void (*)();
+    C_DLLEXPORT void FreeGameEntitiesDLL();
 #endif
 }
