@@ -85,6 +85,14 @@ static bool initReGameDLL_API()
         return false;
     }
 
+    if (!reGameAPI->BGetICSEntity(CSENTITY_API_INTERFACE_VERSION))
+    {
+        using namespace std::string_literals;
+        gMetamod->logMsg(Metamod::LogLevel::Error, Metamod::LogDest::ConsoleFile,
+                         "Interface CCSEntity API version '"s + CSENTITY_API_INTERFACE_VERSION + "' not found");
+        return false;
+    }
+
     gReGameAPI = reGameAPI;
     return true;
 }

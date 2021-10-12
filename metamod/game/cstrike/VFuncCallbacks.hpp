@@ -46,4 +46,7 @@ namespace Metamod::Game::VFunc
 
     void vCBasePlayerKilled(IReGameHook_CBasePlayer_Killed *hook,
                             CBasePlayer *player, entvars_t *pevAttacker, int iGib);
+
+    void vCBasePlayerGiveShield(IReGameHook_CBasePlayer_GiveShield *hook, CBasePlayer *player, bool deploy);
+    CBaseEntity *vCBasePlayerDropShield(IReGameHook_CBasePlayer_DropShield *hook, CBasePlayer *player, bool deploy);
 } // namespace

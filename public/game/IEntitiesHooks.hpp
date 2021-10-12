@@ -47,6 +47,15 @@ namespace Metamod::Game
     using IBasePlayerKilledHook = IClassHook<void, IBasePlayer *, Engine::IEntVars *, GibType>;
     using IBasePlayerKilledHookRegistry = IClassHookRegistry<void, IBasePlayer *, Engine::IEntVars *, GibType>;
 
+    using IBasePlayerKilledHook = IClassHook<void, IBasePlayer *, Engine::IEntVars *, GibType>;
+    using IBasePlayerKilledHookRegistry = IClassHookRegistry<void, IBasePlayer *, Engine::IEntVars *, GibType>;
+
+    using IBasePlayerGiveShieldHook = IClassHook<void, IBasePlayer *, bool>;
+    using IBasePlayerGiveShieldHookRegistry = IClassHookRegistry<void, IBasePlayer *, bool>;
+
+    using IBasePlayerDropShieldHook = IClassHook<IBaseEntity *, IBasePlayer *, bool>;
+    using IBasePlayerDropShieldHookRegistry = IClassHookRegistry<IBaseEntity *, IBasePlayer *, bool>;
+
     class IBasePlayerHooks
     {
     public:
@@ -56,5 +65,7 @@ namespace Metamod::Game
         virtual IBasePlayerTakeDamageHookRegistry *takeDamage() = 0;
         virtual IBasePlayerTraceAttackHookRegistry *traceAttack() = 0;
         virtual IBasePlayerKilledHookRegistry *killed() = 0;
+        virtual IBasePlayerGiveShieldHookRegistry *giveShield() = 0;
+        virtual IBasePlayerDropShieldHookRegistry *dropShield() = 0;
     };
 }

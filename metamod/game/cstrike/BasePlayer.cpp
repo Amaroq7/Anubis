@@ -23,19 +23,19 @@
 
 #include <extdll.h>
 #include <tier0/platform.h>
-#include <enginecallback.h>
 #include <util.h>
 #include <cbase.h>
 #include <player.h>
-#include <regamedll_interfaces.h>
+#include <API/CSEntity.h>
+#include <API/CSPlayer.h>
 
 namespace Metamod::Game::CStrike
 {
-    BasePlayer::BasePlayer(Engine::IEdict *edict) : BaseMonster(edict) {}
+    BasePlayer::BasePlayer(Engine::IEdict *edict) : BaseMonster(edict) { }
 
     BasePlayer::operator CBasePlayer *() const
     {
-        return reinterpret_cast<CBasePlayer *>(m_edict->getPrivateData());
+        return reinterpret_cast<CBasePlayer *>(m_entity);
     }
 
     void BasePlayer::makeVIP()
@@ -52,4 +52,24 @@ namespace Metamod::Game::CStrike
                                                     static_cast<entvars_t *>(*pevAttacker),
                                                     flDamage, bitsDamageType) == TRUE;
     }
-} // namespace Valve
+
+    void BasePlayer::giveShield(bool deploy)
+    {
+        operator CBasePlayer *()->CSPlayer()->GiveShield(deploy);
+    }
+
+    void BasePlayer::removeShield()
+    {
+        operator CBasePlayer *()->CSPlayer()->RemoveShield();
+    }
+
+    void BasePlayer::dropShield(bool deploy)
+    {
+        operator CBasePlayer *()->CSPlayer()->DropShield(deploy);
+    }
+
+    bool BasePlayer::hasShield() const
+    {
+        return operator CBasePlayer *()->m_bOwnsShield;
+    }
+} // namespace CStrike

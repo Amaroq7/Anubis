@@ -24,6 +24,8 @@
 
 #include <string_view>
 
+#include "VFuncCallbacks.hpp"
+
 class CBaseEntity;
 
 namespace Metamod::Game::CStrike
@@ -41,10 +43,11 @@ namespace Metamod::Game::CStrike
             int takeHealth(float flHealth, int bitsDamageType) const override;
             bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType) override;
 
+        public:
+            explicit operator CBaseEntity *() const;
+
         protected:
             Engine::IEdict *m_edict;
-
-        private:
-            operator CBaseEntity *() const;
+            CBaseEntity *m_entity;
     };
 }

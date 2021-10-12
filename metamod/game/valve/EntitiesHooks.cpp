@@ -51,4 +51,15 @@ namespace Metamod::Game::Valve
     {
         return &m_killed;
     }
+
+    BasePlayerGiveShieldHookRegistry *BasePlayerHooks::giveShield()
+    {
+        return nullptr;
+    }
+
+    BasePlayerDropShieldHookRegistry *BasePlayerHooks::dropShield()
+    {
+        return nullptr;
+    }
+
 }

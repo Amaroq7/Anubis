@@ -45,6 +45,16 @@ namespace Metamod::Game::CStrike
             rehooks->CBasePlayer_Killed()->registerHook(Game::VFunc::vCBasePlayerKilled);
         }, [rehooks]() {
             rehooks->CBasePlayer_Killed()->unregisterHook(Game::VFunc::vCBasePlayerKilled);
+        }),
+        m_giveShield([rehooks]() {
+            rehooks->CBasePlayer_GiveShield()->registerHook(Game::VFunc::vCBasePlayerGiveShield);
+        }, [rehooks]() {
+            rehooks->CBasePlayer_GiveShield()->unregisterHook(Game::VFunc::vCBasePlayerGiveShield);
+        }),
+        m_dropShield([rehooks]() {
+            rehooks->CBasePlayer_DropShield()->registerHook(Game::VFunc::vCBasePlayerDropShield);
+        }, [rehooks]() {
+            rehooks->CBasePlayer_DropShield()->unregisterHook(Game::VFunc::vCBasePlayerDropShield);
         })
     {}
 
@@ -67,4 +77,15 @@ namespace Metamod::Game::CStrike
     {
         return &m_killed;
     }
+
+    BasePlayerGiveShieldHookRegistry *BasePlayerHooks::giveShield()
+    {
+        return &m_giveShield;
+    }
+
+    BasePlayerDropShieldHookRegistry *BasePlayerHooks::dropShield()
+    {
+        return &m_dropShield;
+    }
+
 }

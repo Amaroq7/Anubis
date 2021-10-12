@@ -39,6 +39,12 @@ namespace Metamod::Game::CStrike
     using BasePlayerKilledHook = ClassHook<void, IBasePlayer *, Engine::IEntVars *, GibType>;
     using BasePlayerKilledHookRegistry = ClassHookRegistry<void, IBasePlayer *, Engine::IEntVars *, GibType>;
 
+    using BasePlayerGiveShieldHook = ClassHook<void, IBasePlayer *, bool>;
+    using BasePlayerGiveShieldHookRegistry = ClassHookRegistry<void, IBasePlayer *, bool>;
+
+    using BasePlayerDropShieldHook = ClassHook<IBaseEntity *, IBasePlayer *, bool>;
+    using BasePlayerDropShieldHookRegistry = ClassHookRegistry<IBaseEntity *, IBasePlayer *, bool>;
+
     class BasePlayerHooks final : public IBasePlayerHooks
     {
     public:
@@ -49,12 +55,16 @@ namespace Metamod::Game::CStrike
         BasePlayerTakeDamageHookRegistry *takeDamage() final;
         BasePlayerTraceAttackHookRegistry *traceAttack() final;
         BasePlayerKilledHookRegistry *killed() final;
+        BasePlayerGiveShieldHookRegistry *giveShield() final;
+        BasePlayerDropShieldHookRegistry *dropShield() final;
 
     private:
         BasePlayerSpawnHookRegistry m_spawn;
         BasePlayerTakeDamageHookRegistry m_takeDamage;
         BasePlayerTraceAttackHookRegistry m_traceAttack;
         BasePlayerKilledHookRegistry m_killed;
+        BasePlayerGiveShieldHookRegistry m_giveShield;
+        BasePlayerDropShieldHookRegistry m_dropShield;
     };
 }
 

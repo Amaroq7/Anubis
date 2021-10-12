@@ -42,6 +42,10 @@ namespace
         {
             return gEntityHolder.getBasePlayer(gEngineLib->getEdict(instance->edict()));
         }
+        else if constexpr (std::is_same_v<T, Game::IBaseEntity>)
+        {
+            return gEntityHolder.getBaseEntity(gEngineLib->getEdict(instance->edict()));
+        }
 
         return nullptr;
     }
@@ -117,5 +121,27 @@ namespace Metamod::Game::VFunc
         }, [hook, player](IBasePlayer *, Engine::IEntVars *pevAttacker, GibType gibType) {
             hook->callOriginal(player, static_cast<entvars_t *>(*pevAttacker), static_cast<int>(gibType));
         }, instanceToType<IBasePlayer>(player), gEngineLib->getEntVars(pevAttacker), static_cast<GibType>(iGib));
+    }
+
+    void vCBasePlayerGiveShield(IReGameHook_CBasePlayer_GiveShield *hook, CBasePlayer *player, bool deploy)
+    {
+        static Game::CStrike::BasePlayerGiveShieldHookRegistry *hookchain = gBasePlayerHooks->giveShield();
+
+        hookchain->callChain([hook, player](IBasePlayer *, bool deploy) {
+            hook->callNext(player, deploy);
+        }, [hook, player](IBasePlayer *, bool deploy) {
+            hook->callOriginal(player, deploy);
+        }, instanceToType<IBasePlayer>(player), deploy);
+    }
+
+    CBaseEntity *vCBasePlayerDropShield(IReGameHook_CBasePlayer_DropShield *hook, CBasePlayer *player, bool deploy)
+    {
+        static Game::CStrike::BasePlayerDropShieldHookRegistry *hookchain = gBasePlayerHooks->dropShield();
+
+        return static_cast<CBaseEntity *>(*dynamic_cast<CStrike::BaseEntity *>(hookchain->callChain([hook, player](IBasePlayer *, bool deploy) {
+            return instanceToType<IBaseEntity>(hook->callNext(player, deploy));
+        }, [hook, player](IBasePlayer *, bool deploy) {
+            return instanceToType<IBaseEntity>(hook->callOriginal(player, deploy));
+        }, instanceToType<IBasePlayer>(player), deploy)));
     }
 }

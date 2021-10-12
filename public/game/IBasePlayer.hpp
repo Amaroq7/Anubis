@@ -29,7 +29,10 @@ namespace Metamod::Game
         public:
             ~IBasePlayer() override = default;
             virtual void makeVIP() = 0;
-            //virtual void killed() = 0;
+            virtual void giveShield(bool deploy) = 0;
+            virtual void removeShield() = 0;
+            virtual void dropShield(bool deploy) = 0;
+            [[nodiscard]] virtual bool hasShield() const = 0;
 
 #if defined META_CORE
         public:

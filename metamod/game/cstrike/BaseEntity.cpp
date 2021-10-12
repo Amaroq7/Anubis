@@ -31,7 +31,8 @@
 namespace Metamod::Game::CStrike
 {
     BaseEntity::BaseEntity(Engine::IEdict *edict)
-      : m_edict(const_cast<Engine::IEdict *>(edict))
+      : m_edict(const_cast<Engine::IEdict *>(edict)),
+        m_entity(reinterpret_cast<CBaseEntity *>(edict->getPrivateData()))
     {}
 
     Engine::IEdict *BaseEntity::edict() const
@@ -46,17 +47,17 @@ namespace Metamod::Game::CStrike
 
     bool BaseEntity::isAlive() const
     {
-      return operator CBaseEntity *()->IsAlive() == 1;
+        return m_entity->IsAlive() == TRUE;
     }
 
     int BaseEntity::takeHealth(float flHealth, int bitsDamageType) const
     {
-      return operator CBaseEntity *()->TakeHealth(flHealth, bitsDamageType);
+        return m_entity->TakeHealth(flHealth, bitsDamageType);
     }
 
     std::string_view BaseEntity::getTeam() const
     {
-      return operator CBaseEntity *()->TeamID();
+        return m_entity->TeamID();
     }
 
     bool BaseEntity::takeDamage(Engine::IEntVars *pevInflictor,
@@ -64,13 +65,13 @@ namespace Metamod::Game::CStrike
                                 float flDamage,
                                 std::int32_t bitsDamageType)
     {
-        return operator CBaseEntity *()->TakeDamage(static_cast<entvars_t *>(*pevInflictor),
-                                                    static_cast<entvars_t *>(*pevAttacker),
-                                                    flDamage, bitsDamageType) == TRUE;
+        return m_entity->TakeDamage(static_cast<entvars_t *>(*pevInflictor),
+                                    static_cast<entvars_t *>(*pevAttacker),
+                                    flDamage, bitsDamageType) == TRUE;
     }
 
     BaseEntity::operator CBaseEntity *() const
     {
-        return reinterpret_cast<CBaseEntity *>(m_edict->getPrivateData());
+        return m_entity;
     }
 } // namespace Valve

@@ -34,10 +34,18 @@ namespace Metamod::Game::Valve
 
     BasePlayer::operator CBasePlayer *() const
     {
-        return reinterpret_cast<CBasePlayer *>(m_edict->getPrivateData());
+        return reinterpret_cast<CBasePlayer *>(m_entity);
     }
 
     void BasePlayer::makeVIP() { /* CStrike only */ }
+    void BasePlayer::giveShield(bool deploy [[maybe_unused]]) { /* CStrike only */ }
+    void BasePlayer::removeShield() { /* CStrike only */ }
+    void BasePlayer::dropShield(bool deploy [[maybe_unused]]) { /* CStrike only */ }
+    bool BasePlayer::hasShield() const
+    {
+        /* CStrike only */
+        return false;
+    }
 
     bool BasePlayer::takeDamage(Engine::IEntVars *pevInflictor,
                                Engine::IEntVars *pevAttacker,
@@ -48,4 +56,5 @@ namespace Metamod::Game::Valve
                                                     static_cast<entvars_t *>(*pevAttacker),
                                                     flDamage, bitsDamageType) == TRUE;
     }
+
 } // namespace Valve

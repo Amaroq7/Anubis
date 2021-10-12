@@ -21,15 +21,18 @@ namespace Metamod::Game::Valve
             static constexpr const char *CLASS_NAME = "player";
 
         public:
-            BasePlayer(Engine::IEdict *edict);
+            explicit BasePlayer(Engine::IEdict *edict);
             ~BasePlayer() override = default;
 
         public:
             bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType) override;
             void makeVIP() override;
-            //void killed() final;
+            void giveShield(bool deploy) override;
+            void removeShield() override;
+            void dropShield(bool deploy) override;
+            [[nodiscard]] bool hasShield() const override;
 
-        private:
-            operator CBasePlayer *() const;
+        public:
+            explicit operator CBasePlayer *() const;
     };
 }

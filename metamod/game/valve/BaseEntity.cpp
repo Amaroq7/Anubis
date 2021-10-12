@@ -30,7 +30,9 @@
 
 namespace Metamod::Game::Valve
 {
-    BaseEntity::BaseEntity(Engine::IEdict *edict) : m_edict(edict) {}
+    BaseEntity::BaseEntity(Engine::IEdict *edict)
+        : m_edict(edict), m_entity(reinterpret_cast<CBaseEntity *>(edict->getPrivateData()))
+    {}
 
     Metamod::Engine::IEdict *BaseEntity::edict() const
     {
@@ -39,11 +41,10 @@ namespace Metamod::Game::Valve
 
     void BaseEntity::remove()
     {
-        CBaseEntity *baseEntity = operator CBaseEntity *();
-        if (baseEntity->pev->health > 0)
+        if (m_entity->pev->health > 0)
         {
             // this situation can screw up monsters who can't tell their entity pointers are invalid.
-            baseEntity->pev->health = 0;
+            m_entity->pev->health = 0;
             gEngineLib->alert(Engine::AlertType::Aiconsole, "remove called on entity with health > 0\n", FuncCallType::Direct);
         }
 
@@ -52,17 +53,17 @@ namespace Metamod::Game::Valve
 
     bool BaseEntity::isAlive() const
     {
-        return operator CBaseEntity *()->IsAlive() == 1;
+        return m_entity->IsAlive() == TRUE;
     }
 
     int BaseEntity::takeHealth(float flHealth, int bitsDamageType) const
     {
-        return operator CBaseEntity *()->TakeHealth(flHealth, bitsDamageType);
+        return m_entity->TakeHealth(flHealth, bitsDamageType);
     }
 
     std::string_view BaseEntity::getTeam() const
     {
-        return operator CBaseEntity *()->TeamID();
+        return m_entity->TeamID();
     }
 
     bool BaseEntity::takeDamage(Engine::IEntVars *pevInflictor,
@@ -70,13 +71,13 @@ namespace Metamod::Game::Valve
                                 float flDamage,
                                 std::int32_t bitsDamageType)
     {
-        return operator CBaseEntity *()->TakeDamage(static_cast<entvars_t *>(*pevInflictor),
-                                                    static_cast<entvars_t *>(*pevAttacker),
-                                                    flDamage, bitsDamageType) == TRUE;
+        return m_entity->TakeDamage(static_cast<entvars_t *>(*pevInflictor),
+                                    static_cast<entvars_t *>(*pevAttacker),
+                                    flDamage, bitsDamageType) == TRUE;
     }
 
     BaseEntity::operator CBaseEntity *() const
     {
-        return reinterpret_cast<CBaseEntity *>(m_edict->getPrivateData());
+        return m_entity;
     }
 } // namespace Valve

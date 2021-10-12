@@ -38,9 +38,12 @@ namespace Metamod::Game::CStrike
     public:
         bool takeDamage(Engine::IEntVars *pevInflictor, Engine::IEntVars *pevAttacker, float flDamage, std::int32_t bitsDamageType) override;
         void makeVIP() override;
-        //void killed() override;
+        void giveShield(bool deploy) override;
+        void removeShield() override;
+        void dropShield(bool deploy) override;
+        [[nodiscard]] bool hasShield() const override;
 
-    private:
-        operator CBasePlayer *() const;
+    public:
+        explicit operator CBasePlayer *() const;
     };
 }
