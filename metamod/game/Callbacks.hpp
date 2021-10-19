@@ -46,5 +46,6 @@ namespace Metamod::Game::Callbacks::Engine
     void pfnServerDeactivate();
     void pfnStartFrame();
     void pfnGameShutdown();
+    void pfnCvarValue(const edict_t *pEnt, const char *value);
     void pfnCvarValue2(const edict_t *pEnt, int requestID, const char *cvarName, const char *value);
 }

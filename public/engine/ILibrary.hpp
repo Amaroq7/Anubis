@@ -103,7 +103,8 @@ namespace Metamod::Engine
 
         [[nodiscard]] virtual bool isDedicatedServer(FuncCallType callType) const = 0;
         [[nodiscard]] virtual std::pair<std::size_t, std::string_view> checkEngParm(std::string_view parm, FuncCallType callType) const = 0;
-        virtual void queryClientCvarValue(const IEdict *player, std::string_view cvarName, std::uint32_t requestID, FuncCallType callType) const = 0;
+        virtual void queryClientCvarValue(const IEdict *player, std::string_view cvarName, FuncCallType callType) const = 0;
+        virtual void queryClientCvarValue2(const IEdict *player, std::string_view cvarName, std::uint32_t requestID, FuncCallType callType) const = 0;
 
 #if defined META_CORE
         virtual IEdict *getEdict(edict_t *edict) = 0;

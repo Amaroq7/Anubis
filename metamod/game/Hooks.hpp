@@ -54,8 +54,11 @@ namespace Metamod::Game
     using GameShutdownHook = Hook<void>;
     using GameShutdownHookRegistry = HookRegistry<void>;
 
-    using CvarValueHook = Hook<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
-    using CvarValueHookRegistry = HookRegistry<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
+    using CvarValueHook = Hook<void, const Engine::IEdict *, std::string_view>;
+    using CvarValueHookRegistry = HookRegistry<void, const Engine::IEdict *, std::string_view>;
+
+    using CvarValue2Hook = Hook<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
+    using CvarValue2HookRegistry = HookRegistry<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
 
     class Hooks final : public IHooks
     {
@@ -74,6 +77,7 @@ namespace Metamod::Game
         StartFrameHookRegistry *startFrame() final;
         GameShutdownHookRegistry *gameShutdown() final;
         CvarValueHookRegistry *cvarValue() final;
+        CvarValue2HookRegistry *cvarValue2() final;
 
     private:
         GameInitHookRegistry m_gameInitRegistry;
@@ -87,5 +91,6 @@ namespace Metamod::Game
         StartFrameHookRegistry m_startFrameRegistry;
         GameShutdownHookRegistry m_gameShutdownRegistry;
         CvarValueHookRegistry m_cvarValueRegistry;
+        CvarValue2HookRegistry m_cvarValue2Registry;
     };
 }

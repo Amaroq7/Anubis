@@ -63,8 +63,11 @@ namespace Metamod::Game
     using IGameShutdownHook = IHook<void>;
     using IGameShutdownHookRegistry = IHookRegistry<void>;
 
-    using ICvarValueHook = IHook<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
-    using ICvarValueHookRegistry = IHookRegistry<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
+    using ICvarValueHook = IHook<void, const Engine::IEdict *, std::string_view>;
+    using ICvarValueHookRegistry = IHookRegistry<void, const Engine::IEdict *, std::string_view>;
+
+    using ICvarValue2Hook = IHook<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
+    using ICvarValue2HookRegistry = IHookRegistry<void, const Engine::IEdict *, std::uint32_t, std::string_view, std::string_view>;
 
     class IHooks
     {
@@ -82,5 +85,6 @@ namespace Metamod::Game
         virtual IStartFrameHookRegistry *startFrame() = 0;
         virtual IGameShutdownHookRegistry *gameShutdown() = 0;
         virtual ICvarValueHookRegistry *cvarValue() = 0;
+        virtual ICvarValue2HookRegistry *cvarValue2() = 0;
     };
 }

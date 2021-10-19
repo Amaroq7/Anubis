@@ -124,9 +124,14 @@ namespace Metamod::Game::Callbacks::Engine
         gGame->freeEntitiesDLL();
     }
 
+    void pfnCvarValue(const edict_t *pEnt, const char *value)
+    {
+        gGame->pfnCvarValue(gEngine->getEdict(const_cast<edict_t *>(pEnt)), value, FuncCallType::Hooks);
+    }
+
     void pfnCvarValue2(const edict_t *pEnt, int requestID, const char *cvarName, const char *value)
     {
-        gGame->pfnCvarValue(gEngine->getEdict(const_cast<edict_t *>(pEnt)), static_cast<std::uint32_t>(requestID),
+        gGame->pfnCvarValue2(gEngine->getEdict(const_cast<edict_t *>(pEnt)), static_cast<std::uint32_t>(requestID),
                             cvarName, value, FuncCallType::Hooks);
     }
 }

@@ -219,4 +219,9 @@ namespace Metamod::Engine
     {
         return &m_queryClientCvarValue;
     }
+
+    QueryClientCvarValue2HookRegistry *Hooks::queryClientCvarValue2()
+    {
+        return &m_queryClientCvarValue2;
+    }
 }

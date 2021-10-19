@@ -85,10 +85,13 @@ namespace Metamod::Game
         virtual void pfnStartFrame(FuncCallType callType) = 0;
         virtual void pfnGameShutdown(FuncCallType callType) = 0;
         virtual void pfnCvarValue(const Engine::IEdict *player,
-                                  std::uint32_t requestID,
-                                  std::string_view cvarName,
                                   std::string_view value,
                                   FuncCallType callType) = 0;
+        virtual void pfnCvarValue2(const Engine::IEdict *player,
+                                   std::uint32_t requestID,
+                                   std::string_view cvarName,
+                                   std::string_view value,
+                                   FuncCallType callType) = 0;
 
         /**
          * @brief Returns entity.

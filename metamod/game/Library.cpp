@@ -183,6 +183,7 @@ namespace Metamod::Game
 #undef ASSIGN_ENT_FUNC
 #define ASSIGN_NEW_DLL_FUNC(func) (m_newDllApiTable.func = Callbacks::Engine::func)
         ASSIGN_NEW_DLL_FUNC(pfnGameShutdown);
+        ASSIGN_NEW_DLL_FUNC(pfnCvarValue);
         ASSIGN_NEW_DLL_FUNC(pfnCvarValue2);
 #undef ASSIGN_NEW_DLL_FUNC
     }
@@ -321,12 +322,26 @@ namespace Metamod::Game
     }
 
     void Library::pfnCvarValue(const Engine::IEdict *player,
+                               std::string_view value,
+                               FuncCallType callType)
+    {
+        static CvarValueHookRegistry *hookchain = m_hooks->cvarValue();
+        _execGameDLLFunc(hookchain,
+            [](const Engine::IEdict *player, std::string_view value) {
+                if (gNewDLLFunctions.pfnCvarValue)
+                {
+                    gNewDLLFunctions.pfnCvarValue(static_cast<edict_t *>(*player), value.data());
+                }
+        }, callType, player, value);
+    }
+
+    void Library::pfnCvarValue2(const Engine::IEdict *player,
                                std::uint32_t requestID,
                                std::string_view cvarName,
                                std::string_view value,
                                FuncCallType callType)
     {
-        static CvarValueHookRegistry *hookchain = m_hooks->cvarValue();
+        static CvarValue2HookRegistry *hookchain = m_hooks->cvarValue2();
         _execGameDLLFunc(hookchain,
             [](const Engine::IEdict *player, std::uint32_t requestID, std::string_view cvarName, std::string_view value) {
                 if (gNewDLLFunctions.pfnCvarValue2)
