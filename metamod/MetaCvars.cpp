@@ -32,7 +32,7 @@ namespace Metamod::CvarListener
     {
         if (bool result = gMetaGlobal->setLogLevel(pszNewValue); !result)
         {
-            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console, "Unknown loglevel \"{}\". Value has been set to \"info\".", pszNewValue);
+            gMetaGlobal->logMsg(LogLevel::Warning, LogDest::Console, R"("Unknown loglevel "{}". Value has been set to "info".")", pszNewValue);
             CVAR_SET_STRING(gMetaLogLevelCvar.name, "info");
         }
     }
