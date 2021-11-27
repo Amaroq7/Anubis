@@ -1,20 +1,20 @@
 /*
- *  Copyright (C) 2020 Metamod++ Development Team
+ *  Copyright (C) 2020-2021 Anubis Development Team
  *
- *  This file is part of Metamod++.
+ *  This file is part of Anubis.
  *
- *  Metamod++ is free software: you can redistribute it and/or modify
+ *  Anubis is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
 
- *  Metamod++ is distributed in the hope that it will be useful,
+ *  Anubis is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
 
  *  You should have received a copy of the GNU General Public License
- *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
+ *  along with Anubis.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #pragma once
@@ -22,11 +22,11 @@
 #include <cinttypes>
 #include <string_view>
 
-#if defined META_CORE
+#if defined ANUBIS_CORE
 typedef struct cvar_s cvar_t;
 #endif
 
-namespace Metamod::Engine
+namespace Anubis::Engine
 {
     class ICvar
     {
@@ -80,7 +80,7 @@ namespace Metamod::Engine
         virtual void setFlags(Flags flags) = 0;
         virtual void setValue(float value) = 0;
 
-#if defined META_CORE
+#if defined ANUBIS_CORE
         virtual explicit operator cvar_t *() const = 0;
 #endif
     };

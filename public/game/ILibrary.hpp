@@ -1,38 +1,43 @@
 /*
- *  Copyright (C) 2020 Metamod++ Development Team
+ *  Copyright (C) 2020-2021 Anubis Development Team
  *
- *  This file is part of Metamod++.
+ *  This file is part of Anubis.
  *
- *  Metamod++ is free software: you can redistribute it and/or modify
+ *  Anubis is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
 
- *  Metamod++ is distributed in the hope that it will be useful,
+ *  Anubis is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
 
  *  You should have received a copy of the GNU General Public License
- *  along with Metamod++.  If not, see <https://www.gnu.org/licenses/>.
+ *  along with Anubis.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #pragma once
 
+#include "../observer_ptr.hpp"
 #include "../Common.hpp"
-#include "../StdFSWrapper.hpp"
 
 #include <string_view>
+#include <filesystem>
 
-namespace Metamod::Engine
+#if defined ANUBIS_CORE
+struct DLL_FUNCTIONS;
+struct NEW_DLL_FUNCTIONS;
+#endif
+
+namespace Anubis::Engine
 {
     class IEdict;
-    class IEntVars;
     class ITraceResult;
     struct InfoBuffer;
-}
+} // namespace Anubis::Engine
 
-namespace Metamod::Game
+namespace Anubis::Game
 {
     class IBaseEntity;
     class IBasePlayer;
@@ -41,53 +46,80 @@ namespace Metamod::Game
 
     enum class Mod : std::uint8_t
     {
-        Valve = 0,
-        CStrike,
-        CZero,
-    };
-
-    enum class GibType : std::uint8_t
-    {
-        Normal = 0,
-        Never,
-        Always
+        Valve = 0, /**< Half-Life */
+        CStrike,   /**< Counter-Strike */
+        CZero,     /**< Counter-Strike: Condition Zero */
+        DoD,       /**< Day Of Defeat */
+        TFC        /**< Team Fortress Classic */
     };
 
     class ILibrary
     {
     public:
+        /**
+         * @brief Game API major version
+         *
+         */
+        static constexpr MajorInterfaceVersion MAJOR_VERSION = MajorInterfaceVersion(2);
+
+        /**
+         * @brief Game API minor version
+         */
+        static constexpr MinorInterfaceVersion MINOR_VERSION = MinorInterfaceVersion(0);
+
+        /**
+         * @brief Game API version
+         *
+         * Major version is present in the 16 most significant bits.
+         * Minor version is present in the 16 least significant bits.
+         *
+         * @b Examples
+         *
+         * To extract the major version of Game API the following formula can be used
+         * @code{cpp}
+         * std::uint16_t majorVer = (VERSION >> 16) & 0xFFFF;
+         * @endcode
+         *
+         *
+         * To extract the minor version of Game API the following formula can be used
+         * @code{cpp}
+         * std::uint16_t minorVer = VERSION & 0xFFFF;
+         * @endcode
+         */
+        static constexpr InterfaceVersion VERSION = InterfaceVersion(MAJOR_VERSION << 16 | MINOR_VERSION);
+
+    public:
         virtual ~ILibrary() = default;
 
-        virtual std::string_view getName() const = 0;
-        virtual std::string_view getDesc() const = 0;
-        virtual const fs::path &getGameDir() const = 0;
-        virtual const fs::path &getPathname() const = 0;
-        virtual Mod getMod() const = 0;
-        virtual IHooks *getHooks() const = 0;
+        [[nodiscard]] virtual std::string_view getName() const = 0;
+        [[nodiscard]] virtual std::string_view getDesc() const = 0;
+        [[nodiscard]] virtual const std::filesystem::path &getGameDir() const = 0;
+        [[nodiscard]] virtual const std::filesystem::path &getPathname() const = 0;
+        [[nodiscard]] virtual Mod getMod() const = 0;
+        [[nodiscard]] virtual nstd::observer_ptr<IHooks> getHooks() const = 0;
 
-        virtual bool callGameEntity(std::string_view name, Engine::IEntVars *pev) = 0;
+        virtual bool callGameEntity(std::string_view name, nstd::observer_ptr<Engine::IEdict> pEntity) = 0;
 
         virtual void pfnGameInit(FuncCallType callType) = 0;
-        virtual std::int32_t pfnSpawn(Engine::IEdict *edict, FuncCallType callType) = 0;
-        virtual bool pfnClientConnect(Engine::IEdict *pEntity, std::string_view pszName,
-                                      std::string_view pszAddress, std::string &szRejectReason,
+        virtual std::int32_t pfnSpawn(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;
+        virtual bool pfnClientConnect(nstd::observer_ptr<Engine::IEdict> pEntity,
+                                      std::string_view pszName,
+                                      std::string_view pszAddress,
+                                      std::string &szRejectReason,
                                       FuncCallType callType) = 0;
-        virtual void pfnClientPutInServer(Engine::IEdict *pEntity, FuncCallType callType) = 0;
-        virtual void pfnClientCommand(Engine::IEdict *pEntity, FuncCallType callType) = 0;
-        virtual void pfnClientUserInfoChanged(Engine::IEdict *pEntity,
+        virtual void pfnClientPutInServer(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;
+        virtual void pfnClientCommand(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;
+        virtual void pfnClientUserInfoChanged(nstd::observer_ptr<Engine::IEdict> pEntity,
                                               Engine::InfoBuffer infobuffer,
                                               FuncCallType callType) = 0;
 
-        virtual void pfnServerActivate(std::uint32_t edictCount,
-                                       std::uint32_t clientMax,
-                                       FuncCallType callType) = 0;
+        virtual void pfnServerActivate(std::uint32_t edictCount, std::uint32_t clientMax, FuncCallType callType) = 0;
         virtual void pfnServerDeactivate(FuncCallType callType) = 0;
         virtual void pfnStartFrame(FuncCallType callType) = 0;
         virtual void pfnGameShutdown(FuncCallType callType) = 0;
-        virtual void pfnCvarValue(const Engine::IEdict *player,
-                                  std::string_view value,
-                                  FuncCallType callType) = 0;
-        virtual void pfnCvarValue2(const Engine::IEdict *player,
+        virtual void
+            pfnCvarValue(nstd::observer_ptr<Engine::IEdict> player, std::string_view value, FuncCallType callType) = 0;
+        virtual void pfnCvarValue2(nstd::observer_ptr<Engine::IEdict> player,
                                    std::uint32_t requestID,
                                    std::string_view cvarName,
                                    std::string_view value,
@@ -98,21 +130,24 @@ namespace Metamod::Game
          *
          * @return Edict's base entity representation.
          */
-        virtual IBaseEntity *getBaseEntity(Engine::IEdict *edict) = 0;
+        virtual nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) = 0;
 
         /**
          * @brief Returns player entity.
          *
          * @return Edict's player entity representation.
          */
-        virtual IBasePlayer *getBasePlayer(Engine::IEdict *edict) = 0;
+        virtual std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
 
-        virtual IBasePlayerHooks *getCBasePlayerHooks() = 0;
+        virtual nstd::observer_ptr<IBasePlayerHooks> getCBasePlayerHooks() = 0;
 
-#if defined META_CORE
-        [[nodiscard]] virtual void *getDllFuncs() = 0;
-        [[nodiscard]] virtual void *getNewDllFuncs() = 0;
+#if defined ANUBIS_CORE
+        [[nodiscard]] virtual const std::unique_ptr<DLL_FUNCTIONS> &getDllFuncs() = 0;
+        [[nodiscard]] virtual const std::unique_ptr<NEW_DLL_FUNCTIONS> &getNewDllFuncs() = 0;
         [[nodiscard]] virtual void *getSystemHandle() const = 0;
+        [[nodiscard]] virtual nstd::observer_ptr<IBaseEntity>
+            allocEntity(nstd::observer_ptr<Engine::IEdict> edict) const = 0;
+        virtual void initVFuncHooks() = 0;
 #endif
     };
-}
+} // namespace Anubis::Game
