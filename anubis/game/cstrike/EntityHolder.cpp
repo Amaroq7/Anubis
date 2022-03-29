@@ -35,11 +35,11 @@ namespace Anubis::Game::CStrike
         return _getEntity(edict);
     }
 
-    std::unique_ptr<IBasePlayer> EntityHolder::getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict)
+    nstd::observer_ptr<IBasePlayer> EntityHolder::getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict)
     {
-        if (_getEntity(edict))
+        if (edict->getIndex() != 0u && edict->getIndex() <= gEngineLib->getMaxClients())
         {
-            return std::make_unique<BasePlayer>(edict);
+            return nstd::dynamic_observer_cast<IBasePlayer>(_getEntity(edict));
         }
 
         return {};
@@ -47,14 +47,28 @@ namespace Anubis::Game::CStrike
 
     nstd::observer_ptr<IBaseEntity> EntityHolder::allocEntity(nstd::observer_ptr<Engine::IEdict> edict)
     {
-        const auto &[it, inserted] = m_entities.try_emplace(edict, std::make_unique<BaseEntity>(edict));
-
-        if (!inserted)
+        if (edict->getIndex() != 0u && edict->getIndex() <= gEngineLib->getMaxClients())
         {
-            it->second->updateSerialNumber(edict->getSerialNumber());
+            const auto &[it, inserted] = m_entities.try_emplace(edict, std::make_unique<BasePlayer>(edict));
+            if (!inserted)
+            {
+                it->second->updateSerialNumber(edict->getSerialNumber());
+            }
+
+            return it->second;
+        }
+        else
+        {
+            const auto &[it, inserted] = m_entities.try_emplace(edict, std::make_unique<BaseEntity>(edict));
+            if (!inserted)
+            {
+                it->second->updateSerialNumber(edict->getSerialNumber());
+            }
+
+            return it->second;
         }
 
-        return it->second;
+        return {};
     }
 
     nstd::observer_ptr<IBaseEntity> EntityHolder::getBaseEntity(CBaseEntity *baseEntity)
@@ -62,7 +76,7 @@ namespace Anubis::Game::CStrike
         return getBaseEntity(gEngineLib->getEdict(baseEntity->pev));
     }
 
-    std::unique_ptr<IBasePlayer> EntityHolder::getBasePlayer(CBasePlayer *basePlayer)
+    nstd::observer_ptr<IBasePlayer> EntityHolder::getBasePlayer(CBasePlayer *basePlayer)
     {
         return getBasePlayer(gEngineLib->getEdict(basePlayer->pev));
     }

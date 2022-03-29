@@ -32,11 +32,11 @@ namespace Anubis::Game::CStrike
     {
     public:
         nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
-        std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
+        nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
         nstd::observer_ptr<IBaseEntity> allocEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
 
         nstd::observer_ptr<IBaseEntity> getBaseEntity(CBaseEntity *baseEntity);
-        std::unique_ptr<IBasePlayer> getBasePlayer(CBasePlayer *basePlayer);
+        nstd::observer_ptr<IBasePlayer> getBasePlayer(CBasePlayer *basePlayer);
         nstd::observer_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars);
 
     private:

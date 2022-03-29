@@ -38,31 +38,31 @@ namespace Anubis::Game
     class IBaseEntity;
     class IBasePlayer;
 
-    using IBasePlayerSpawnHook = IClassHook<void, const std::unique_ptr<IBasePlayer> &>;
-    using IBasePlayerSpawnHookRegistry = IClassHookRegistry<void, const std::unique_ptr<IBasePlayer> &>;
+    using IBasePlayerSpawnHook = IClassHook<void, nstd::observer_ptr<IBasePlayer>>;
+    using IBasePlayerSpawnHookRegistry = IClassHookRegistry<void, nstd::observer_ptr<IBasePlayer>>;
 
     using IBasePlayerTakeDamageHook = IClassHook<bool,
-                                                 const std::unique_ptr<IBasePlayer> &,
+                                                 nstd::observer_ptr<IBasePlayer>,
                                                  nstd::observer_ptr<IBaseEntity>,
                                                  nstd::observer_ptr<IBaseEntity>,
                                                  float &,
                                                  DmgType>;
     using IBasePlayerTakeDamageHookRegistry = IClassHookRegistry<bool,
-                                                                 const std::unique_ptr<IBasePlayer> &,
+                                                                 nstd::observer_ptr<IBasePlayer>,
                                                                  nstd::observer_ptr<IBaseEntity>,
                                                                  nstd::observer_ptr<IBaseEntity>,
                                                                  float &,
                                                                  DmgType>;
 
     using IBasePlayerTraceAttackHook = IClassHook<void,
-                                                  const std::unique_ptr<IBasePlayer> &,
+                                                  nstd::observer_ptr<IBasePlayer>,
                                                   nstd::observer_ptr<IBaseEntity>,
                                                   float,
                                                   float *,
                                                   const std::unique_ptr<Engine::ITraceResult> &,
                                                   DmgType>;
     using IBasePlayerTraceAttackHookRegistry = IClassHookRegistry<void,
-                                                                  const std::unique_ptr<IBasePlayer> &,
+                                                                  nstd::observer_ptr<IBasePlayer>,
                                                                   nstd::observer_ptr<IBaseEntity>,
                                                                   float,
                                                                   float *,
@@ -70,17 +70,17 @@ namespace Anubis::Game
                                                                   DmgType>;
 
     using IBasePlayerKilledHook =
-        IClassHook<void, const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity>, GibType>;
+        IClassHook<void, nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity>, GibType>;
     using IBasePlayerKilledHookRegistry =
-        IClassHookRegistry<void, const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity>, GibType>;
+        IClassHookRegistry<void, nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity>, GibType>;
 
-    using IBasePlayerGiveShieldHook = IClassHook<void, const std::unique_ptr<IBasePlayer> &, bool>;
-    using IBasePlayerGiveShieldHookRegistry = IClassHookRegistry<void, const std::unique_ptr<IBasePlayer> &, bool>;
+    using IBasePlayerGiveShieldHook = IClassHook<void, nstd::observer_ptr<IBasePlayer>, bool>;
+    using IBasePlayerGiveShieldHookRegistry = IClassHookRegistry<void, nstd::observer_ptr<IBasePlayer>, bool>;
 
     using IBasePlayerDropShieldHook =
-        IClassHook<nstd::observer_ptr<IBaseEntity>, const std::unique_ptr<IBasePlayer> &, bool>;
+        IClassHook<nstd::observer_ptr<IBaseEntity>, nstd::observer_ptr<IBasePlayer>, bool>;
     using IBasePlayerDropShieldHookRegistry =
-        IClassHookRegistry<nstd::observer_ptr<IBaseEntity>, const std::unique_ptr<IBasePlayer> &, bool>;
+        IClassHookRegistry<nstd::observer_ptr<IBaseEntity>, nstd::observer_ptr<IBasePlayer>, bool>;
 
     class IBasePlayerHooks
     {

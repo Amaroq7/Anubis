@@ -67,7 +67,7 @@ namespace Anubis::Game::VFunc
         {
             static auto hookChain = Valve::getBasePlayerHooks()->spawn();
             hookChain->callChain(
-                [instance](const std::unique_ptr<IBasePlayer> &)
+                [instance](nstd::observer_ptr<IBasePlayer>)
                 {
                     execVFunc<>(hookChain->getVFuncAddr(), instance);
                 },
@@ -96,7 +96,7 @@ namespace Anubis::Game::VFunc
         {
             static auto hookChain = Valve::getBasePlayerHooks()->takeDamage();
             return hookChain->callChain(
-                [instance](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevInflictor,
+                [instance](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevInflictor,
                            nstd::observer_ptr<IBaseEntity> pevAttacker, float &flDamage, DmgType bitsDamageType)
                 {
                     return execVFunc<int>(hookChain->getVFuncAddr(), instance, static_cast<entvars_t *>(*pevInflictor),
@@ -136,9 +136,8 @@ namespace Anubis::Game::VFunc
             static auto hookChain = Valve::getBasePlayerHooks()->traceAttack();
 
             hookChain->callChain(
-                [instance](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevAttacker,
-                           float flDamage, float *vec, const std::unique_ptr<Engine::ITraceResult> &metatr,
-                           DmgType bitsDamageType)
+                [instance](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevAttacker, float flDamage,
+                           float *vec, const std::unique_ptr<Engine::ITraceResult> &metatr, DmgType bitsDamageType)
                 {
                     execVFunc<void>(hookChain->getVFuncAddr(), instance, static_cast<entvars_t *>(*pevAttacker),
                                     flDamage, vec, static_cast<TraceResult *>(*metatr),
@@ -170,8 +169,7 @@ namespace Anubis::Game::VFunc
             static auto hookChain = Valve::getBasePlayerHooks()->killed();
 
             hookChain->callChain(
-                [instance](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevAttacker,
-                           GibType gib)
+                [instance](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevAttacker, GibType gib)
                 {
                     execVFunc<void>(hookChain->getVFuncAddr(), instance, static_cast<entvars_t *>(*pevAttacker),
                                     static_cast<int>(gib));

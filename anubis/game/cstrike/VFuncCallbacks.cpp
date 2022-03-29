@@ -25,19 +25,17 @@
 
 #include <engine/ITraceResult.hpp>
 
-#include <type_traits>
-
 namespace Anubis::Game::VFunc
 {
     void vCBasePlayerSpawn(IReGameHook_CBasePlayer_Spawn *hook, CBasePlayer *player)
     {
         static auto hookChain = CStrike::getBasePlayerHooks()->spawn();
         hookChain->callChain(
-            [player, hook](const std::unique_ptr<IBasePlayer> &)
+            [player, hook](nstd::observer_ptr<IBasePlayer>)
             {
                 hook->callNext(player);
             },
-            [player, hook](const std::unique_ptr<IBasePlayer> &)
+            [player, hook](nstd::observer_ptr<IBasePlayer>)
             {
                 hook->callOriginal(player);
             },
@@ -54,14 +52,14 @@ namespace Anubis::Game::VFunc
         static auto hookChain = CStrike::getBasePlayerHooks()->takeDamage();
 
         return hookChain->callChain(
-            [player, hook](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevInflictor,
+            [player, hook](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevInflictor,
                            nstd::observer_ptr<IBaseEntity> pevAttacker, float &flDamage, DmgType bitsDamageType)
             {
                 return hook->callNext(player, static_cast<entvars_t *>(*pevInflictor),
                                       static_cast<entvars_t *>(*pevAttacker), flDamage,
                                       static_cast<int>(bitsDamageType));
             },
-            [player, hook](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevInflictor,
+            [player, hook](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevInflictor,
                            nstd::observer_ptr<IBaseEntity> pevAttacker, float &flDamage, DmgType bitsDamageType)
             {
                 return hook->callOriginal(player, static_cast<entvars_t *>(*pevInflictor),
@@ -84,14 +82,14 @@ namespace Anubis::Game::VFunc
         static auto hookChain = CStrike::getBasePlayerHooks()->traceAttack();
 
         hookChain->callChain(
-            [hook, player, &vecDir](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevAttacker,
+            [hook, player, &vecDir](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevAttacker,
                                     float flDamage, float *, const std::unique_ptr<Engine::ITraceResult> &metatr,
                                     DmgType bitsDamageType)
             {
                 hook->callNext(player, static_cast<entvars_t *>(*pevAttacker), flDamage, vecDir,
                                static_cast<TraceResult *>(*metatr), static_cast<int>(bitsDamageType));
             },
-            [hook, player, &vecDir](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevAttacker,
+            [hook, player, &vecDir](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevAttacker,
                                     float flDamage, float *, const std::unique_ptr<Engine::ITraceResult> &metatr,
                                     DmgType bitsDamageType)
             {
@@ -107,12 +105,12 @@ namespace Anubis::Game::VFunc
         static auto hookChain = CStrike::getBasePlayerHooks()->killed();
 
         hookChain->callChain(
-            [hook, player](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevAttacker,
+            [hook, player](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevAttacker,
                            GibType gibType)
             {
                 hook->callNext(player, static_cast<entvars_t *>(*pevAttacker), static_cast<int>(gibType));
             },
-            [hook, player](const std::unique_ptr<IBasePlayer> &, nstd::observer_ptr<IBaseEntity> pevAttacker,
+            [hook, player](nstd::observer_ptr<IBasePlayer>, nstd::observer_ptr<IBaseEntity> pevAttacker,
                            GibType gibType)
             {
                 hook->callOriginal(player, static_cast<entvars_t *>(*pevAttacker), static_cast<int>(gibType));
@@ -125,11 +123,11 @@ namespace Anubis::Game::VFunc
     {
         static auto hookChain = CStrike::getBasePlayerHooks()->giveShield();
         hookChain->callChain(
-            [hook, player](const std::unique_ptr<IBasePlayer> &, bool deploy)
+            [hook, player](nstd::observer_ptr<IBasePlayer>, bool deploy)
             {
                 hook->callNext(player, deploy);
             },
-            [hook, player](const std::unique_ptr<IBasePlayer> &, bool deploy)
+            [hook, player](nstd::observer_ptr<IBasePlayer>, bool deploy)
             {
                 hook->callOriginal(player, deploy);
             },
@@ -140,11 +138,11 @@ namespace Anubis::Game::VFunc
     {
         static auto hookChain = CStrike::getBasePlayerHooks()->dropShield();
         return static_cast<CBaseEntity *>(*hookChain->callChain(
-            [hook, player](const std::unique_ptr<IBasePlayer> &, bool deploy)
+            [hook, player](nstd::observer_ptr<IBasePlayer>, bool deploy)
             {
                 return CStrike::getEntityHolder()->getBaseEntity(hook->callNext(player, deploy));
             },
-            [hook, player](const std::unique_ptr<IBasePlayer> &, bool deploy)
+            [hook, player](nstd::observer_ptr<IBasePlayer>, bool deploy)
             {
                 return CStrike::getEntityHolder()->getBaseEntity(hook->callOriginal(player, deploy));
             },
