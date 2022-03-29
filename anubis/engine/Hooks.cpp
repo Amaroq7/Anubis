@@ -90,7 +90,8 @@ namespace Anubis::Engine
           m_getEntityOfEntOffsetRegistry(std::make_unique<GetEntityOfEntityOffsetHookRegistry>()),
           m_getEntityOfEntIdRegistry(std::make_unique<GetEntityOfEntityIdHookRegistry>()),
           m_allocEntPrivDataRegistry(std::make_unique<AllocEntPrivateDataHookRegistry>()),
-          m_edAllocRegistry(std::make_unique<EdAllocHookRegistry>())
+          m_edAllocRegistry(std::make_unique<EdAllocHookRegistry>()),
+          m_stringFromOffsetRegistry(std::make_unique<StringFromOffsetHookRegistry>())
     {
     }
 
@@ -337,5 +338,10 @@ namespace Anubis::Engine
     nstd::observer_ptr<IEdAllocHookRegistry> Hooks::edAlloc()
     {
         return m_edAllocRegistry;
+    }
+
+    nstd::observer_ptr<IStringFromOffsetHookRegistry> Hooks::stringFromOffset()
+    {
+        return m_stringFromOffsetRegistry;
     }
 } // namespace Anubis::Engine

@@ -135,7 +135,7 @@ namespace Anubis::Engine
         virtual void removeEntity(nstd::observer_ptr<IEdict> pEdict, FuncCallType callType) = 0;
         virtual void alert(AlertType alertType, std::string_view msg, FuncCallType callType) = 0;
         virtual void print(std::string_view szMsg, FuncCallType callType) = 0;
-        [[nodiscard]] virtual std::string_view getString(StringOffset offset) const = 0;
+        [[nodiscard]] virtual std::string_view getString(StringOffset offset, FuncCallType callType) const = 0;
         virtual void
             cvarDirectSet(nstd::observer_ptr<ICvar> cvar, std::string_view value, FuncCallType callType) const = 0;
         [[nodiscard]] virtual float getTime() const = 0;

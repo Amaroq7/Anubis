@@ -1019,6 +1019,23 @@ namespace Anubis::Engine
             edict, classSize);
     }
 
+    std::string_view Library::getString(StringOffset offset, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnSzFromIndex(static_cast<int>(offset.value));
+        }
+
+        static auto hookChain = m_hooks->stringFromOffset();
+
+        return hookChain->callChain(
+            [this](StringOffset offset)
+            {
+                return m_origEngineFuncs->pfnSzFromIndex(static_cast<int>(offset.value));
+            },
+            offset);
+    }
+
     void Library::_replaceFuncs()
     {
         *m_engineFuncs = *m_origEngineFuncs;
@@ -1069,6 +1086,7 @@ namespace Anubis::Engine
         ASSIGN_ENG_FUNCS(pfnEntOffsetOfPEntity);
         ASSIGN_ENG_FUNCS(pfnPEntityOfEntIndex);
         ASSIGN_ENG_FUNCS(pfnPvAllocEntPrivateData);
+        ASSIGN_ENG_FUNCS(pfnSzFromIndex);
 #undef ASSIGN_ENG_FUNCS
     }
 
@@ -1122,11 +1140,6 @@ namespace Anubis::Engine
     void Library::initEdict(edict_t *edict)
     {
         m_edicts.try_emplace(m_origEngineFuncs->pfnIndexOfEdict(edict), std::make_unique<Edict>(edict, this));
-    }
-
-    std::string_view Library::getString(StringOffset offset) const
-    {
-        return m_engineGlobals->pStringBase + static_cast<StringOffset::BaseType>(offset);
     }
 
     void Library::_initGameClients()

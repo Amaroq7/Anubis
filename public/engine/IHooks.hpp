@@ -188,6 +188,9 @@ namespace Anubis::Engine
     using IEdAllocHook = IHook<nstd::observer_ptr<IEdict>>;
     using IEdAllocHookRegistry = IHookRegistry<nstd::observer_ptr<IEdict>>;
 
+    using IStringFromOffsetHook = IHook<std::string_view, StringOffset>;
+    using IStringFromOffsetHookRegistry = IHookRegistry<std::string_view, StringOffset>;
+
     class IHooks
     {
     public:
@@ -242,5 +245,6 @@ namespace Anubis::Engine
         virtual nstd::observer_ptr<IGetEntityOfEntityIdHookRegistry> getEntityOfEntId() = 0;
         virtual nstd::observer_ptr<IAllocEntPrivateDataHookRegistry> allocEntPrivData() = 0;
         virtual nstd::observer_ptr<IEdAllocHookRegistry> edAlloc() = 0;
+        virtual nstd::observer_ptr<IStringFromOffsetHookRegistry> stringFromOffset() = 0;
     };
 } // namespace Anubis::Engine

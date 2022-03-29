@@ -97,7 +97,7 @@ namespace Anubis::Engine
         void alert(AlertType alertType, std::string_view msg, FuncCallType callType) final;
         void removeCmd(std::string_view cmd_name) final;
         void print(std::string_view szMsg, FuncCallType callType) final;
-        [[nodiscard]] std::string_view getString(StringOffset offset) const final;
+        [[nodiscard]] std::string_view getString(StringOffset offset, FuncCallType callType) const final;
         void cvarDirectSet(nstd::observer_ptr<ICvar> cvar, std::string_view value, FuncCallType callType) const final;
 
         [[nodiscard]] float getTime() const final;

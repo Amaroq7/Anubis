@@ -310,4 +310,9 @@ namespace Anubis::Engine::Callbacks::GameDLL
 
         return pEdict->pvPrivateData;
     }
+
+    const char *pfnSzFromIndex(int iString)
+    {
+        return getEngine()->getString(StringOffset(static_cast<std::uint32_t>(iString)), FuncCallType::Hooks).data();
+    }
 } // namespace Anubis::Engine::Callbacks::GameDLL
