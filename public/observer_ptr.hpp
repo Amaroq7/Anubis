@@ -81,6 +81,52 @@ namespace nstd
             return m_ptr == other.m_ptr;
         }
 
+        template<typename T>
+        constexpr bool operator==(nstd::observer_ptr<T> other) const noexcept
+        {
+            return get() == other.get();
+        }
+
+        template<typename T>
+        constexpr bool operator!=(nstd::observer_ptr<T> other) const noexcept
+        {
+            return get() != other.get();
+        }
+
+        constexpr bool operator==(std::nullptr_t) const noexcept
+        {
+            return !m_ptr;
+        }
+
+        template<typename T>
+        constexpr bool operator==(const std::unique_ptr<T> &other) noexcept
+        {
+            return get() == other.get();
+        }
+
+        template<typename T>
+        constexpr bool operator==(const std::shared_ptr<T> &other) noexcept
+        {
+            return get() == other.get();
+        }
+
+        constexpr bool operator!=(std::nullptr_t) const noexcept
+        {
+            return get() != nullptr;
+        }
+
+        template<typename T>
+        constexpr bool operator!=(const std::unique_ptr<T> &other) const noexcept
+        {
+            return get() != other.get();
+        }
+
+        template<typename T>
+        constexpr bool operator!=(const std::shared_ptr<T> &other) const noexcept
+        {
+            return get() != other.get();
+        }
+
         constexpr explicit operator pointer() const noexcept
         {
             return m_ptr;
@@ -144,7 +190,31 @@ namespace nstd
     }
 
     template<typename W, typename T>
+    observer_ptr<W> static_observer_cast(const std::unique_ptr<T> &p)
+    {
+        return make_observer(static_cast<W *>(p.get()));
+    }
+
+    template<typename W, typename T>
+    observer_ptr<W> static_observer_cast(const std::shared_ptr<T> &p)
+    {
+        return make_observer(static_cast<W *>(p.get()));
+    }
+
+    template<typename W, typename T>
     observer_ptr<W> dynamic_observer_cast(const observer_ptr<T> &p)
+    {
+        return make_observer(dynamic_cast<W *>(p.get()));
+    }
+
+    template<typename W, typename T>
+    observer_ptr<W> dynamic_observer_cast(const std::unique_ptr<T> &p)
+    {
+        return make_observer(dynamic_cast<W *>(p.get()));
+    }
+
+    template<typename W, typename T>
+    observer_ptr<W> dynamic_observer_cast(const std::shared_ptr<T> &p)
     {
         return make_observer(dynamic_cast<W *>(p.get()));
     }
@@ -162,46 +232,22 @@ namespace std
     };
 } // namespace std
 
-template<typename W1, typename W2>
-bool operator==(nstd::observer_ptr<W1> p1, nstd::observer_ptr<W2> p2)
-{
-    return p1.get() == p2.get();
-}
-
-template<typename W1, typename W2>
-bool operator!=(nstd::observer_ptr<W1> p1, nstd::observer_ptr<W2> p2)
-{
-    return !(p1 == p2);
-}
-
-template<typename W>
-bool operator==(nstd::observer_ptr<W> p, std::nullptr_t) noexcept
-{
-    return !p;
-}
-
 template<typename W>
 bool operator==(std::nullptr_t, nstd::observer_ptr<W> p) noexcept
 {
     return !p;
 }
 
-template<typename W, typename T>
-bool operator==(nstd::observer_ptr<W> p1, const std::unique_ptr<T> &p2) noexcept
-{
-    return p1.get() == p2.get();
-}
-
-template<typename W, typename T>
+template<typename T, typename W>
 bool operator==(const std::unique_ptr<T> &p1, nstd::observer_ptr<W> p2) noexcept
 {
     return p1.get() == p2.get();
 }
 
-template<typename W>
-bool operator!=(nstd::observer_ptr<W> p, std::nullptr_t) noexcept
+template<typename T, typename W>
+bool operator==(const std::shared_ptr<T> &p1, nstd::observer_ptr<W> p2) noexcept
 {
-    return static_cast<bool>(p);
+    return p1.get() == p2.get();
 }
 
 template<typename W>
