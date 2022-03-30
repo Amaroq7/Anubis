@@ -177,6 +177,11 @@ namespace Anubis::Engine
                                 std::int32_t classSize,
                                 FuncCallType callType) const = 0;
 
+        [[nodiscard]] StringOffset makeString(std::string_view str) const
+        {
+            return StringOffset(str.data() - getString(StringOffset(0), FuncCallType::Direct).data());
+        }
+
 #if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const edict_t *edict) const = 0;
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const entvars_t *vars) const = 0;
