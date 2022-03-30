@@ -315,4 +315,9 @@ namespace Anubis::Engine::Callbacks::GameDLL
     {
         return getEngine()->getString(StringOffset(static_cast<std::uint32_t>(iString)), FuncCallType::Hooks).data();
     }
+
+    int pfnAllocString(const char *szValue)
+    {
+        return static_cast<int>(getEngine()->allocString(szValue, FuncCallType::Hooks).value);
+    }
 } // namespace Anubis::Engine::Callbacks::GameDLL

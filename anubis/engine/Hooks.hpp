@@ -179,6 +179,9 @@ namespace Anubis::Engine
     using StringFromOffsetHook = Hook<std::string_view, StringOffset>;
     using StringFromOffsetHookRegistry = HookRegistry<std::string_view, StringOffset>;
 
+    using AllocStringHook = Hook<StringOffset, std::string_view>;
+    using AllocStringHookRegistry = HookRegistry<StringOffset, std::string_view>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -235,6 +238,7 @@ namespace Anubis::Engine
         nstd::observer_ptr<IAllocEntPrivateDataHookRegistry> allocEntPrivData() final;
         nstd::observer_ptr<IEdAllocHookRegistry> edAlloc() final;
         nstd::observer_ptr<IStringFromOffsetHookRegistry> stringFromOffset() final;
+        nstd::observer_ptr<IAllocStringHookRegistry> strAlloc() final;
 
     private:
         std::unique_ptr<PrecacheModelHookRegistry> m_precacheModelRegistry;
@@ -287,5 +291,6 @@ namespace Anubis::Engine
         std::unique_ptr<AllocEntPrivateDataHookRegistry> m_allocEntPrivDataRegistry;
         std::unique_ptr<EdAllocHookRegistry> m_edAllocRegistry;
         std::unique_ptr<StringFromOffsetHookRegistry> m_stringFromOffsetRegistry;
+        std::unique_ptr<AllocStringHookRegistry> m_strAllocRegistry;
     };
 } // namespace Anubis::Engine

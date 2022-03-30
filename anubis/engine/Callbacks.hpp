@@ -98,4 +98,5 @@ namespace Anubis::Engine::Callbacks::GameDLL
     edict_t *pfnPEntityOfEntIndex(int iEntIndex);
     void *pfnPvAllocEntPrivateData(edict_t *pEdict, std::int32_t cb);
     const char *pfnSzFromIndex(int iString);
+    int pfnAllocString(const char *szValue);
 } // namespace Anubis::Engine::Callbacks::GameDLL

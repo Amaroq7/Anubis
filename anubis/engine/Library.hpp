@@ -146,6 +146,8 @@ namespace Anubis::Engine
                                                                                 std::int32_t classSize,
                                                                                 FuncCallType callType) const final;
 
+        [[nodiscard]] StringOffset allocString(std::string_view str, FuncCallType callType) const final;
+
         void removeHooks() final;
         void initPlayerEdicts();
 

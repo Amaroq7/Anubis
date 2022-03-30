@@ -1036,6 +1036,23 @@ namespace Anubis::Engine
             offset);
     }
 
+    [[nodiscard]] StringOffset Library::allocString(std::string_view str, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return StringOffset(m_origEngineFuncs->pfnAllocString(str.data()));
+        }
+
+        static auto hookChain = m_hooks->strAlloc();
+
+        return hookChain->callChain(
+            [this](std::string_view str)
+            {
+                return StringOffset(m_origEngineFuncs->pfnAllocString(str.data()));
+            },
+            str);
+    }
+
     void Library::_replaceFuncs()
     {
         *m_engineFuncs = *m_origEngineFuncs;
@@ -1087,6 +1104,7 @@ namespace Anubis::Engine
         ASSIGN_ENG_FUNCS(pfnPEntityOfEntIndex);
         ASSIGN_ENG_FUNCS(pfnPvAllocEntPrivateData);
         ASSIGN_ENG_FUNCS(pfnSzFromIndex);
+        ASSIGN_ENG_FUNCS(pfnAllocString);
 #undef ASSIGN_ENG_FUNCS
     }
 

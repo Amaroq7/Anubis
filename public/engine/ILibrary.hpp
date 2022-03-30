@@ -182,6 +182,8 @@ namespace Anubis::Engine
             return StringOffset(str.data() - getString(StringOffset(0), FuncCallType::Direct).data());
         }
 
+        [[nodiscard]] virtual StringOffset allocString(std::string_view str, FuncCallType callType) const = 0;
+
 #if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const edict_t *edict) const = 0;
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const entvars_t *vars) const = 0;
