@@ -84,7 +84,7 @@ namespace Anubis::Game
                            FuncCallType callType) final;
 
         nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
-        std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
+        nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
         nstd::observer_ptr<IBasePlayerHooks> getCBasePlayerHooks() final;
         void initVFuncHooks() final;
 

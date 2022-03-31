@@ -489,7 +489,7 @@ namespace Anubis::Game
         return m_entityHolder->getBaseEntity(edict);
     }
 
-    std::unique_ptr<IBasePlayer> Library::getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict)
+    nstd::observer_ptr<IBasePlayer> Library::getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict)
     {
         std::uint32_t idx = edict->getIndex();
         if (idx > m_maxClients || !idx)

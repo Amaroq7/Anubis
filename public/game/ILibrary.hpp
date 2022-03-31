@@ -137,7 +137,7 @@ namespace Anubis::Game
          *
          * @return Edict's player entity representation.
          */
-        virtual std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
+        virtual nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
 
         virtual nstd::observer_ptr<IBasePlayerHooks> getCBasePlayerHooks() = 0;
 
