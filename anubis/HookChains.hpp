@@ -251,13 +251,11 @@ namespace Anubis
             }
 
             bool wereHooksPresent = !m_hooks.empty();
-            auto iter = m_hooks.remove_if(
+            m_hooks.remove_if(
                 [hookInfo](const std::unique_ptr<HookInfo<t_ret, t_args...>> &hook)
                 {
                     return hookInfo == hook;
                 });
-
-            m_hooks.erase(iter, m_hooks.end());
 
             bool shouldRemoveHook = wereHooksPresent && m_hooks.empty() && m_unregisterFn;
             if (shouldRemoveHook)
@@ -488,13 +486,11 @@ namespace Anubis
             }
 
             bool wereHooksPresent = !m_hooks.empty();
-            auto iter = m_hooks.remove_if(
+            m_hooks.remove_if(
                 [hookInfo](const std::unique_ptr<ClassHookInfo<t_ret, t_entity, t_args...>> &hook)
                 {
                     return hookInfo == hook;
                 });
-
-            m_hooks.erase(iter, m_hooks.end());
 
             bool shouldRemoveHook = wereHooksPresent && m_hooks.empty();
             if (shouldRemoveHook)

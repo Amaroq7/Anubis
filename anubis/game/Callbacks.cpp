@@ -64,18 +64,14 @@ namespace Anubis::Game::Callbacks::Engine
         static std::string rejectReason;
         if (rejectReason.capacity() < REASON_REJECT_MAX_LEN)
         {
-            rejectReason.reserve(REASON_REJECT_MAX_LEN);
+            rejectReason.resize(REASON_REJECT_MAX_LEN);
         }
         rejectReason.clear();
 
         if (!getGame()->pfnClientConnect(getEngine()->getEdict(pEntity), pszName, pszAddress, rejectReason,
                                          FuncCallType::Hooks))
         {
-#if defined __linux__
-            strncpy(szRejectReason, rejectReason.data(), REASON_REJECT_MAX_LEN - 1);
-#elif defined _WIN32
-            strncpy_s(szRejectReason, 128, rejectReason.data(), _TRUNCATE);
-#endif
+            rejectReason = szRejectReason;
             return FALSE;
         }
         return TRUE;

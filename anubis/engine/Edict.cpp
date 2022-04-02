@@ -118,6 +118,8 @@ namespace Anubis::Engine
                     return m_edict->v.vuser3;
                 case VecProperty::User4:
                     return m_edict->v.vuser4;
+                default:
+                    return Vector {0.0f, 0.0f, 0.0f};
             }
         };
         vec3_t vec = getVec();
@@ -157,6 +159,8 @@ namespace Anubis::Engine
                     return static_cast<std::uint32_t>(m_edict->v.noise2);
                 case StrProperty::Noise3:
                     return static_cast<std::uint32_t>(m_edict->v.noise3);
+                default:
+                    return 0u;
             }
         };
 
@@ -241,6 +245,8 @@ namespace Anubis::Engine
                 return m_edict->v.fuser3;
             case FlProperty::User4:
                 return m_edict->v.fuser4;
+            default:
+                return 0.0f;
         }
     }
 
@@ -292,6 +298,8 @@ namespace Anubis::Engine
                 return m_edict->v.iuser3;
             case IntProperty::User4:
                 return m_edict->v.iuser4;
+            default:
+                return 0;
         }
     }
 
@@ -303,6 +311,8 @@ namespace Anubis::Engine
                 return static_cast<std::int16_t>(m_edict->v.button);
             case ShortProperty::OldButtons:
                 return static_cast<std::int16_t>(m_edict->v.oldbuttons);
+            default:
+                return 0;
         }
     }
 
@@ -312,6 +322,8 @@ namespace Anubis::Engine
         {
             case UShortProperty::ColorMap:
                 return static_cast<std::uint16_t>(m_edict->v.colormap);
+            default:
+                return 0;
         }
     }
 
@@ -321,6 +333,8 @@ namespace Anubis::Engine
         {
             case ByteProperty::Impulse:
                 return std::byte {static_cast<unsigned char>(m_edict->v.impulse)};
+            default:
+                return std::byte {};
         }
     }
 
@@ -348,6 +362,8 @@ namespace Anubis::Engine
                 return m_engine->getEdict(m_edict->v.euser3);
             case EdictProperty::User4:
                 return m_engine->getEdict(m_edict->v.euser4);
+            default:
+                return {};
         }
     }
 
@@ -802,12 +818,20 @@ namespace Anubis::Engine
 
     void Edict::setController(std::array<std::byte, 4> controller)
     {
-        std::copy(controller.begin(), controller.end(), std::begin(m_edict->v.controller));
+        std::size_t i = 0;
+        for (auto value : controller)
+        {
+            m_edict->v.controller[i++] = std::to_integer<byte>(value);
+        }
     }
 
     void Edict::setBlending(std::array<std::byte, 2> blending)
     {
-        std::copy(blending.begin(), blending.end(), std::begin(m_edict->v.blending));
+        std::size_t i = 0;
+        for (auto value : blending)
+        {
+            m_edict->v.blending[i++] = std::to_integer<byte>(value);
+        }
     }
 
     void Edict::setRenderMode(RenderMode renderMode)

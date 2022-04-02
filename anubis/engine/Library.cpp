@@ -113,7 +113,7 @@ namespace Anubis::Engine
 
     std::string_view Library::getMapName() const
     {
-        return getString(StringOffset(m_engineGlobals->mapname));
+        return getString(StringOffset(m_engineGlobals->mapname), FuncCallType::Direct);
     }
 
     nstd::observer_ptr<const RehldsFuncs_t> Library::_initReHLDSAPI()
