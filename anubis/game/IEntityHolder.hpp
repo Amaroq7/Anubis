@@ -34,5 +34,8 @@ namespace Anubis::Game
         virtual nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) = 0;
         virtual nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
         virtual nstd::observer_ptr<IBaseEntity> allocEntity(nstd::observer_ptr<Engine::IEdict> edict) = 0;
+
+        virtual nstd::observer_ptr<IBaseEntity> getBaseEntity(edict_t *edict) = 0;
+        virtual nstd::observer_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars) = 0;
     };
 } // namespace Anubis::Game

@@ -85,4 +85,9 @@ namespace Anubis::Game::CStrike
     {
         return getBaseEntity(gEngineLib->getEdict(entVars));
     }
+
+    nstd::observer_ptr<IBaseEntity> EntityHolder::getBaseEntity(edict_t *edict)
+    {
+        return getBaseEntity(gEngineLib->getEdict(edict));
+    }
 } // namespace Anubis::Game::CStrike

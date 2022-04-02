@@ -28,6 +28,8 @@
 #if defined ANUBIS_CORE
 struct DLL_FUNCTIONS;
 struct NEW_DLL_FUNCTIONS;
+struct edict_s;
+typedef edict_s edict_t;
 #endif
 
 namespace Anubis::Engine
@@ -43,6 +45,7 @@ namespace Anubis::Game
     class IBasePlayer;
     class IHooks;
     class IBasePlayerHooks;
+    class IRules;
 
     enum class Mod : std::uint8_t
     {
@@ -140,6 +143,7 @@ namespace Anubis::Game
         virtual nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
 
         virtual nstd::observer_ptr<IBasePlayerHooks> getCBasePlayerHooks() = 0;
+        virtual nstd::observer_ptr<IRules> getRules() const = 0;
 
 #if defined ANUBIS_CORE
         [[nodiscard]] virtual const std::unique_ptr<DLL_FUNCTIONS> &getDllFuncs() = 0;
@@ -148,6 +152,7 @@ namespace Anubis::Game
         [[nodiscard]] virtual nstd::observer_ptr<IBaseEntity>
             allocEntity(nstd::observer_ptr<Engine::IEdict> edict) const = 0;
         virtual void initVFuncHooks() = 0;
+        virtual nstd::observer_ptr<IBaseEntity> getBaseEntity(edict_t *entity) const = 0;
 #endif
     };
 } // namespace Anubis::Game

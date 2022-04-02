@@ -25,6 +25,9 @@
 #include "Hooks.hpp"
 #include "Logger.hpp"
 #include "IEntityHolder.hpp"
+#include "Rules.hpp"
+
+class CBaseEntity;
 
 #include <limits>
 #include <array>
@@ -86,7 +89,9 @@ namespace Anubis::Game
         nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
         nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
         nstd::observer_ptr<IBasePlayerHooks> getCBasePlayerHooks() final;
+        nstd::observer_ptr<IRules> getRules() const final;
         void initVFuncHooks() final;
+        nstd::observer_ptr<IBaseEntity> getBaseEntity(edict_t *entity) const final;
 
         const std::unique_ptr<DLL_FUNCTIONS> &getDllFuncs() final;
         const std::unique_ptr<NEW_DLL_FUNCTIONS> &getNewDllFuncs() final;
@@ -94,10 +99,11 @@ namespace Anubis::Game
         void setMaxClients(std::uint32_t maxClients);
         void setEdictList(edict_t *edictList);
         void freeEntitiesDLL();
-        nstd::observer_ptr<IBaseEntity> allocEntity(nstd::observer_ptr<Engine::IEdict> edict) const final;
+        [[nodiscard]] nstd::observer_ptr<IBaseEntity> allocEntity(nstd::observer_ptr<Engine::IEdict> edict) const final;
 
     private:
         void _loadGameDLL();
+        void _getGameRules();
         void _replaceFuncs();
         void _initGameEntityDLL(std::filesystem::path &&path);
 
@@ -136,5 +142,6 @@ namespace Anubis::Game
         std::unique_ptr<Module> m_entityLibrary;
         std::uint32_t m_maxClients = 6;
         edict_t *m_edictList = nullptr;
+        std::unique_ptr<Rules> m_rules;
     };
 } // namespace Anubis::Game

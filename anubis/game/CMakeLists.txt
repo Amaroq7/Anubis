@@ -6,7 +6,8 @@ add_subdirectory(valve)
 set(SRC_FILES
         Library.cpp
         Callbacks.cpp
-        Hooks.cpp)
+        Hooks.cpp
+        Rules.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 
@@ -31,14 +32,14 @@ if (UNIX)
 
     if (IS_CLANG_COMPILER)
         target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
-    endif()
-else()
+    endif ()
+else ()
     target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external
-                                                   /external:I ${CMAKE_SOURCE_DIR}/rehlds
-                                                   /external:W0
-                                                   /W4 /WX)
+            /external:I ${CMAKE_SOURCE_DIR}/rehlds
+            /external:W0
+            /W4 /WX)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
-endif()
+endif ()
 
 set_target_properties(${PROJECT_NAME}
         PROPERTIES

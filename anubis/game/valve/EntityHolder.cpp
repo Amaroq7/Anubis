@@ -90,4 +90,9 @@ namespace Anubis::Game::Valve
     {
         return getBaseEntity(gEngineLib->getEdict(entVars));
     }
+
+    nstd::observer_ptr<IBaseEntity> EntityHolder::getBaseEntity(edict_t *edict)
+    {
+        return getBaseEntity(gEngineLib->getEdict(edict));
+    }
 } // namespace Anubis::Game::Valve

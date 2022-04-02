@@ -37,7 +37,8 @@ namespace Anubis::Game::CStrike
 
         nstd::observer_ptr<IBaseEntity> getBaseEntity(CBaseEntity *baseEntity);
         nstd::observer_ptr<IBasePlayer> getBasePlayer(CBasePlayer *basePlayer);
-        nstd::observer_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars);
+        nstd::observer_ptr<IBaseEntity> getBaseEntity(edict_t *edict) final;
+        nstd::observer_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars) final;
 
     private:
         const std::unique_ptr<BaseEntity> &_getEntity(nstd::observer_ptr<Engine::IEdict> edict)
