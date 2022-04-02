@@ -19,6 +19,7 @@
 
 #include "BasePlayer.hpp"
 #include "ReGameHeaders.hpp"
+#include "EntityHolder.hpp"
 
 namespace Anubis::Game::CStrike
 {
@@ -52,5 +53,53 @@ namespace Anubis::Game::CStrike
     bool BasePlayer::hasShield() const
     {
         return operator CBasePlayer *()->m_bOwnsShield;
+    }
+
+    std::optional<nstd::observer_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item) const
+    {
+        return getEntityHolder()->getBaseEntity(operator CBasePlayer *()->CSPlayer()->GiveNamedItem(item.data()));
+    }
+
+    nstd::observer_ptr<IBaseEntity> BasePlayer::giveNamedItemEx(std::string_view item) const
+    {
+        return getEntityHolder()->getBaseEntity(operator CBasePlayer *()->CSPlayer()->GiveNamedItemEx(item.data()));
+    }
+
+    bool BasePlayer::hasNamedPlayerItem(std::string_view item) const
+    {
+        return operator CBasePlayer *()->CSPlayer()->HasNamedPlayerItem(item.data());
+    }
+
+    void BasePlayer::RenewItems()
+    { /* HL Only */
+    }
+
+    void BasePlayer::PackDeadPlayerItems()
+    { /* HL Only */
+    }
+
+    void BasePlayer::RemoveAllItems(bool removeSuit)
+    {
+        operator CBasePlayer *()->CSPlayer()->RemoveAllItems(removeSuit);
+    }
+
+    bool BasePlayer::IsOnLadder() const
+    {
+        return m_entity->pev->movetype == MOVETYPE_FLY;
+    }
+
+    bool BasePlayer::FlashlightIsOn() const
+    {
+        return m_entity->pev->effects & EF_DIMLIGHT;
+    }
+
+    void BasePlayer::FlashlightTurnOn()
+    {
+        // operator CBasePlayer *()->FlashlightTurnOn();
+    }
+
+    void BasePlayer::FlashlightTurnOff()
+    {
+        // operator CBasePlayer *()->FlashlightTurnOff();
     }
 } // namespace Anubis::Game::CStrike

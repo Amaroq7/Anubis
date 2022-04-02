@@ -29,23 +29,33 @@ class CBasePlayer;
 
 namespace Anubis::Game::Valve
 {
-    class BasePlayer : public BaseMonster, public virtual IBasePlayer
+    class BasePlayer final : public BaseMonster, public virtual IBasePlayer
     {
     public:
         static constexpr const char *CLASS_NAME = "player";
 
     public:
         explicit BasePlayer(nstd::observer_ptr<Engine::IEdict> edict);
-        ~BasePlayer() override = default;
+        ~BasePlayer() final = default;
 
     public:
-        void makeVIP() override;
-        void giveShield(bool deploy) override;
-        void removeShield() override;
-        void dropShield(bool deploy) override;
-        [[nodiscard]] bool hasShield() const override;
+        void makeVIP() final;
+        void giveShield(bool deploy) final;
+        void removeShield() final;
+        void dropShield(bool deploy) final;
+        [[nodiscard]] bool hasShield() const final;
+        [[nodiscard]] std::optional<nstd::observer_ptr<IBaseEntity>> giveNamedItem(std::string_view item) const final;
+        [[nodiscard]] nstd::observer_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const final;
+        [[nodiscard]] bool hasNamedPlayerItem(std::string_view item) const final;
+        void RenewItems() final;
+        void PackDeadPlayerItems() final;
+        void RemoveAllItems(bool removeSuit) final;
+        [[nodiscard]] bool IsOnLadder() const final;
+        [[nodiscard]] bool FlashlightIsOn() const final;
+        void FlashlightTurnOn() final;
+        void FlashlightTurnOff() final;
 
     public:
-        explicit operator CBasePlayer *() const;
+        explicit operator CBasePlayer *() const final;
     };
 } // namespace Anubis::Game::Valve

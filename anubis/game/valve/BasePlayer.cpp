@@ -18,6 +18,7 @@
  */
 
 #include "BasePlayer.hpp"
+#include "AnubisExports.hpp"
 
 #include <extdll.h>
 #include <tier0/platform.h>
@@ -50,6 +51,57 @@ namespace Anubis::Game::Valve
     {
         /* CStrike only */
         return false;
+    }
+
+    std::optional<nstd::observer_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item) const
+    {
+        operator CBasePlayer *()->GiveNamedItem(item.data());
+        return std::nullopt;
+    }
+    nstd::observer_ptr<IBaseEntity> BasePlayer::giveNamedItemEx(std::string_view item [[maybe_unused]]) const
+    {
+        /* CStrike only */
+        return {};
+    }
+
+    bool BasePlayer::hasNamedPlayerItem(std::string_view item) const
+    {
+        return operator CBasePlayer *()->HasNamedPlayerItem(item.data());
+    }
+
+    void BasePlayer::RenewItems()
+    {
+        operator CBasePlayer *()->RenewItems();
+    }
+
+    void BasePlayer::PackDeadPlayerItems()
+    {
+        operator CBasePlayer *()->PackDeadPlayerItems();
+    }
+
+    void BasePlayer::RemoveAllItems(bool removeSuit)
+    {
+        operator CBasePlayer *()->RemoveAllItems(removeSuit);
+    }
+
+    bool BasePlayer::IsOnLadder() const
+    {
+        return operator CBasePlayer *()->IsOnLadder();
+    }
+
+    bool BasePlayer::FlashlightIsOn() const
+    {
+        return operator CBasePlayer *()->FlashlightIsOn();
+    }
+
+    void BasePlayer::FlashlightTurnOn()
+    {
+        operator CBasePlayer *()->FlashlightTurnOn();
+    }
+
+    void BasePlayer::FlashlightTurnOff()
+    {
+        operator CBasePlayer *()->FlashlightTurnOff();
     }
 
 } // namespace Anubis::Game::Valve
