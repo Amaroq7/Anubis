@@ -172,7 +172,6 @@ namespace Anubis::Game
             }
         }
 
-        _getGameRules();
         _replaceFuncs();
     }
 
@@ -531,6 +530,7 @@ namespace Anubis::Game
             m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Cannot find entity library for {}",
                              m_gameDir.filename().string());
             m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Virtual func hooking is unavailable");
+            m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "GameRules are unavailable");
             return;
         }
 
@@ -547,6 +547,11 @@ namespace Anubis::Game
 
             m_basePlayerHooks = entityLib->getCBasePlayerHooks();
             m_entityHolder = entityLib->getEntityHolder();
+            entityLib->setCGameRulesCallback(
+                [this](nstd::observer_ptr<CGameRules> gameRules)
+                {
+                    m_rules = std::make_unique<Rules>(gameRules, this);
+                });
 
             m_entityLibrary = std::move(entityLib);
 
@@ -554,10 +559,10 @@ namespace Anubis::Game
         }
         catch (const std::runtime_error &e)
         {
-            using namespace std::string_literals;
-            m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile,
-                             "Cannot load entity library. Reason: "s + e.what());
+            m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Cannot load entity library. Reason: {}",
+                             e.what());
             m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Virtual func hooking is unavailable");
+            m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "GameRules are unavailable");
         }
     }
 
@@ -588,46 +593,6 @@ namespace Anubis::Game
             return m_entityHolder->getBaseEntity(entity);
 
         return {};
-    }
-
-    void Library::_getGameRules()
-    {
-#if defined __linux__
-        m_rules = std::make_unique<Rules>(m_gameLibrary->getSymbol<CGameRules *>("g_pGameRules"), this);
-#else
-        std::intptr_t g_pGameRulesOffset;
-        if (m_modType == Mod::Valve)
-        {
-            g_pGameRulesOffset = 0x8f2d8;
-        }
-        else if (m_modType == Mod::DoD)
-        {
-            g_pGameRulesOffset = 0xbb801;
-        }
-        else if (m_modType == Mod::TFC)
-        {
-            g_pGameRulesOffset = 0x89e2c;
-        }
-
-        MODULEINFO moduleInfo;
-        if (GetModuleInformation(GetCurrentProcess(),
-                                 reinterpret_cast<HMODULE>(static_cast<SystemHandle>(*m_gameLibrary)), &moduleInfo,
-                                 sizeof(moduleInfo)))
-        {
-            CGameRules *g_pGameRules;
-            if (ReadProcessMemory(GetCurrentProcess(),
-                                  reinterpret_cast<char *>(moduleInfo.lpBaseOfDll) + g_pGameRulesOffset + 1,
-                                  g_pGameRules, sizeof(g_pGameRules), nullptr))
-            {
-                m_rules = std::make_unique<Rules>(g_pGameRules, this);
-            }
-        }
-
-        if (!m_rules)
-        {
-            m_logger->logMsg(LogLevel::Warning, LogDest::ConsoleFile, "Could not retrieve CGameRules");
-        }
-#endif
     }
 
     nstd::observer_ptr<IRules> Library::getRules() const

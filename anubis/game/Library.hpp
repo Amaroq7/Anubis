@@ -103,7 +103,6 @@ namespace Anubis::Game
 
     private:
         void _loadGameDLL();
-        void _getGameRules();
         void _replaceFuncs();
         void _initGameEntityDLL(std::filesystem::path &&path);
 
