@@ -73,7 +73,7 @@ namespace Anubis::Game::Valve
     class BasePlayerHooks final : public IBasePlayerHooks
     {
     public:
-        explicit BasePlayerHooks(std::unordered_map<std::string, std::uint32_t> &&vOffsets);
+        explicit BasePlayerHooks();
         ~BasePlayerHooks() final = default;
 
         nstd::observer_ptr<IBasePlayerSpawnHookRegistry> spawn() final;
@@ -90,6 +90,5 @@ namespace Anubis::Game::Valve
         std::unique_ptr<BasePlayerKilledHookRegistry> m_killed;
     };
 
-    const std::unique_ptr<BasePlayerHooks> &
-        getBasePlayerHooks(std::unordered_map<std::string, std::uint32_t> &&vOffsets = {});
+    const std::unique_ptr<BasePlayerHooks> &getBasePlayerHooks();
 } // namespace Anubis::Game::Valve

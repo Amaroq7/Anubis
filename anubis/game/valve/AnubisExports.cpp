@@ -21,45 +21,48 @@
 #include "EntitiesHooks.hpp"
 #include "EntityHolder.hpp"
 #include "VFuncCallbacks.hpp"
+#include "Config.hpp"
 
 #include <engine/IEdict.hpp>
 #include <game/valve/BasePlayer.hpp>
 
-#include <yaml-cpp/yaml.h>
+#include <fmt/format.h>
+
+#include <utility>
 
 nstd::observer_ptr<Anubis::Game::ILibrary> gGameLib;
 nstd::observer_ptr<Anubis::Engine::ILibrary> gEngineLib;
 nstd::observer_ptr<Anubis::IAnubis> gAnubisAPI;
+std::unique_ptr<Anubis::ILogger> gLogger;
 
 namespace
 {
-    std::unordered_map<std::string, std::uint32_t> loadVOffsets()
+    void protect(std::intptr_t region, std::int32_t protection)
     {
-        std::unordered_map<std::string, std::uint32_t> offsets;
-        try
-        {
-            std::filesystem::path virtualOffsetsPath =
-                gAnubisAPI->getPath(Anubis::PathType::Configs) / "gamedata" / "virtual" / "valve" / "offsets.yml";
-#if defined __linux__
-            YAML::Node rootNode = YAML::LoadFile(virtualOffsetsPath.c_str());
-            std::string_view osName("linux");
-#elif defined _WIN32
-            YAML::Node rootNode = YAML::LoadFile(virtualOffsetsPath.string().c_str());
-            std::string_view osName("windows");
+#if defined _WIN32
+        MEMORY_BASIC_INFORMATION mbi;
+        VirtualQuery(reinterpret_cast<void *>(region), &mbi, sizeof(mbi));
+        VirtualProtect(mbi.BaseAddress, mbi.RegionSize, protection, &mbi.Protect);
+#elif defined __linux__
+        static std::int32_t pageSize = sysconf(_SC_PAGE_SIZE);
+        mprotect(reinterpret_cast<void *>(region & ~(pageSize - 1)), pageSize, protection);
 #endif
-            for (auto funcIt = rootNode.begin(); funcIt != rootNode.end(); ++funcIt)
-            {
-                offsets.try_emplace(funcIt->first.as<std::string>(), funcIt->second[osName.data()].as<std::uint32_t>());
-            }
-        }
-        catch (const YAML::BadFile &e)
-        {
-            using namespace std::string_literals;
-            throw std::runtime_error("Error parsing yaml vtable offsets file: "s + e.what());
-        }
-
-        return offsets;
     }
+
+    std::int32_t unprotect(std::intptr_t region)
+    {
+#if defined _WIN32
+        MEMORY_BASIC_INFORMATION mbi;
+        VirtualQuery(reinterpret_cast<void *>(region), &mbi, sizeof(mbi));
+        VirtualProtect(mbi.BaseAddress, mbi.RegionSize, PAGE_READWRITE, &mbi.Protect);
+        return mbi.Protect;
+#elif defined __linux__
+        static std::int32_t pageSize = sysconf(_SC_PAGE_SIZE);
+        mprotect(reinterpret_cast<void *>(region & ~(pageSize - 1)), pageSize, PROT_READ | PROT_WRITE | PROT_EXEC);
+        return PROT_READ | PROT_EXEC;
+#endif
+    }
+
 } // namespace
 
 namespace Anubis
@@ -75,6 +78,20 @@ namespace Anubis
         gAnubisAPI = api;
         gGameLib = api->getGame(Game::ILibrary::VERSION);
         gEngineLib = api->getEngine(Engine::ILibrary::VERSION);
+        gLogger = api->getLogger(ILogger::VERSION);
+        gLogger->setLogTag("VALVE API");
+
+        try
+        {
+            Game::Valve::gConfig = std::make_unique<Game::Valve::Config>(gAnubisAPI->getPath(PathType::Configs),
+                                                                         gGameLib->getSystemHandle());
+        }
+        catch (const std::exception &e)
+        {
+            gLogger->logMsg(LogDest::ConsoleFile, LogLevel::Warning,
+                            fmt::format("Cannot initialize GameConfig: {}", e.what()));
+            return false;
+        }
 
         return true;
     }
@@ -107,17 +124,38 @@ namespace Anubis
             return vTable;
         };
 
+        try
+        {
+            CWorldVTable = getVTable("worldspawn");
+
+            // Hook CWorld::Spawn to get CGameRules
+            if (CWorldVTable)
+            {
+                auto vFunc = CWorldVTable + static_cast<std::intptr_t>(sizeof(std::intptr_t) *
+                                                                       Game::Valve::gConfig->getVirtualOffset("spawn"));
+
+                CWorldSpawnOrigFn = *reinterpret_cast<std::intptr_t *>(vFunc);
+                std::int32_t memProtection = unprotect(vFunc);
+                *(reinterpret_cast<std::intptr_t *>(vFunc)) = reinterpret_cast<intptr_t>(Game::VFunc::vSpawnHook);
+                protect(vFunc, memProtection);
+            }
+        }
+        catch (const std::exception &e)
+        {
+            gLogger->logMsg(LogDest::ConsoleFile, LogLevel::Error, e.what());
+            return;
+        }
+
         Game::IBasePlayer::VTable = getVTable(Game::Valve::BasePlayer::CLASS_NAME);
         if (!Game::IBasePlayer::VTable)
         {
             return;
         }
 
-        auto vOffsets = loadVOffsets();
-        Game::VFunc::gPevOffset = vOffsets.at("pev");
+        Game::VFunc::gPevOffset = Game::Valve::gConfig->getVirtualOffset("pev");
 
         Game::Valve::getEntityHolder();
-        Game::Valve::getBasePlayerHooks(std::move(vOffsets));
+        Game::Valve::getBasePlayerHooks();
     }
 
     void Shutdown() {}
@@ -133,5 +171,14 @@ namespace Anubis
         {
             return Valve::getEntityHolder();
         }
+
+        void GetGameRules(std::function<void(nstd::observer_ptr<CGameRules>)> fn,
+                          nstd::observer_ptr<CGameRules> gameRules)
+        {
+            static auto getGameRulesCb = std::move(fn);
+            if (getGameRulesCb && gameRules)
+                getGameRulesCb(gameRules);
+        }
+
     } // namespace Game
 } // namespace Anubis

@@ -20,29 +20,30 @@
 #include "EntitiesHooks.hpp"
 #include "VFuncCallbacks.hpp"
 #include "BasePlayer.hpp"
+#include "Config.hpp"
 
 namespace Anubis::Game::Valve
 {
-    const std::unique_ptr<BasePlayerHooks> &getBasePlayerHooks(std::unordered_map<std::string, std::uint32_t> &&vOffsets)
+    const std::unique_ptr<BasePlayerHooks> &getBasePlayerHooks()
     {
-        static auto basePlayerHooks = std::make_unique<Game::Valve::BasePlayerHooks>(std::move(vOffsets));
+        static auto basePlayerHooks = std::make_unique<Game::Valve::BasePlayerHooks>();
         return basePlayerHooks;
     }
 
-    BasePlayerHooks::BasePlayerHooks(std::unordered_map<std::string, std::uint32_t> &&vOffsets)
+    BasePlayerHooks::BasePlayerHooks()
         : m_spawn(std::make_unique<BasePlayerSpawnHookRegistry>(IBasePlayer::VTable,
-                                                                vOffsets.at("spawn"),
+                                                                gConfig->getVirtualOffset("spawn"),
                                                                 reinterpret_cast<intptr_t>(VFunc::vSpawnHook))),
           m_takeDamage(
               std::make_unique<BasePlayerTakeDamageHookRegistry>(IBasePlayer::VTable,
-                                                                 vOffsets.at("takedamage"),
+                                                                 gConfig->getVirtualOffset("takedamage"),
                                                                  reinterpret_cast<intptr_t>(VFunc::vTakeDamageHook))),
           m_traceAttack(
               std::make_unique<BasePlayerTraceAttackHookRegistry>(IBasePlayer::VTable,
-                                                                  vOffsets.at("traceattack"),
+                                                                  gConfig->getVirtualOffset("traceattack"),
                                                                   reinterpret_cast<intptr_t>(VFunc::vTraceAttack))),
           m_killed(std::make_unique<BasePlayerKilledHookRegistry>(IBasePlayer::VTable,
-                                                                  vOffsets.at("killed"),
+                                                                  gConfig->getVirtualOffset("killed"),
                                                                   reinterpret_cast<intptr_t>(VFunc::vKilled)))
     {
     }
