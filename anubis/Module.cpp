@@ -59,7 +59,7 @@ namespace Anubis
                                                                });
 #endif
 
-        if (!m_libHandle || !_getError().empty())
+        if (!m_libHandle)
         {
             throw std::runtime_error(_getError().data());
         }
@@ -100,7 +100,7 @@ namespace Anubis
                                                                });
 #endif
 
-        if (!m_libHandle || !_getError().empty())
+        if (!m_libHandle)
         {
             throw std::runtime_error(_getError().data());
         }
@@ -259,7 +259,18 @@ namespace Anubis
             {
                 throw std::runtime_error("Anubis::Game::EntityHolder function not found");
             }
+
+            m_getGameRules = getSymbol<fnGetGameRules>(Module::FnGetGameRulesSgn);
+            if (!m_getGameRules)
+            {
+                throw std::runtime_error("Anubis::Game::GetGameRules function not found");
+            }
         }
+    }
+
+    void Module::setCGameRulesCallback(std::function<void(nstd::observer_ptr<CGameRules>)> fn) const
+    {
+        std::invoke(m_getGameRules, fn, nullptr);
     }
 
     void Module::deinitPlugin() const

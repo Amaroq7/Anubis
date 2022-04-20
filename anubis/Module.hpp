@@ -35,6 +35,8 @@
     #include <windows.h>
 #endif
 
+class CGameRules;
+
 namespace Anubis
 {
     class Module
@@ -51,6 +53,7 @@ namespace Anubis
         void deinitPlugin() const;
         [[nodiscard]] nstd::observer_ptr<Game::IBasePlayerHooks> getCBasePlayerHooks() const;
         [[nodiscard]] nstd::observer_ptr<Game::IEntityHolder> getEntityHolder() const;
+        void setCGameRulesCallback(std::function<void(nstd::observer_ptr<CGameRules>)> fn) const;
         [[nodiscard]] IPlugin::Type getType() const;
         [[nodiscard]] std::string_view getName() const;
         [[nodiscard]] std::string_view getVersion() const;
@@ -82,6 +85,9 @@ namespace Anubis
             "?EntityHolder@Game@Anubis@@YA?AV?$observer_ptr@VIEntityHolder@Game@Anubis@@@nstd@@XZ";
         static constexpr std::string_view FnBasePlayerHooksSgn =
             "?BasePlayerHooks@Game@Anubis@@YA?AV?$observer_ptr@VIBasePlayerHooks@Game@Anubis@@@nstd@@XZ";
+        static constexpr std::string_view FnGetGameRulesSgn =
+            "?GetGameRules@Game@Anubis@@YAXV?$function@$$A6AXV?$observer_ptr@VCGameRules@@@nstd@@@Z@std@@V?$observer_"
+            "ptr@VCGameRules@@@nstd@@@Z";
 #else
         static constexpr std::string_view FnQuerySgn = "_ZN6Anubis5QueryEv";
         static constexpr std::string_view FnInitSgn = "_ZN6Anubis4InitEN4nstd12observer_ptrINS_7IAnubisEEE";
@@ -89,6 +95,8 @@ namespace Anubis
         static constexpr std::string_view FnInstallVFHooksSgn = "_ZN6Anubis13InstallVHooksEv";
         static constexpr std::string_view FnEntityHolderSgn = "_ZN6Anubis4Game12EntityHolderEv";
         static constexpr std::string_view FnBasePlayerHooksSgn = "_ZN6Anubis4Game15BasePlayerHooksEv";
+        static constexpr std::string_view FnGetGameRulesSgn =
+            "_ZN6Anubis4Game12GetGameRulesESt8functionIFvN4nstd12observer_ptrI10CGameRulesEEEES5_";
 #endif
 
     private:
@@ -111,6 +119,7 @@ namespace Anubis
         fnEntityHolder m_getEntityHolderFn = nullptr;
         fnShutdown m_shutdownFn = nullptr;
         fnInstallVHooks m_installVFHooks = nullptr;
+        fnGetGameRules m_getGameRules = nullptr;
         std::unique_ptr<void, std::function<void(SystemHandle)>> m_libHandle;
     };
 } // namespace Anubis
