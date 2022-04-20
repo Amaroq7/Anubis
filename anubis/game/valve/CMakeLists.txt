@@ -6,7 +6,8 @@ set(SRC_FILES
         BaseEntity.cpp
         AnubisExports.cpp
         EntityHolder.cpp
-        BasePlayer.cpp)
+        BasePlayer.cpp
+        Config.cpp)
 
 add_library(${PROJECT_NAME} MODULE ${SRC_FILES})
 
@@ -41,10 +42,11 @@ else ()
             /external:I ${CMAKE_SOURCE_DIR}/rehlds
             /external:W0
             /W4 /WX /wd4250)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING PSAPI_VERSION=1)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Psapi.lib)
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${YAML_CPP_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${YAML_CPP_LIBRARIES} ${FMT_LIBRARIES})
 
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
