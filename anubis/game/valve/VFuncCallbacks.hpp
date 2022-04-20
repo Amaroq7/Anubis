@@ -25,39 +25,49 @@ typedef struct entvars_s entvars_t;
 struct TraceResult;
 class Vector;
 
+extern std::intptr_t CWorldVTable;
+extern std::intptr_t CWorldSpawnOrigFn;
+
+#if defined _WIN32
+    #define FASTCALL __fastcall
+#else
+    #define FASTCALL
+#endif
+
 namespace Anubis::Game::VFunc
 {
-    void vSpawnHook(
-#if defined __linux__
-        void *instance
+    void FASTCALL vSpawnHook(void *instance
+#if defined _WIN32
+                             ,
+                             void *notUsed
 #endif
     );
 
-    std::int32_t vTakeDamageHook(
-#if defined __linux__
-        void *instance,
+    std::int32_t FASTCALL vTakeDamageHook(void *instance,
+#if defined _WIN32
+                                          void *notUsed,
 #endif
-        entvars_t *pevInflictor,
-        entvars_t *pevAttacker,
-        float flDamage,
-        std::int32_t bitsDamageType);
+                                          entvars_t *pevInflictor,
+                                          entvars_t *pevAttacker,
+                                          float flDamage,
+                                          std::int32_t bitsDamageType);
 
-    void vTraceAttack(
-#if defined __linux__
-        void *instance,
+    void FASTCALL vTraceAttack(void *instance,
+#if defined _WIN32
+                               void *notUsed,
 #endif
-        entvars_t *pevAttacker,
-        float flDamage,
-        Vector vecDir,
-        ::TraceResult *ptr,
-        std::int32_t bitsDamageType);
+                               entvars_t *pevAttacker,
+                               float flDamage,
+                               Vector vecDir,
+                               ::TraceResult *ptr,
+                               std::int32_t bitsDamageType);
 
-    void vKilled(
-#if defined __linux__
-        void *instance,
+    void FASTCALL vKilled(void *instance,
+#if defined _WIN32
+                          void *notUsed,
 #endif
-        entvars_t *pevAttacker,
-        int iGib);
+                          entvars_t *pevAttacker,
+                          int iGib);
 
     extern std::uint32_t gPevOffset;
 } // namespace Anubis::Game::VFunc

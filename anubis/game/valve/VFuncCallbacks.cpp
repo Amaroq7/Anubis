@@ -21,9 +21,15 @@
 #include "AnubisExports.hpp"
 #include "EntitiesHooks.hpp"
 #include "EntityHolder.hpp"
+#include "Config.hpp"
 #include <engine/ITraceResult.hpp>
 #include <game/IBasePlayer.hpp>
 #include <extdll.h>
+
+std::intptr_t CWorldVTable;
+std::intptr_t CWorldSpawnOrigFn;
+
+class CGameRules;
 
 namespace
 {
@@ -50,19 +56,13 @@ namespace Anubis::Game::VFunc
     std::uint32_t gPevOffset;
 
     /* virtual void	Spawn( void ) */
-    void vSpawnHook(
-#if defined __linux__
-        void *instance
+    void FASTCALL vSpawnHook(void *instance
+#if defined _WIN32
+                             ,
+                             void *notUsed
 #endif
     )
     {
-#if defined _WIN32
-        void *instance;
-        __asm
-        {
-            mov [instance], ecx
-        }
-#endif
         if (getVTable(instance) == IBasePlayer::VTable)
         {
             static auto hookChain = Valve::getBasePlayerHooks()->spawn();
@@ -73,25 +73,23 @@ namespace Anubis::Game::VFunc
                 },
                 Valve::getEntityHolder()->getBasePlayer(static_cast<CBasePlayer *>(instance)));
         }
+        else if (getVTable(instance) == CWorldVTable)
+        {
+            execVFunc<>(CWorldSpawnOrigFn, instance);
+            GetGameRules({}, *Valve::gConfig->getAddress<CGameRules *>("g_pGameRules"));
+        }
     }
 
     /* int TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType); */
-    std::int32_t vTakeDamageHook(
-#if defined __linux__
-        void *instance,
-#endif
-        entvars_t *pevInflictor,
-        entvars_t *pevAttacker,
-        float flDamage,
-        std::int32_t bitsDamageType)
-    {
+    std::int32_t FASTCALL vTakeDamageHook(void *instance,
 #if defined _WIN32
-        void *instance;
-        __asm
-        {
-            mov [instance], ecx
-        }
+                                          void *notUsed,
 #endif
+                                          entvars_t *pevInflictor,
+                                          entvars_t *pevAttacker,
+                                          float flDamage,
+                                          std::int32_t bitsDamageType)
+    {
         if (getVTable(instance) == IBasePlayer::VTable)
         {
             static auto hookChain = Valve::getBasePlayerHooks()->takeDamage();
@@ -113,23 +111,16 @@ namespace Anubis::Game::VFunc
 
     /* void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int
      * bitsDamageType); */
-    void vTraceAttack(
-#if defined __linux__
-        void *instance,
-#endif
-        entvars_t *pevAttacker,
-        float flDamage,
-        Vector vecDir,
-        ::TraceResult *ptr,
-        std::int32_t bitsDamageType)
-    {
+    void FASTCALL vTraceAttack(void *instance,
 #if defined _WIN32
-        void *instance;
-        __asm
-        {
-            mov [instance], ecx
-        }
+                               void *notUsed,
 #endif
+                               entvars_t *pevAttacker,
+                               float flDamage,
+                               Vector vecDir,
+                               ::TraceResult *ptr,
+                               std::int32_t bitsDamageType)
+    {
         if (getVTable(instance) == IBasePlayer::VTable)
         {
             std::unique_ptr<Engine::ITraceResult> metaTr = gEngineLib->createTraceResult(ptr);
@@ -149,21 +140,13 @@ namespace Anubis::Game::VFunc
         }
     }
 
-    void vKilled(
-#if defined __linux__
-        void *instance,
-#endif
-        entvars_t *pevAttacker,
-        int iGib)
-    {
+    void FASTCALL vKilled(void *instance,
 #if defined _WIN32
-        void *instance;
-        __asm
-        {
-            mov [instance], ecx
-        }
+                          void *notUsed,
 #endif
-
+                          entvars_t *pevAttacker,
+                          int iGib)
+    {
         if (getVTable(instance) == IBasePlayer::VTable)
         {
             static auto hookChain = Valve::getBasePlayerHooks()->killed();
