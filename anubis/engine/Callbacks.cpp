@@ -297,13 +297,13 @@ namespace Anubis::Engine::Callbacks::GameDLL
         getEngine()->initEdict(pEdict);
         if (!vFuncInitialized)
         {
-            getGame()->initVFuncHooks();
             vFuncInitialized = true;
+            getGame()->initVFuncHooks();
         }
         if (!playerEdictsInitialized)
         {
-            getEngine()->initPlayerEdicts();
             playerEdictsInitialized = true;
+            getEngine()->initPlayerEdicts();
         }
 
         std::ignore = getEngine()->allocEntPrivateData(getEngine()->getEdict(pEdict), cb, FuncCallType::Hooks);
