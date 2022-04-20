@@ -31,7 +31,7 @@ namespace Anubis::Game
     {
     public:
         ~Rules() final = default;
-        Rules(CGameRules *gameRules, nstd::observer_ptr<ILibrary> gameLib);
+        Rules(nstd::observer_ptr<CGameRules> gameRules, nstd::observer_ptr<ILibrary> gameLib);
 
         void refreshSkillData() final;
         void think() final;
@@ -107,7 +107,7 @@ namespace Anubis::Game
         void endMultiplayerGame() final;
 
     private:
-        CGameRules *m_gameRules;
+        nstd::observer_ptr<CGameRules> m_gameRules;
         nstd::observer_ptr<ILibrary> m_gameLib;
     };
 } // namespace Anubis::Game

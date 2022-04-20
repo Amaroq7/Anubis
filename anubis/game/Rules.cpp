@@ -32,11 +32,9 @@ using Vector = float *;
 #endif
 #include <gamerules.h>
 
-#include <string>
-
 namespace Anubis::Game
 {
-    Rules::Rules(CGameRules *gameRules, nstd::observer_ptr<ILibrary> gameLib)
+    Rules::Rules(nstd::observer_ptr<CGameRules> gameRules, nstd::observer_ptr<ILibrary> gameLib)
         : m_gameRules(gameRules),
           m_gameLib(gameLib)
     {
@@ -100,10 +98,12 @@ namespace Anubis::Game
             rejectReason.resize(MAX_REJECT_REASON);
         }
 
-        return m_gameRules->ClientConnected(static_cast<edict_t *>(*entity->edict()), name.data(), address.data(),
-                                            szRejectReason);
+        bool result = m_gameRules->ClientConnected(static_cast<edict_t *>(*entity->edict()), name.data(),
+                                                   address.data(), szRejectReason) == 1;
 
         rejectReason = szRejectReason;
+
+        return result;
     }
 
     void Rules::initHUD(nstd::observer_ptr<IBasePlayer> player)
