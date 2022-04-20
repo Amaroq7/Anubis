@@ -101,5 +101,6 @@ namespace Anubis::Game::Valve
     void BaseEntity::updateSerialNumber(std::uint32_t serialNumber)
     {
         m_serialNumber = serialNumber;
+        m_entity = reinterpret_cast<CBaseEntity *>(m_edict->getPrivateData());
     }
 } // namespace Anubis::Game::Valve
