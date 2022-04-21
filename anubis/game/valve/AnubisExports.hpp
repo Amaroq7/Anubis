@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Anubis Development Team
+ *  Copyright (C) 2020-2022 Anubis Development Team
  *
  *  This file is part of Anubis.
  *
@@ -28,45 +28,48 @@
 extern nstd::observer_ptr<Anubis::Game::ILibrary> gGameLib;
 extern nstd::observer_ptr<Anubis::Engine::ILibrary> gEngineLib;
 extern nstd::observer_ptr<Anubis::IAnubis> gAnubisAPI;
+extern std::unique_ptr<Anubis::ILogger> gLogger;
 
-namespace EntityLib::Valve
+class CGameRules;
+
+namespace Anubis::Game::Valve
 {
-    class Plugin : public Anubis::IPlugin
+    class Plugin final : public Anubis::IPlugin
     {
     public:
-        ~Plugin() override = default;
+        ~Plugin() final = default;
 
-        [[nodiscard]] Anubis::InterfaceVersion getInterfaceVersion() const override
+        [[nodiscard]] InterfaceVersion getInterfaceVersion() const final
         {
-            return Anubis::IAnubis::VERSION;
+            return IAnubis::VERSION;
         }
 
-        [[nodiscard]] Type getType() const override
+        [[nodiscard]] Type getType() const final
         {
-            return Anubis::IPlugin::Type::EntityDLL;
+            return IPlugin::Type::EntityDLL;
         }
 
-        [[nodiscard]] std::string_view getName() const override
+        [[nodiscard]] std::string_view getName() const final
         {
             return "Entity Library Valve";
         }
 
-        [[nodiscard]] std::string_view getVersion() const override
+        [[nodiscard]] std::string_view getVersion() const final
         {
             return ANUBIS_VERSION;
         }
 
-        [[nodiscard]] std::string_view getDate() const override
+        [[nodiscard]] std::string_view getDate() const final
         {
             return __DATE__;
         }
 
-        [[nodiscard]] std::string_view getAuthor() const override
+        [[nodiscard]] std::string_view getAuthor() const final
         {
             return "Anubis Development Team";
         }
 
-        [[nodiscard]] std::string_view getUrl() const override
+        [[nodiscard]] std::string_view getUrl() const final
         {
             return "https://github.com/Amaroq7/anubis";
         }
