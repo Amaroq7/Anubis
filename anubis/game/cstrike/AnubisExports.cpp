@@ -105,7 +105,7 @@ static bool initReGameDLL_API()
         [](IReGameHook_InstallGameRules *chain)
         {
             nstd::observer_ptr<CGameRules> gameRules = chain->callNext();
-            gPluginInfo->execHook(Anubis::Game::SetupHookType::GameRules, gameRules);
+            gPluginInfo->execHook(Anubis::Game::SetupHookType::GameRules, gPluginInfo->createGameRules(gameRules));
             return gameRules.get();
         },
         HookChainPriority::HC_PRIORITY_DEFAULT);

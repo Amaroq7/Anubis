@@ -29,3 +29,4 @@ class CBaseEntity;
 #include <cbase.h>
 #include <player.h>
 #include <regamedll_api.h>
+#include <gamerules.h>

@@ -76,8 +76,8 @@ namespace Anubis::Game::VFunc
         else if (getVTable(instance) == CWorldVTable)
         {
             execVFunc<>(CWorldSpawnOrigFn, instance);
-            Valve::gPluginInfo->execHook(SetupHookType::GameRules,
-                                         *Valve::gConfig->getAddress<CGameRules *>("g_pGameRules"));
+            nstd::observer_ptr<CGameRules> gameRules = *Valve::gConfig->getAddress<CGameRules *>("g_pGameRules");
+            Valve::gPluginInfo->execHook(SetupHookType::GameRules, Valve::gPluginInfo->createGameRules(gameRules));
         }
     }
 

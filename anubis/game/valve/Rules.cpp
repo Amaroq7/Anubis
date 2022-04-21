@@ -32,7 +32,7 @@ using Vector = float *;
 #endif
 #include <gamerules.h>
 
-namespace Anubis::Game
+namespace Anubis::Game::Valve
 {
     Rules::Rules(nstd::observer_ptr<CGameRules> gameRules, nstd::observer_ptr<ILibrary> gameLib)
         : m_gameRules(gameRules),
@@ -57,27 +57,27 @@ namespace Anubis::Game
 
     bool Rules::allowFlashlight()
     {
-        return m_gameRules->FAllowFlashlight() == 1;
+        return m_gameRules->FAllowFlashlight() != FALSE;
     }
 
     bool Rules::isMultiplayer()
     {
-        return m_gameRules->IsMultiplayer() == 1;
+        return m_gameRules->IsMultiplayer() != FALSE;
     }
 
     bool Rules::isDeathMatch()
     {
-        return m_gameRules->IsDeathmatch() == 1;
+        return m_gameRules->IsDeathmatch() != FALSE;
     }
 
     bool Rules::isTeamPlay()
     {
-        return m_gameRules->IsTeamplay() == 1;
+        return m_gameRules->IsTeamplay() != FALSE;
     }
 
     bool Rules::isCoOp()
     {
-        return m_gameRules->IsCoOp() == 1;
+        return m_gameRules->IsCoOp() != FALSE;
     }
 
     std::string_view Rules::getGameDescription()
@@ -99,7 +99,7 @@ namespace Anubis::Game
         }
 
         bool result = m_gameRules->ClientConnected(static_cast<edict_t *>(*entity->edict()), name.data(),
-                                                   address.data(), szRejectReason) == 1;
+                                                   address.data(), szRejectReason) != FALSE;
 
         rejectReason = szRejectReason;
 
@@ -129,13 +129,13 @@ namespace Anubis::Game
     bool Rules::playerCanTakeDamage(nstd::observer_ptr<IBasePlayer> player, nstd::observer_ptr<IBaseEntity> attacker)
     {
         return m_gameRules->FPlayerCanTakeDamage(static_cast<CBasePlayer *>(*player),
-                                                 static_cast<CBaseEntity *>(*attacker)) == 1;
+                                                 static_cast<CBaseEntity *>(*attacker)) != FALSE;
     }
 
     bool Rules::shouldAutoAim(nstd::observer_ptr<IBasePlayer> player, nstd::observer_ptr<IBaseEntity> target)
     {
         return m_gameRules->ShouldAutoAim(static_cast<CBasePlayer *>(*player),
-                                          static_cast<edict_t *>(*target->edict()));
+                                          static_cast<edict_t *>(*target->edict())) != FALSE;
     }
 
     void Rules::playerSpawn(nstd::observer_ptr<IBasePlayer> player)
@@ -150,7 +150,7 @@ namespace Anubis::Game
 
     bool Rules::playerCanRespawn(nstd::observer_ptr<IBasePlayer> player)
     {
-        return m_gameRules->FPlayerCanRespawn(static_cast<CBasePlayer *>(*player));
+        return m_gameRules->FPlayerCanRespawn(static_cast<CBasePlayer *>(*player)) != FALSE;
     }
 
     float Rules::playerSpawnTime(nstd::observer_ptr<IBasePlayer> player)
@@ -165,12 +165,12 @@ namespace Anubis::Game
 
     bool Rules::allowAutoTargetCrosshair()
     {
-        return m_gameRules->AllowAutoTargetCrosshair() == 1;
+        return m_gameRules->AllowAutoTargetCrosshair() != FALSE;
     }
 
     bool Rules::clientCommand(nstd::observer_ptr<IBasePlayer> player, std::string_view cmd)
     {
-        return m_gameRules->ClientCommand(static_cast<CBasePlayer *>(*player), cmd.data());
+        return m_gameRules->ClientCommand(static_cast<CBasePlayer *>(*player), cmd.data()) != FALSE;
     }
 
     void Rules::clientUserInfoChanged(nstd::observer_ptr<IBasePlayer> player, Engine::InfoBuffer infobuffer)
@@ -201,7 +201,7 @@ namespace Anubis::Game
 
     bool Rules::canHaveAmmo(nstd::observer_ptr<IBasePlayer> player, std::string_view ammoName, std::int32_t maxCarry)
     {
-        return m_gameRules->CanHaveAmmo(static_cast<CBasePlayer *>(*player), ammoName.data(), maxCarry) == 1;
+        return m_gameRules->CanHaveAmmo(static_cast<CBasePlayer *>(*player), ammoName.data(), maxCarry) != FALSE;
     }
 
     void Rules::playerGotAmmo(nstd::observer_ptr<IBasePlayer> player, std::string_view name, std::int32_t count)
@@ -234,7 +234,7 @@ namespace Anubis::Game
         return m_gameRules->GetTeamID(static_cast<CBaseEntity *>(*entity));
     }
 
-    PlayerRelationship Rules::playerRelationship(nstd::observer_ptr<IBaseEntity> player,
+    PlayerRelationship Rules::playerRelationship(nstd::observer_ptr<IBasePlayer> player,
                                                  nstd::observer_ptr<IBaseEntity> target)
     {
         return static_cast<PlayerRelationship>(
@@ -253,7 +253,7 @@ namespace Anubis::Game
 
     bool Rules::isValidTeam(std::string_view teamName)
     {
-        return m_gameRules->IsValidTeam(teamName.data());
+        return m_gameRules->IsValidTeam(teamName.data()) != FALSE;
     }
 
     void Rules::changePlayerTeam(nstd::observer_ptr<IBasePlayer> player, std::string_view teamName, bool kill, bool gib)
@@ -269,17 +269,17 @@ namespace Anubis::Game
 
     bool Rules::playTextureSounds()
     {
-        return m_gameRules->PlayTextureSounds() == 1;
+        return m_gameRules->PlayTextureSounds() != FALSE;
     }
 
     bool Rules::playFootstepSounds(nstd::observer_ptr<IBasePlayer> player, float vol)
     {
-        return m_gameRules->PlayFootstepSounds(static_cast<CBasePlayer *>(*player), vol) == 1;
+        return m_gameRules->PlayFootstepSounds(static_cast<CBasePlayer *>(*player), vol) != FALSE;
     }
 
     bool Rules::allowMonsters()
     {
-        return m_gameRules->FAllowMonsters() == 1;
+        return m_gameRules->FAllowMonsters() != FALSE;
     }
 
     void Rules::endMultiplayerGame()
@@ -287,4 +287,4 @@ namespace Anubis::Game
         m_gameRules->EndMultiplayerGame();
     }
 
-} // namespace Anubis::Game
+} // namespace Anubis::Game::Valve

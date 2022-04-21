@@ -559,9 +559,9 @@ namespace Anubis::Game
             entityLib->setupHook(SetupHookType::GameRules,
                                  [this](std::any gameRules)
                                  {
-                                     if (auto rules = std::any_cast<nstd::observer_ptr<CGameRules>>(gameRules); rules)
+                                     if (auto rules = std::any_cast<nstd::observer_ptr<IRules>>(gameRules); rules)
                                      {
-                                         m_rules = std::make_unique<Rules>(rules, this);
+                                         m_rules = rules;
                                      }
                                  });
 

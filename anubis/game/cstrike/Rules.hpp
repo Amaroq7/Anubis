@@ -25,7 +25,7 @@
 
 class CGameRules;
 
-namespace Anubis::Game
+namespace Anubis::Game::CStrike
 {
     class Rules final : public IRules
     {
@@ -89,7 +89,7 @@ namespace Anubis::Game
         DeadPlayerAmmo deadPlayerAmmo(nstd::observer_ptr<IBasePlayer> player) final;
 
         std::string_view getTeamID(nstd::observer_ptr<IBaseEntity> entity) final;
-        PlayerRelationship playerRelationship(nstd::observer_ptr<IBaseEntity> player,
+        PlayerRelationship playerRelationship(nstd::observer_ptr<IBasePlayer> player,
                                               nstd::observer_ptr<IBaseEntity> target) final;
         TeamIndex getTeamIndex(std::string_view teamName) final;
         std::string_view getIndexedTeamName(TeamIndex teamIndex) final;
@@ -110,4 +110,4 @@ namespace Anubis::Game
         nstd::observer_ptr<CGameRules> m_gameRules;
         nstd::observer_ptr<ILibrary> m_gameLib;
     };
-} // namespace Anubis::Game
+} // namespace Anubis::Game::CStrike

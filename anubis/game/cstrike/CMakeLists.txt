@@ -7,7 +7,8 @@ set(SRC_FILES
         AnubisExports.cpp
         BaseEntity.cpp
         BasePlayer.cpp
-        ValveInterface.cpp)
+        ValveInterface.cpp
+        Rules.cpp)
 
 add_library(${PROJECT_NAME} MODULE ${SRC_FILES})
 

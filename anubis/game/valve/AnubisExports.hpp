@@ -23,14 +23,15 @@
 #include <AnubisInfo.hpp>
 #include <game/ILibrary.hpp>
 #include <engine/ILibrary.hpp>
+
+#include "Rules.hpp"
+
 #include <map>
 
 extern nstd::observer_ptr<Anubis::Game::ILibrary> gGameLib;
 extern nstd::observer_ptr<Anubis::Engine::ILibrary> gEngineLib;
 extern nstd::observer_ptr<Anubis::IAnubis> gAnubisAPI;
 extern std::unique_ptr<Anubis::ILogger> gLogger;
-
-class CGameRules;
 
 namespace Anubis::Game::Valve
 {
@@ -84,8 +85,15 @@ namespace Anubis::Game::Valve
             m_hooks.try_emplace(setupHookType, std::move(hook));
         }
 
+        nstd::observer_ptr<IRules> createGameRules(nstd::observer_ptr<CGameRules> gameRules)
+        {
+            m_rules = std::make_unique<Rules>(gameRules, gGameLib);
+            return m_rules;
+        }
+
     private:
         std::map<SetupHookType, std::function<void(std::any)>> m_hooks;
+        std::unique_ptr<Rules> m_rules;
     };
 
     extern std::unique_ptr<Plugin> gPluginInfo;

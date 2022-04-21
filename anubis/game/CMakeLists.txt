@@ -6,8 +6,7 @@ add_subdirectory(valve)
 set(SRC_FILES
         Library.cpp
         Callbacks.cpp
-        Hooks.cpp
-        Rules.cpp)
+        Hooks.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 

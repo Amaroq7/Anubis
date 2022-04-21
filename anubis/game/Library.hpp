@@ -25,7 +25,6 @@
 #include "Hooks.hpp"
 #include "Logger.hpp"
 #include "IEntityHolder.hpp"
-#include "Rules.hpp"
 
 class CBaseEntity;
 
@@ -141,6 +140,6 @@ namespace Anubis::Game
         std::unique_ptr<Module> m_entityLibrary;
         std::uint32_t m_maxClients = 6;
         edict_t *m_edictList = nullptr;
-        std::unique_ptr<Rules> m_rules;
+        nstd::observer_ptr<IRules> m_rules;
     };
 } // namespace Anubis::Game

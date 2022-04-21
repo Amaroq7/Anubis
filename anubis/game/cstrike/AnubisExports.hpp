@@ -24,6 +24,8 @@
 #include <game/ILibrary.hpp>
 #include <engine/ILibrary.hpp>
 
+#include "Rules.hpp"
+
 #include <map>
 
 class IReGameApi;
@@ -54,7 +56,7 @@ namespace Anubis::Game::CStrike
 
         [[nodiscard]] std::string_view getName() const final
         {
-            return "Entity Library Valve";
+            return "Entity Library CStrike";
         }
 
         [[nodiscard]] std::string_view getVersion() const final
@@ -87,8 +89,15 @@ namespace Anubis::Game::CStrike
             m_hooks.try_emplace(setupHookType, std::move(hook));
         }
 
+        nstd::observer_ptr<IRules> createGameRules(nstd::observer_ptr<CGameRules> gameRules)
+        {
+            m_rules = std::make_unique<Rules>(gameRules, gGameLib);
+            return m_rules;
+        }
+
     private:
         std::map<SetupHookType, std::function<void(std::any)>> m_hooks;
+        std::unique_ptr<Rules> m_rules;
     };
 
     extern std::unique_ptr<Anubis::Game::CStrike::Plugin> gPluginInfo;

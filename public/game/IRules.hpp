@@ -144,7 +144,7 @@ namespace Anubis::Game
         virtual DeadPlayerAmmo deadPlayerAmmo(nstd::observer_ptr<IBasePlayer> player) = 0;
 
         virtual std::string_view getTeamID(nstd::observer_ptr<IBaseEntity> entity) = 0;
-        virtual PlayerRelationship playerRelationship(nstd::observer_ptr<IBaseEntity> player,
+        virtual PlayerRelationship playerRelationship(nstd::observer_ptr<IBasePlayer> player,
                                                       nstd::observer_ptr<IBaseEntity> target) = 0;
         virtual TeamIndex getTeamIndex(std::string_view teamName) = 0;
         virtual std::string_view getIndexedTeamName(TeamIndex teamIndex) = 0;
