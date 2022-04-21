@@ -150,7 +150,11 @@ namespace
     }
 } // namespace
 
-extern "C" ANUBIS_API void WINAPI GiveFnptrsToDll(enginefuncs_t *pengfuncsFromEngine, globalvars_t *pGlobals)
+extern "C" ANUBIS_API void
+#if defined _WIN32
+    __stdcall
+#endif
+    GiveFnptrsToDll(enginefuncs_t *pengfuncsFromEngine, globalvars_t *pGlobals)
 {
     auto engineFuncs = std::make_unique<enginefuncs_t>();
     *engineFuncs = *pengfuncsFromEngine;

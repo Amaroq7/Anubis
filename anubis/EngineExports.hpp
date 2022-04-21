@@ -24,5 +24,9 @@ typedef struct globalvars_s globalvars_t;
 
 namespace Anubis::Engine
 {
+#if defined __linux__
     using fnGiveFuncs = void (*)(enginefuncs_t *pengfuncsFromEngine, globalvars_t *pGlobals);
-}
+#elif defined _WIN32
+    using fnGiveFuncs = void(__stdcall *)(enginefuncs_t *pengfuncsFromEngine, globalvars_t *pGlobals);
+#endif
+} // namespace Anubis::Engine
