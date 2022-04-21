@@ -27,11 +27,8 @@
 #include "IMsg.hpp"
 #include "ILogger.hpp"
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
-    #include <game/IEntityHolder.hpp>
-#endif
-
 #include <filesystem>
+#include <any>
 
 #if defined ANUBIS_CORE
 typedef struct enginefuncs_s enginefuncs_t;
