@@ -23,7 +23,7 @@
 #include <AnubisInfo.hpp>
 #include <game/ILibrary.hpp>
 #include <engine/ILibrary.hpp>
-#include <unordered_map>
+#include <map>
 
 extern nstd::observer_ptr<Anubis::Game::ILibrary> gGameLib;
 extern nstd::observer_ptr<Anubis::Engine::ILibrary> gEngineLib;
@@ -70,5 +70,20 @@ namespace EntityLib::Valve
         {
             return "https://github.com/Amaroq7/anubis";
         }
+
+        void execHook(SetupHookType setupHookType, std::any obj)
+        {
+            m_hooks.at(setupHookType)(obj);
+        }
+
+        void addHook(SetupHookType setupHookType, std::function<void(std::any)> &&hook)
+        {
+            m_hooks.try_emplace(setupHookType, std::move(hook));
+        }
+
+    private:
+        std::map<SetupHookType, std::function<void(std::any)>> m_hooks;
     };
-} // namespace EntityLib::Valve
+
+    extern std::unique_ptr<Plugin> gPluginInfo;
+} // namespace Anubis::Game::Valve

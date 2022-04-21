@@ -51,9 +51,7 @@ namespace Anubis
         [[nodiscard]] bool initPlugin(nstd::observer_ptr<IAnubis> api) const;
         void installVFHooks() const;
         void deinitPlugin() const;
-        [[nodiscard]] nstd::observer_ptr<Game::IBasePlayerHooks> getCBasePlayerHooks() const;
-        [[nodiscard]] nstd::observer_ptr<Game::IEntityHolder> getEntityHolder() const;
-        void setCGameRulesCallback(std::function<void(nstd::observer_ptr<CGameRules>)> fn) const;
+        void setupHook(Game::SetupHookType setupHookType, std::function<void(std::any)> hook) const;
         [[nodiscard]] IPlugin::Type getType() const;
         [[nodiscard]] std::string_view getName() const;
         [[nodiscard]] std::string_view getVersion() const;
@@ -81,11 +79,7 @@ namespace Anubis
         static constexpr std::string_view FnInitSgn = "?Init@Anubis@@YA_NV?$observer_ptr@VIAnubis@Anubis@@@nstd@@@Z";
         static constexpr std::string_view FnShutdownSgn = "?Shutdown@Anubis@@YAXXZ";
         static constexpr std::string_view FnInstallVFHooksSgn = "?InstallVHooks@Anubis@@YAXXZ";
-        static constexpr std::string_view FnEntityHolderSgn =
-            "?EntityHolder@Game@Anubis@@YA?AV?$observer_ptr@VIEntityHolder@Game@Anubis@@@nstd@@XZ";
-        static constexpr std::string_view FnBasePlayerHooksSgn =
-            "?BasePlayerHooks@Game@Anubis@@YA?AV?$observer_ptr@VIBasePlayerHooks@Game@Anubis@@@nstd@@XZ";
-        static constexpr std::string_view FnGetGameRulesSgn =
+        static constexpr std::string_view FnSetupHookSgn =
             "?GetGameRules@Game@Anubis@@YAXV?$function@$$A6AXV?$observer_ptr@VCGameRules@@@nstd@@@Z@std@@V?$observer_"
             "ptr@VCGameRules@@@nstd@@@Z";
 #else
@@ -93,10 +87,8 @@ namespace Anubis
         static constexpr std::string_view FnInitSgn = "_ZN6Anubis4InitEN4nstd12observer_ptrINS_7IAnubisEEE";
         static constexpr std::string_view FnShutdownSgn = "_ZN6Anubis8ShutdownEv";
         static constexpr std::string_view FnInstallVFHooksSgn = "_ZN6Anubis13InstallVHooksEv";
-        static constexpr std::string_view FnEntityHolderSgn = "_ZN6Anubis4Game12EntityHolderEv";
-        static constexpr std::string_view FnBasePlayerHooksSgn = "_ZN6Anubis4Game15BasePlayerHooksEv";
-        static constexpr std::string_view FnGetGameRulesSgn =
-            "_ZN6Anubis4Game12GetGameRulesESt8functionIFvN4nstd12observer_ptrI10CGameRulesEEEES5_";
+        static constexpr std::string_view FnSetupHookSgn =
+            "_ZN6Anubis4Game9SetupHookENS0_13SetupHookTypeESt8functionIFvSt3anyEE";
 #endif
 
     private:
@@ -115,11 +107,9 @@ namespace Anubis
         std::string m_plUrl;
         fnQuery m_queryFn = nullptr;
         fnInit m_initFn = nullptr;
-        fnBasePlayerHooks m_basePlayerHooksFn = nullptr;
-        fnEntityHolder m_getEntityHolderFn = nullptr;
         fnShutdown m_shutdownFn = nullptr;
         fnInstallVHooks m_installVFHooks = nullptr;
-        fnGetGameRules m_getGameRules = nullptr;
+        fnSetupHook m_setupHookFn = nullptr;
         std::unique_ptr<void, std::function<void(SystemHandle)>> m_libHandle;
     };
 } // namespace Anubis

@@ -24,6 +24,8 @@
 #include <game/ILibrary.hpp>
 #include <engine/ILibrary.hpp>
 
+#include <map>
+
 class IReGameApi;
 
 extern nstd::observer_ptr<Anubis::Game::ILibrary> gGameLib;
@@ -73,5 +75,20 @@ namespace EntityLib::CStrike
         {
             return "https://github.com/Amaroq7/anubis";
         }
+
+        void execHook(SetupHookType setupHookType, std::any obj)
+        {
+            m_hooks.at(setupHookType)(obj);
+        }
+
+        void addHook(SetupHookType setupHookType, std::function<void(std::any)> &&hook)
+        {
+            m_hooks.try_emplace(setupHookType, std::move(hook));
+        }
+
+    private:
+        std::map<SetupHookType, std::function<void(std::any)>> m_hooks;
     };
-} // namespace EntityLib::CStrike
+
+    extern std::unique_ptr<Anubis::Game::CStrike::Plugin> gPluginInfo;
+} // namespace Anubis::Game::CStrike

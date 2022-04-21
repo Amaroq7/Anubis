@@ -34,6 +34,7 @@ nstd::observer_ptr<Anubis::Game::ILibrary> gGameLib;
 nstd::observer_ptr<Anubis::Engine::ILibrary> gEngineLib;
 nstd::observer_ptr<Anubis::IAnubis> gAnubisAPI;
 std::unique_ptr<Anubis::ILogger> gLogger;
+std::unique_ptr<Anubis::Game::Valve::Plugin> gPluginInfo;
 
 namespace
 {
@@ -69,8 +70,8 @@ namespace Anubis
 {
     nstd::observer_ptr<IPlugin> Query()
     {
-        static std::unique_ptr<IPlugin> pluginInfo = std::make_unique<EntityLib::Valve::Plugin>();
-        return pluginInfo;
+        gPluginInfo = std::make_unique<Game::Valve::Plugin>();
+        return gPluginInfo;
     }
 
     bool Init(nstd::observer_ptr<IAnubis> api)
@@ -154,31 +155,19 @@ namespace Anubis
 
         Game::VFunc::gPevOffset = Game::Valve::gConfig->getVirtualOffset("pev");
 
-        Game::Valve::getEntityHolder();
-        Game::Valve::getBasePlayerHooks();
+        gPluginInfo->execHook(Game::SetupHookType::EntityHolder,
+                              nstd::make_observer<Game::IEntityHolder>(Game::Valve::getEntityHolder()));
+        gPluginInfo->execHook(Game::SetupHookType::BasePlayerHooks,
+                              nstd::make_observer<Game::IBasePlayerHooks>(Game::Valve::getBasePlayerHooks()));
     }
 
     void Shutdown() {}
 
     namespace Game
     {
-        nstd::observer_ptr<IBasePlayerHooks> BasePlayerHooks()
+        void SetupHook(SetupHookType setupHookType, std::function<void(std::any)> hook)
         {
-            return Valve::getBasePlayerHooks();
+            return gPluginInfo->addHook(setupHookType, std::move(hook));
         }
-
-        nstd::observer_ptr<IEntityHolder> EntityHolder()
-        {
-            return Valve::getEntityHolder();
-        }
-
-        void GetGameRules(std::function<void(nstd::observer_ptr<CGameRules>)> fn,
-                          nstd::observer_ptr<CGameRules> gameRules)
-        {
-            static auto getGameRulesCb = std::move(fn);
-            if (getGameRulesCb && gameRules)
-                getGameRulesCb(gameRules);
-        }
-
     } // namespace Game
 } // namespace Anubis

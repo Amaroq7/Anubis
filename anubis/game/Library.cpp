@@ -543,15 +543,29 @@ namespace Anubis::Game
                 throw std::runtime_error("Cannot initialize entity library");
             }
 
-            entityLib->installVFHooks();
+            entityLib->setupHook(SetupHookType::EntityHolder,
+                                 [this](std::any entHolder)
+                                 {
+                                     m_entityHolder = std::any_cast<nstd::observer_ptr<IEntityHolder>>(entHolder);
+                                 });
 
-            m_basePlayerHooks = entityLib->getCBasePlayerHooks();
-            m_entityHolder = entityLib->getEntityHolder();
-            entityLib->setCGameRulesCallback(
-                [this](nstd::observer_ptr<CGameRules> gameRules)
-                {
-                    m_rules = std::make_unique<Rules>(gameRules, this);
-                });
+            entityLib->setupHook(SetupHookType::BasePlayerHooks,
+                                 [this](std::any basePlrHooks)
+                                 {
+                                     m_basePlayerHooks =
+                                         std::any_cast<nstd::observer_ptr<IBasePlayerHooks>>(basePlrHooks);
+                                 });
+
+            entityLib->setupHook(SetupHookType::GameRules,
+                                 [this](std::any gameRules)
+                                 {
+                                     if (auto rules = std::any_cast<nstd::observer_ptr<CGameRules>>(gameRules); rules)
+                                     {
+                                         m_rules = std::make_unique<Rules>(rules, this);
+                                     }
+                                 });
+
+            entityLib->installVFHooks();
 
             m_entityLibrary = std::move(entityLib);
 

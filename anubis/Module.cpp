@@ -248,50 +248,22 @@ namespace Anubis
                 throw std::runtime_error("Anubis::InstallVHooks function not found");
             }
 
-            m_basePlayerHooksFn = getSymbol<fnBasePlayerHooks>(Module::FnBasePlayerHooksSgn);
-            if (!m_basePlayerHooksFn)
+            m_setupHookFn = getSymbol<fnSetupHook>(Module::FnSetupHookSgn);
+            if (!m_setupHookFn)
             {
-                throw std::runtime_error("Anubis::Game::BasePlayerHooks function not found");
-            }
-
-            m_getEntityHolderFn = getSymbol<fnEntityHolder>(Module::FnEntityHolderSgn);
-            if (!m_getEntityHolderFn)
-            {
-                throw std::runtime_error("Anubis::Game::EntityHolder function not found");
-            }
-
-            m_getGameRules = getSymbol<fnGetGameRules>(Module::FnGetGameRulesSgn);
-            if (!m_getGameRules)
-            {
-                throw std::runtime_error("Anubis::Game::GetGameRules function not found");
+                throw std::runtime_error("Anubis::Game::SetupHook function not found");
             }
         }
     }
 
-    void Module::setCGameRulesCallback(std::function<void(nstd::observer_ptr<CGameRules>)> fn) const
+    void Module::setupHook(Game::SetupHookType setupHookType, std::function<void(std::any)> hook) const
     {
-        std::invoke(m_getGameRules, fn, nullptr);
+        std::invoke(m_setupHookFn, setupHookType, std::move(hook));
     }
 
     void Module::deinitPlugin() const
     {
         std::invoke(m_shutdownFn);
-    }
-
-    nstd::observer_ptr<Game::IBasePlayerHooks> Module::getCBasePlayerHooks() const
-    {
-        if (m_basePlayerHooksFn)
-            return std::invoke(m_basePlayerHooksFn);
-
-        return {};
-    }
-
-    nstd::observer_ptr<Game::IEntityHolder> Module::getEntityHolder() const
-    {
-        if (m_getEntityHolderFn)
-            return std::invoke(m_getEntityHolderFn);
-
-        return {};
     }
 
     void Module::installVFHooks() const

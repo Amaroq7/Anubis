@@ -58,6 +58,14 @@ namespace Anubis
     {
         class ILibrary;
         class IBasePlayerHooks;
+
+        enum class SetupHookType : std::uint8_t
+        {
+            BasePlayerHooks = 0,
+            EntityHolder,
+            GameRules
+        };
+
     } // namespace Game
 
     namespace Engine
@@ -220,22 +228,12 @@ namespace Anubis
     namespace Game
     {
         /**
-         * @brief Entity DLL CBasePlayer hooks.
+         * @brief Setup callback for object when it is ready.
          *
          * @warning This function is mandatory if plugin is loaded as entity dll.
          *
-         * @return IBasePlayerHooks instance.
          */
-        ANUBIS_API nstd::observer_ptr<IBasePlayerHooks> BasePlayerHooks();
-
-        /**
-         * @brief Entity DLL entity holder.
-         *
-         * @warning This function is mandatory if plugin is loaded as entity dll.
-         *
-         * @return IEntityHolder instance.
-         */
-        ANUBIS_API nstd::observer_ptr<IEntityHolder> EntityHolder();
+        ANUBIS_API void SetupHook(SetupHookType setupHookType, std::function<void(std::any)> hook);
     } // namespace Game
     #endif
 #else
@@ -260,13 +258,8 @@ namespace Anubis
     using fnInstallVHooks = void (*)();
 
     /**
-     * @brief Signature of Anubis::Game::BasePlayerHooks().
+     * @brief Signature of Anubis::Game::SetupHook().
      */
-    using fnBasePlayerHooks = nstd::observer_ptr<Game::IBasePlayerHooks> (*)();
-
-    /**
-     * @brief Signature of Anubis::Game::EntityHolder().
-     */
-    using fnEntityHolder = nstd::observer_ptr<Game::IEntityHolder> (*)();
+    using fnSetupHook = void (*)(Game::SetupHookType setupHookType, std::function<void(std::any)> hook);
 #endif
 } // namespace Anubis

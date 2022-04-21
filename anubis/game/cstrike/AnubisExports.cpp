@@ -22,6 +22,7 @@
 #include "EntityHolder.hpp"
 
 #include <engine/IEdict.hpp>
+#include <utility>
 
 #include "ReGameHeaders.hpp"
 
@@ -31,6 +32,7 @@ nstd::observer_ptr<Anubis::IAnubis> gAnubisAPI;
 std::unique_ptr<Anubis::ILogger> gLogger;
 nstd::observer_ptr<IReGameApi> gReGameAPI;
 nstd::observer_ptr<CSysModule> gGameModule;
+std::unique_ptr<Anubis::Game::CStrike::Plugin> gPluginInfo;
 
 static bool initReGameDLL_API()
 {
@@ -91,6 +93,23 @@ static bool initReGameDLL_API()
         return false;
     }
 
+    if (!reGameAPI->BGetIGameRules(GAMERULES_API_INTERFACE_VERSION))
+    {
+        using namespace std::string_literals;
+        gLogger->logMsg(Anubis::LogDest::ConsoleFile, Anubis::LogLevel::Error,
+                        "Interface CGameRules API version '"s + GAMERULES_API_INTERFACE_VERSION + "' not found");
+        return false;
+    }
+
+    reGameAPI->GetHookchains()->InstallGameRules()->registerHook(
+        [](IReGameHook_InstallGameRules *chain)
+        {
+            nstd::observer_ptr<CGameRules> gameRules = chain->callNext();
+            gPluginInfo->execHook(Anubis::Game::SetupHookType::GameRules, gameRules);
+            return gameRules.get();
+        },
+        HookChainPriority::HC_PRIORITY_DEFAULT);
+
     gReGameAPI = reGameAPI;
     return true;
 }
@@ -99,8 +118,8 @@ namespace Anubis
 {
     nstd::observer_ptr<IPlugin> Query()
     {
-        static std::unique_ptr<IPlugin> pluginInfo = std::make_unique<EntityLib::CStrike::Plugin>();
-        return pluginInfo;
+        gPluginInfo = std::make_unique<Anubis::Game::CStrike::Plugin>();
+        return gPluginInfo;
     }
 
     bool Init(nstd::observer_ptr<IAnubis> api)
@@ -121,8 +140,10 @@ namespace Anubis
     void InstallVHooks()
     {
         // init vfunc stuff
-        Game::CStrike::getBasePlayerHooks();
-        Game::CStrike::getEntityHolder();
+        gPluginInfo->execHook(Game::SetupHookType::EntityHolder,
+                              nstd::make_observer<Game::IEntityHolder>(Game::CStrike::getEntityHolder()));
+        gPluginInfo->execHook(Game::SetupHookType::BasePlayerHooks,
+                              nstd::make_observer<Game::IBasePlayerHooks>(Game::CStrike::getBasePlayerHooks()));
     }
 
     void Shutdown()
@@ -133,14 +154,9 @@ namespace Anubis
 
     namespace Game
     {
-        nstd::observer_ptr<IBasePlayerHooks> BasePlayerHooks()
+        void SetupHook(SetupHookType setupHookType, std::function<void(std::any)> hook)
         {
-            return CStrike::getBasePlayerHooks();
-        }
-
-        nstd::observer_ptr<IEntityHolder> EntityHolder()
-        {
-            return CStrike::getEntityHolder();
+            return gPluginInfo->addHook(setupHookType, std::move(hook));
         }
     } // namespace Game
 } // namespace Anubis
