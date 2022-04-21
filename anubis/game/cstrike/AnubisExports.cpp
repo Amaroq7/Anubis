@@ -128,6 +128,7 @@ namespace Anubis
         gGameLib = api->getGame(Game::ILibrary::VERSION);
         gEngineLib = api->getEngine(Engine::ILibrary::VERSION);
         gLogger = api->getLogger(ILogger::VERSION);
+        gLogger->setLogTag("CSTRIKE API");
 
         if (!initReGameDLL_API())
         {
