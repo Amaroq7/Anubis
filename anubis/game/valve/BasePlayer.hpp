@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "Config.hpp"
 #include "HookChains.hpp"
 #include <game/IBasePlayer.hpp>
 #include "BaseMonster.hpp"
@@ -47,13 +48,26 @@ namespace Anubis::Game::Valve
         [[nodiscard]] std::optional<nstd::observer_ptr<IBaseEntity>> giveNamedItem(std::string_view item) const final;
         [[nodiscard]] nstd::observer_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const final;
         [[nodiscard]] bool hasNamedPlayerItem(std::string_view item) const final;
-        void RenewItems() final;
-        void PackDeadPlayerItems() final;
-        void RemoveAllItems(bool removeSuit) final;
-        [[nodiscard]] bool IsOnLadder() const final;
-        [[nodiscard]] bool FlashlightIsOn() const final;
-        void FlashlightTurnOn() final;
-        void FlashlightTurnOff() final;
+        void renewItems() final;
+        void packDeadPlayerItems() final;
+        void removeAllItems(bool removeSuit) final;
+        [[nodiscard]] bool isOnLadder() const final;
+        [[nodiscard]] bool flashlightIsOn() const final;
+        void flashlightTurnOn() final;
+        void flashlightTurnOff() final;
+
+        template<typename t_ret = void, typename... t_args>
+        t_ret execFunc(std::string_view fnName, t_args... args) const
+        {
+#if defined __linux__
+            static auto fn = gConfig->getAddressFn<t_ret, void *, t_args...>(fnName, "CBasePlayer");
+            return fn(operator CBasePlayer *(), args...);
+#else
+            static auto fn = gConfig->getAddressFn<t_ret, void *, int, t_args...>(fnName, "CBasePlayer");
+            static auto fsClFn = fn.target<t_ret(__fastcall *)(void *, int, t_args...)>();
+            return std::invoke(*fsClFn, operator CBasePlayer *(), 0, args...);
+#endif
+        }
 
     public:
         explicit operator CBasePlayer *() const final;

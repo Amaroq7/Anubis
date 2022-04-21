@@ -44,13 +44,13 @@ namespace Anubis::Game
             giveNamedItem(std::string_view item) const = 0;
         [[nodiscard]] virtual nstd::observer_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const = 0;
         [[nodiscard]] virtual bool hasNamedPlayerItem(std::string_view item) const = 0;
-        virtual void RenewItems() = 0;
-        virtual void PackDeadPlayerItems() = 0;
-        virtual void RemoveAllItems(bool removeSuit) = 0;
-        [[nodiscard]] virtual bool IsOnLadder() const = 0;
-        [[nodiscard]] virtual bool FlashlightIsOn() const = 0;
-        virtual void FlashlightTurnOn() = 0;
-        virtual void FlashlightTurnOff() = 0;
+        virtual void renewItems() = 0;
+        virtual void packDeadPlayerItems() = 0;
+        virtual void removeAllItems(bool removeSuit) = 0;
+        [[nodiscard]] virtual bool isOnLadder() const = 0;
+        [[nodiscard]] virtual bool flashlightIsOn() const = 0;
+        virtual void flashlightTurnOn() = 0;
+        virtual void flashlightTurnOff() = 0;
         // BOOL SwitchWeapon(CBasePlayerItem *pWeapon);
 
         /**

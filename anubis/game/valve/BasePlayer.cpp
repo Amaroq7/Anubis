@@ -53,9 +53,10 @@ namespace Anubis::Game::Valve
         return false;
     }
 
-    std::optional<nstd::observer_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item) const
+    std::optional<nstd::observer_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item
+                                                                             [[maybe_unused]]) const
     {
-        operator CBasePlayer *()->GiveNamedItem(item.data());
+        execFunc<void, const char *>("GiveNamedItem", item.data());
         return std::nullopt;
     }
     nstd::observer_ptr<IBaseEntity> BasePlayer::giveNamedItemEx(std::string_view item [[maybe_unused]]) const
@@ -66,42 +67,42 @@ namespace Anubis::Game::Valve
 
     bool BasePlayer::hasNamedPlayerItem(std::string_view item) const
     {
-        return operator CBasePlayer *()->HasNamedPlayerItem(item.data());
+        return execFunc<BOOL, const char *>("HasNamedPlayerItem", item.data()) != FALSE;
     }
 
-    void BasePlayer::RenewItems()
+    void BasePlayer::renewItems()
     {
-        operator CBasePlayer *()->RenewItems();
+        // no body
     }
 
-    void BasePlayer::PackDeadPlayerItems()
+    void BasePlayer::packDeadPlayerItems()
     {
-        operator CBasePlayer *()->PackDeadPlayerItems();
+        execFunc<>("PackDeadPlayerItems");
     }
 
-    void BasePlayer::RemoveAllItems(bool removeSuit)
+    void BasePlayer::removeAllItems(bool removeSuit)
     {
-        operator CBasePlayer *()->RemoveAllItems(removeSuit);
+        execFunc<void, BOOL>("RemoveAllItems", removeSuit);
     }
 
-    bool BasePlayer::IsOnLadder() const
+    bool BasePlayer::isOnLadder() const
     {
-        return operator CBasePlayer *()->IsOnLadder();
+        return execFunc<BOOL>("IsOnLadder") != FALSE;
     }
 
-    bool BasePlayer::FlashlightIsOn() const
+    bool BasePlayer::flashlightIsOn() const
     {
-        return operator CBasePlayer *()->FlashlightIsOn();
+        return execFunc<BOOL>("FlashlightIsOn") != FALSE;
     }
 
-    void BasePlayer::FlashlightTurnOn()
+    void BasePlayer::flashlightTurnOn()
     {
-        operator CBasePlayer *()->FlashlightTurnOn();
+        execFunc<>("FlashlightTurnOn");
     }
 
-    void BasePlayer::FlashlightTurnOff()
+    void BasePlayer::flashlightTurnOff()
     {
-        operator CBasePlayer *()->FlashlightTurnOff();
+        execFunc<>("FlashlightTurnOff");
     }
 
 } // namespace Anubis::Game::Valve

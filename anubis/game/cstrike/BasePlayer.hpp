@@ -44,13 +44,13 @@ namespace Anubis::Game::CStrike
         [[nodiscard]] std::optional<nstd::observer_ptr<IBaseEntity>> giveNamedItem(std::string_view item) const final;
         [[nodiscard]] nstd::observer_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const final;
         [[nodiscard]] bool hasNamedPlayerItem(std::string_view item) const final;
-        void RenewItems() final;
-        void PackDeadPlayerItems() final;
-        void RemoveAllItems(bool removeSuit) final;
-        [[nodiscard]] bool IsOnLadder() const final;
-        [[nodiscard]] bool FlashlightIsOn() const final;
-        void FlashlightTurnOn() final;
-        void FlashlightTurnOff() final;
+        void renewItems() final;
+        void packDeadPlayerItems() final;
+        void removeAllItems(bool removeSuit) final;
+        [[nodiscard]] bool isOnLadder() const final;
+        [[nodiscard]] bool flashlightIsOn() const final;
+        void flashlightTurnOn() final;
+        void flashlightTurnOff() final;
 
     public:
         explicit operator CBasePlayer *() const;

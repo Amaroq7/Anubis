@@ -70,35 +70,35 @@ namespace Anubis::Game::CStrike
         return operator CBasePlayer *()->CSPlayer()->HasNamedPlayerItem(item.data());
     }
 
-    void BasePlayer::RenewItems()
+    void BasePlayer::renewItems()
     { /* HL Only */
     }
 
-    void BasePlayer::PackDeadPlayerItems()
+    void BasePlayer::packDeadPlayerItems()
     { /* HL Only */
     }
 
-    void BasePlayer::RemoveAllItems(bool removeSuit)
+    void BasePlayer::removeAllItems(bool removeSuit)
     {
         operator CBasePlayer *()->CSPlayer()->RemoveAllItems(removeSuit);
     }
 
-    bool BasePlayer::IsOnLadder() const
+    bool BasePlayer::isOnLadder() const
     {
         return m_entity->pev->movetype == MOVETYPE_FLY;
     }
 
-    bool BasePlayer::FlashlightIsOn() const
+    bool BasePlayer::flashlightIsOn() const
     {
         return m_entity->pev->effects & EF_DIMLIGHT;
     }
 
-    void BasePlayer::FlashlightTurnOn()
+    void BasePlayer::flashlightTurnOn()
     {
         // operator CBasePlayer *()->FlashlightTurnOn();
     }
 
-    void BasePlayer::FlashlightTurnOff()
+    void BasePlayer::flashlightTurnOff()
     {
         // operator CBasePlayer *()->FlashlightTurnOff();
     }
