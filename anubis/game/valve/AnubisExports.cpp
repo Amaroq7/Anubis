@@ -43,7 +43,7 @@ namespace
 #if defined _WIN32
         MEMORY_BASIC_INFORMATION mbi;
         VirtualQuery(reinterpret_cast<void *>(region), &mbi, sizeof(mbi));
-        VirtualProtect(mbi.BaseAddress, mbi.RegionSize, protection, &mbi.Protect);
+        VirtualProtect(mbi.BaseAddress, mbi.RegionSize, protection, protection);
 #elif defined __linux__
         static std::int32_t pageSize = sysconf(_SC_PAGE_SIZE);
         mprotect(reinterpret_cast<void *>(region & ~(pageSize - 1)), pageSize, protection);
