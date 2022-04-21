@@ -124,8 +124,8 @@ namespace Anubis
          *
          * Provides path of the plugin.
          *
-         * @note The path is provided by metamod. It is already set by the time MetaInit() is called.
-         * @note The plugin's path is the same as it appears in the configs.yml file while loading a plugin.
+         * @note The path is provided by anubis. It is already set by the time Init() is called.
+         * @note The plugin's path is the same as it appears in the configs.yaml file while loading a plugin.
          *
          * @return Path of the plugin
          */
