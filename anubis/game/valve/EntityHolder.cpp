@@ -72,8 +72,6 @@ namespace Anubis::Game::Valve
 
             return it->second;
         }
-
-        return {};
     }
 
     nstd::observer_ptr<IBaseEntity> EntityHolder::getBaseEntity(CBaseEntity *baseEntity)
