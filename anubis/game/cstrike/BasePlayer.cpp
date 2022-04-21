@@ -71,11 +71,13 @@ namespace Anubis::Game::CStrike
     }
 
     void BasePlayer::renewItems()
-    { /* HL Only */
+    {
+        // no body
     }
 
     void BasePlayer::packDeadPlayerItems()
-    { /* HL Only */
+    {
+        /* not exported */
     }
 
     void BasePlayer::removeAllItems(bool removeSuit)

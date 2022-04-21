@@ -64,8 +64,7 @@ namespace Anubis::Game::Valve
             return fn(operator CBasePlayer *(), args...);
 #else
             static auto fn = gConfig->getAddressFn<t_ret, void *, int, t_args...>(fnName, "CBasePlayer");
-            static auto fsClFn = fn.target<t_ret(__fastcall *)(void *, int, t_args...)>();
-            return std::invoke(*fsClFn, operator CBasePlayer *(), 0, args...);
+            return fn(operator CBasePlayer *(), 0, args...);
 #endif
         }
 
