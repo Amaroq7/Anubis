@@ -176,7 +176,7 @@ namespace Anubis
             throw std::runtime_error("Anubis::Query function not found");
         }
 
-        const auto &plInfo = std::invoke(m_queryFn);
+        nstd::observer_ptr<IPlugin> plInfo = std::invoke(m_queryFn);
         if (!plInfo)
         {
             throw std::runtime_error("Could not get plugin info");
@@ -214,7 +214,6 @@ namespace Anubis
 
         m_plName = plInfo->getName();
         m_plAuthor = plInfo->getAuthor();
-        m_plDate = plInfo->getAuthor();
         m_plType = plInfo->getType();
         m_plDate = plInfo->getDate();
         m_plVersion = plInfo->getVersion();
