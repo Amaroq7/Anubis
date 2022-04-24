@@ -95,6 +95,6 @@ namespace Anubis::Game::Valve
         std::map<SetupHookType, std::function<void(std::any)>> m_hooks;
         std::unique_ptr<Rules> m_rules;
     };
-
-    extern std::unique_ptr<Plugin> gPluginInfo;
 } // namespace Anubis::Game::Valve
+
+extern std::unique_ptr<Anubis::Game::Valve::Plugin> gPluginInfo;
