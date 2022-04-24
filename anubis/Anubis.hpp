@@ -61,10 +61,10 @@ namespace Anubis
 
         void freePluginsResources();
 
-        void initEngine(std::unique_ptr<enginefuncs_t> &&engineFuncs, nstd::observer_ptr<globalvars_t> globals) final;
-        void initLogger() final;
-        void initGameDLL() final;
-        void installVFHooksForPlugins() const final;
+        void initEngine(std::unique_ptr<enginefuncs_t> &&engineFuncs, nstd::observer_ptr<globalvars_t> globals);
+        void initLogger();
+        void initGameDLL();
+        void installVFHooksForPlugins() const;
         [[nodiscard]] const std::unique_ptr<Logger> &getLogger() const;
         void printInfo() const;
         void printPluginList() const;

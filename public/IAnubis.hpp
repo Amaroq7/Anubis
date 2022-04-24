@@ -168,14 +168,6 @@ namespace Anubis
          * @return Path
          */
         virtual const std::filesystem::path &getPath(PathType pathType) = 0;
-
-#if defined ANUBIS_CORE
-        virtual void initEngine(std::unique_ptr<enginefuncs_t> &&engineFuncs,
-                                nstd::observer_ptr<globalvars_t> globals) = 0;
-        virtual void initLogger() = 0;
-        virtual void initGameDLL() = 0;
-        virtual void installVFHooksForPlugins() const = 0;
-#endif
     };
 #if !defined ANUBIS_CORE
     /**
