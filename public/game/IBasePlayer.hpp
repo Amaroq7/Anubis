@@ -25,7 +25,7 @@
 #include <optional>
 
 /**
- * @internal A internal representation of a base player in gamedll
+ * @internal An internal representation of a base player in gamedll
  */
 class CBasePlayer;
 
@@ -60,6 +60,9 @@ namespace Anubis::Game
          * @internal Allows to get a internal representation of a base player in the gamedll.
          */
         explicit virtual operator CBasePlayer *() const = 0;
+        /**
+         * @endcond
+         */
 
 #if defined ANUBIS_ENTITY_DLL
 
