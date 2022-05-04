@@ -78,8 +78,7 @@ namespace Anubis
         static constexpr std::string_view FnShutdownSgn = "?Shutdown@Anubis@@YAXXZ";
         static constexpr std::string_view FnInstallVFHooksSgn = "?InstallVHooks@Anubis@@YAXXZ";
         static constexpr std::string_view FnSetupHookSgn =
-            "?GetGameRules@Game@Anubis@@YAXV?$function@$$A6AXV?$observer_ptr@VCGameRules@@@nstd@@@Z@std@@V?$observer_"
-            "ptr@VCGameRules@@@nstd@@@Z";
+            "?SetupHook@Game@Anubis@@YAXW4SetupHookType@12@V?$function@$$A6AXVany@std@@@Z@std@@@Z";
 #else
         static constexpr std::string_view FnQuerySgn = "_ZN6Anubis5QueryEv";
         static constexpr std::string_view FnInitSgn = "_ZN6Anubis4InitEN4nstd12observer_ptrINS_7IAnubisEEE";
@@ -103,11 +102,11 @@ namespace Anubis
         std::string m_plDate;
         std::string m_plAuthor;
         std::string m_plUrl;
-        fnQuery m_queryFn = nullptr;
-        fnInit m_initFn = nullptr;
-        fnShutdown m_shutdownFn = nullptr;
-        fnInstallVHooks m_installVFHooks = nullptr;
-        fnSetupHook m_setupHookFn = nullptr;
+        std::function<nstd::observer_ptr<IPlugin>()> m_queryFn;
+        std::function<bool(nstd::observer_ptr<IAnubis> api)> m_initFn;
+        std::function<void()> m_shutdownFn;
+        std::function<void()> m_installVFHooks;
+        std::function<void(Game::SetupHookType, std::function<void(std::any)>)> m_setupHookFn;
         std::unique_ptr<void, std::function<void(SystemHandle)>> m_libHandle;
     };
 } // namespace Anubis

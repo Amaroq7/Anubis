@@ -176,7 +176,7 @@ namespace Anubis
             throw std::runtime_error("Anubis::Query function not found");
         }
 
-        nstd::observer_ptr<IPlugin> plInfo = std::invoke(m_queryFn);
+        nstd::observer_ptr<IPlugin> plInfo = m_queryFn();
         if (!plInfo)
         {
             throw std::runtime_error("Could not get plugin info");
@@ -221,7 +221,7 @@ namespace Anubis
 
     bool Module::initPlugin(nstd::observer_ptr<IAnubis> api) const
     {
-        return std::invoke(m_initFn, api);
+        return m_initFn(api);
     }
 
     void Module::_findPluginFuncs()
@@ -257,23 +257,23 @@ namespace Anubis
 
     void Module::setupHook(Game::SetupHookType setupHookType, std::function<void(std::any)> hook) const
     {
-        std::invoke(m_setupHookFn, setupHookType, std::move(hook));
+        m_setupHookFn(setupHookType, std::move(hook));
     }
 
     void Module::deinitPlugin() const
     {
-        std::invoke(m_shutdownFn);
+        m_shutdownFn();
     }
 
     void Module::installVFHooks() const
     {
         if (m_installVFHooks)
-            std::invoke(m_installVFHooks);
+            m_installVFHooks();
     }
 
     void Module::setPath(std::filesystem::path &&path)
     {
-        auto plInfo = std::invoke(m_queryFn);
+        auto plInfo = m_queryFn();
         plInfo->setPath(std::move(path));
     }
 } // namespace Anubis
