@@ -35,8 +35,6 @@
     #include <windows.h>
 #endif
 
-class CGameRules;
-
 namespace Anubis
 {
     class Module
