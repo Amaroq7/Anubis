@@ -5,19 +5,19 @@ include(FetchContent)
 FetchContent_Declare(
         yamlcpp
         GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-        GIT_TAG        yaml-cpp-0.6.3
-        GIT_SHALLOW    ON
+        GIT_TAG yaml-cpp-0.7.0
+        GIT_SHALLOW ON
 )
 
 set(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "")
 set(YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "")
 set(YAML_CPP_BUILD_CONTRIB OFF CACHE INTERNAL "")
-set(YAML_BUILD_SHARED_LIBS ${DYNAMIC_BUILD} CACHE INTERNAL "")
+set(YAML_BUILD_SHARED_LIBS ON CACHE INTERNAL "")
 set(YAML_CPP_INSTALL OFF CACHE INTERNAL "")
 
 if (WIN32)
-    set(YAML_MSVC_SHARED_RT ${DYNAMIC_BUILD} CACHE INTERNAL "")
-endif()
+    set(YAML_MSVC_SHARED_RT ON CACHE INTERNAL "")
+endif ()
 
 FetchContent_MakeAvailable(yamlcpp)
 
@@ -26,26 +26,19 @@ if (UNIX)
 
     target_compile_options(yaml-cpp PUBLIC -m32)
     target_link_options(yaml-cpp PUBLIC -m32
-                                 PRIVATE -Wl,--disable-new-dtags)
-
-    if (NOT DYNAMIC_BUILD)
-        set_target_properties(yaml-cpp PROPERTIES
-                            POSITION_INDEPENDENT_CODE ON)
-    endif()
+            PRIVATE -Wl,--disable-new-dtags)
 
     if (IS_CLANG_COMPILER)
         target_compile_options(yaml-cpp PRIVATE -Wno-pedantic -stdlib=libc++)
 
-        if (DYNAMIC_BUILD)
-            target_link_options(yaml-cpp PUBLIC -fuse-ld=${LLD} -stdlib=libc++ --rtlib=compiler-rt)
-            target_link_libraries(yaml-cpp PUBLIC c++ c++abi unwind)
-        endif()
-    else()
+        target_link_options(yaml-cpp PUBLIC -fuse-ld=${LLD} -stdlib=libc++ --rtlib=compiler-rt)
+        target_link_libraries(yaml-cpp PUBLIC c++ c++abi unwind)
+    else ()
         target_compile_options(yaml-cpp PRIVATE -Wno-effc++)
-    endif()
-else()
+    endif ()
+else ()
     target_compile_options(yaml-cpp PRIVATE /wd4251 /wd4275)
-endif()
+endif ()
 
 set(YAML_CPP_INCLUDE_DIR ${yamlcpp_SOURCE_DIR}/include)
 set(YAML_CPP_LIBRARIES yaml-cpp)
@@ -58,11 +51,9 @@ set_target_properties(yaml-cpp
         BUILD_RPATH_USE_ORIGIN ON
         INSTALL_RPATH $ORIGIN)
 
-if (DYNAMIC_BUILD)
-    install(TARGETS yaml-cpp
+install(TARGETS yaml-cpp
         RUNTIME DESTINATION bin/lib
         LIBRARY DESTINATION bin/lib)
-endif()
 
 #SDK
 install(TARGETS yaml-cpp
