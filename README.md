@@ -3,22 +3,24 @@
 # What is Anubis?
 
 Anubis is a plugin/DLL manager that sits between the Half-Life Engine and an HL Game mod, allowing the mod-like DLL
-plugins to add functionality to the HL server or game mod. Its goal is to provide C++ API to interact with the engine as
-well as the game library.
+plugins to add functionality to the HL server or game mod. Its goal is to provide modern C++ API to interact
+with the engine as well as the game library.
 
 ## Requirements
 
 - [ReHLDS](https://github.com/dreamstalker/rehlds) v3.11+
-- [ReGameDLL_CS](https://github.com/s1lentq/ReGameDLL_CS) v5.21+ (cstrike & czero)
+- [ReGameDLL_CS](https://github.com/s1lentq/ReGameDLL_CS) v5.21+ (only for cstrike & czero)
 
 ## Game support
 
-|                      Game                       | Basic | VFunc hooking |
-|:-----------------------------------------------:|:-----:|:-------------:|
-|                    Half-Life                    |   ✔   |       ✔       |
-| Counter-Strike / Counter-Strike: Condition Zero |   ✔   |       ✔       |
-|              Team Fortress Classic              |   ✔   |       ✖       |
-|                  Day Of Defeat                  |   ✔   |       ✖       |
+|                      Game                       | Basic | Entities support |
+|:-----------------------------------------------:|:-----:|:----------------:|
+|                    Half-Life                    |   ✔   |        ✔*        |
+| Counter-Strike / Counter-Strike: Condition Zero |   ✔   |        ✔*        |
+|              Team Fortress Classic              |   ✔   |        ✖         |
+|                  Day Of Defeat                  |   ✔   |        ✖         |
+
+&ast; Check [wiki](https://github.com/Amaroq7/Anubis/wiki) for more info.
 
 ## Example plugin
 
