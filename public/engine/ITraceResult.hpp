@@ -22,9 +22,7 @@
 #include "../observer_ptr.hpp"
 #include "Common.hpp"
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
 struct TraceResult;
-#endif
 
 namespace Anubis::Engine
 {
@@ -57,8 +55,6 @@ namespace Anubis::Engine
         virtual void setHit(nstd::observer_ptr<IEdict> hit) = 0;
         virtual void setHitGroup(HitGroup hitGroup) = 0;
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
         virtual explicit operator ::TraceResult *() const = 0;
-#endif
     };
 } // namespace Anubis::Engine

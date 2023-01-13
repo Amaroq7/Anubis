@@ -33,6 +33,8 @@ namespace Anubis::Game
 {
     class IBaseEntity;
     class IBasePlayer;
+    class IBasePlayerItem;
+    class IItem;
 
     ANUBIS_STRONG_TYPEDEF(std::uint8_t, TeamIndex)
 
@@ -71,8 +73,10 @@ namespace Anubis::Game
         virtual bool isAllowedToSpawn(nstd::observer_ptr<IBaseEntity> entity) = 0;
 
         virtual bool allowFlashlight() = 0;
-        // virtual bool shouldSwitchWeapon( CBasePlayer *player, CBasePlayerItem *pWeapon ) = 0;
-        // virtual bool getNextBestWeapon( CBasePlayer *player, CBasePlayerItem *currentWeapon ) = 0;
+        // virtual bool shouldSwitchWeapon(nstd::observer_ptr<IBasePlayer> player,
+        // nstd::observer_ptr<IBasePlayerItem> pWeapon) = 0;
+        // virtual bool getNextBestWeapon(nstd::observer_ptr<IBasePlayer> player,
+        //                                nstd::observer_ptr<IBasePlayerItem> currentWeapon) = 0;
 
         virtual bool isMultiplayer() = 0;
         virtual bool isDeathMatch() = 0;
@@ -113,16 +117,18 @@ namespace Anubis::Game
                                  nstd::observer_ptr<IBaseEntity> killer,
                                  nstd::observer_ptr<IBaseEntity> inflictor) = 0;
 
-        // virtual bool canHavePlayerItem( CBasePlayer *player, CBasePlayerItem *pWeapon ) = 0;
-        // virtual void playerGotWeapon( CBasePlayer *player, CBasePlayerItem *pWeapon ) = 0;
+        // virtual bool canHavePlayerItem(nstd::observer_ptr<IBasePlayer> player,
+        //                                nstd::observer_ptr<IBasePlayerItem> pWeapon) = 0;
+        // virtual void playerGotWeapon(nstd::observer_ptr<IBasePlayer> player,
+        //                              nstd::observer_ptr<IBasePlayerItem> pWeapon) = 0;
 
-        // virtual std::int32_t weaponShouldRespawn( CBasePlayerItem *pWeapon ) = 0;
-        // virtual float weaponRespawnTime( CBasePlayerItem *pWeapon ) = 0;
-        // virtual float weaponTryRespawn( CBasePlayerItem *pWeapon ) = 0;
-        // virtual Vector weaponRespawnSpot( CBasePlayerItem *pWeapon ) = 0;
+        // virtual std::int32_t weaponShouldRespawn(nstd::observer_ptr<IBasePlayerItem> pWeapon) = 0;
+        // virtual float weaponRespawnTime(nstd::observer_ptr<IBasePlayerItem> pWeapon) = 0;
+        // virtual float weaponTryRespawn(nstd::observer_ptr<IBasePlayerItem> pWeapon) = 0;
+        //  virtual Vector weaponRespawnSpot(nstd::observer_ptr<IBasePlayerItem> pWeapon) = 0;
 
-        // virtual bool canHaveItem( CBasePlayer *player, CItem *item ) = 0;
-        // virtual void playerGotItem( CBasePlayer *player, CItem *item ) = 0;
+        // virtual bool canHaveItem(CBasePlayer *player, CItem *item) = 0;
+        // virtual void playerGotItem(CBasePlayer *player, CItem *item) = 0;
 
         // virtual int itemShouldRespawn( CItem *item ) = 0;
         // virtual float itemRespawnTime( CItem *item ) = 0;

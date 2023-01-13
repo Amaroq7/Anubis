@@ -60,6 +60,12 @@ namespace Anubis::Game::Valve
         return m_gameRules->FAllowFlashlight() != FALSE;
     }
 
+    /*bool Rules::shouldSwitchWeapon(nstd::observer_ptr<IBasePlayer> player [[maybe_unused]],
+                                   nstd::observer_ptr<IBasePlayerItem> pWeapon [[maybe_unused]])
+    {
+        return false;
+    }*/
+
     bool Rules::isMultiplayer()
     {
         return m_gameRules->IsMultiplayer() != FALSE;

@@ -22,9 +22,7 @@
 #include <cinttypes>
 #include <string_view>
 
-#if defined ANUBIS_CORE
 typedef struct cvar_s cvar_t;
-#endif
 
 namespace Anubis::Engine
 {
@@ -80,8 +78,6 @@ namespace Anubis::Engine
         virtual void setFlags(Flags flags) = 0;
         virtual void setValue(float value) = 0;
 
-#if defined ANUBIS_CORE
         virtual explicit operator cvar_t *() const = 0;
-#endif
     };
 }

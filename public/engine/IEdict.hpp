@@ -25,10 +25,8 @@
 #include <cstddef>
 #include <memory>
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
 typedef struct edict_s edict_t;
 typedef struct entvars_s entvars_t;
-#endif
 
 namespace Anubis::Engine
 {
@@ -388,10 +386,8 @@ namespace Anubis::Engine
         virtual void setDeadFlag(DeadFlag deadFlag) = 0;
         virtual void setSpawnFlag(SpawnFlag spawnFlag) = 0;
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
         [[nodiscard]] virtual void *getPrivateData() const = 0;
         virtual explicit operator edict_t *() const = 0;
         virtual explicit operator entvars_t *() const = 0;
-#endif
     };
 } // namespace Anubis::Engine

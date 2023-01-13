@@ -86,12 +86,10 @@ namespace Anubis
         virtual nstd::observer_ptr<IHookInfo> registerHook(HookFunc<t_ret, t_args...> hook, HookPriority priority) = 0;
         virtual void unregisterHook(nstd::observer_ptr<IHookInfo> hookInfo) = 0;
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
         virtual t_ret callChain(OriginalFunc<t_ret, t_args...> origFunc, t_args... args) = 0;
         virtual t_ret callChain(OriginalFunc<t_ret, t_args...> lastFunc,
                                 OriginalFunc<t_ret, t_args...> origFunc,
                                 t_args... args) = 0;
-#endif
     };
 
     template<typename t_ret, typename t_entity, typename... t_args>
@@ -121,7 +119,6 @@ namespace Anubis
                                                            HookPriority priority) = 0;
         virtual void unregisterHook(nstd::observer_ptr<IHookInfo> hookInfo) = 0;
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
         virtual t_ret callChain(std::function<t_ret(t_entity, t_args...)> lastFn, t_entity entity, t_args... args) = 0;
         virtual t_ret callChain(ClassOriginalFunc<t_ret, t_entity, t_args...> lastFunc,
                                 ClassOriginalFunc<t_ret, t_entity, t_args...> origFunc,
@@ -129,6 +126,5 @@ namespace Anubis
                                 t_args... args) = 0;
 
         [[nodiscard]] virtual std::intptr_t getVFuncAddr() const = 0;
-#endif
     };
 } // namespace Anubis

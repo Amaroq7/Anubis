@@ -133,7 +133,6 @@ namespace Anubis::Game::Valve
                 void *addr = nullptr;
                 if (var)
                 {
-                    res += pattern.size();
                     addr =
                         *reinterpret_cast<void **>(reinterpret_cast<std::uint8_t *>(moduleInfo.lpBaseOfDll) + offset);
                 }

@@ -28,7 +28,6 @@
 #include <cstddef>
 #include <optional>
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
 typedef struct edict_s edict_t;
 typedef struct entvars_s entvars_t;
 typedef struct enginefuncs_s enginefuncs_t;
@@ -37,7 +36,6 @@ typedef struct globalvars_s globalvars_t;
 typedef struct cvar_s cvar_t;
 class IGameClient;
 struct TraceResult;
-#endif
 
 namespace Anubis::Game
 {
@@ -184,7 +182,6 @@ namespace Anubis::Engine
 
         [[nodiscard]] virtual StringOffset allocString(std::string_view str, FuncCallType callType) const = 0;
 
-#if defined ANUBIS_CORE || defined ANUBIS_ENTITY_DLL
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const edict_t *edict) const = 0;
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const entvars_t *vars) const = 0;
         virtual std::unique_ptr<ITraceResult> createTraceResult(::TraceResult *tr) = 0;
@@ -195,6 +192,5 @@ namespace Anubis::Engine
         [[nodiscard]] virtual nstd::observer_ptr<globalvars_t> getGlobals() const = 0;
         virtual nstd::observer_ptr<ICvar> addToCache(cvar_t *cvar) = 0;
         virtual void removeHooks() = 0;
-#endif
     };
 } // namespace Anubis::Engine

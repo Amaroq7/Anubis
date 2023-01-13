@@ -21,9 +21,7 @@
 
 #include <memory>
 
-#if defined ANUBIS_CORE
 class IGameClient;
-#endif
 
 namespace Anubis::Engine
 {
@@ -36,8 +34,6 @@ namespace Anubis::Engine
 
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict() const = 0;
 
-#if defined ANUBIS_CORE
         virtual explicit operator ::IGameClient *() const = 0;
-#endif
     };
 } // namespace Anubis::Engine

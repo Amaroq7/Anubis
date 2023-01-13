@@ -63,11 +63,8 @@ namespace Anubis::Game
         /**
          * @endcond
          */
-
-#if defined ANUBIS_ENTITY_DLL
-
+         
     public:
         static inline std::intptr_t VTable;
-#endif
     };
 } // namespace Anubis::Game

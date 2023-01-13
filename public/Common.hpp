@@ -25,7 +25,6 @@
     #define ANUBIS_API __declspec(dllexport)
 #elif defined __linux__
     #define ANUBIS_API __attribute__((visibility("default")))
-    #define WINAPI
 #endif
 
 #define ANUBIS_STRONG_TYPEDEF(_base, _type)                                                                            \

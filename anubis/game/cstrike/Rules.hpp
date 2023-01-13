@@ -38,6 +38,8 @@ namespace Anubis::Game::CStrike
         bool isAllowedToSpawn(nstd::observer_ptr<IBaseEntity> entity) final;
 
         bool allowFlashlight() final;
+        /*bool shouldSwitchWeapon(nstd::observer_ptr<IBasePlayer> player,
+                                nstd::observer_ptr<IBasePlayerItem> pWeapon) final;*/
 
         bool isMultiplayer() final;
         bool isDeathMatch() final;
