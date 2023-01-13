@@ -63,6 +63,13 @@ namespace Anubis::Engine
         Logged // Server print to console ( only in multiplayer games ).
     };
 
+    enum class PrintType : std::uint8_t
+    {
+        Console = 0,
+        Center,
+        Chat
+    };
+
     /**
      * Server command callback.
      */
@@ -78,4 +85,5 @@ namespace Anubis::Engine
     ANUBIS_STRONG_TYPEDEF(std::int16_t, MsgSize)
     ANUBIS_STRONG_TYPEDEF(std::uint32_t, StringOffset)
     ANUBIS_STRONG_TYPEDEF(std::uint32_t, EntityOffset)
+    ANUBIS_STRONG_TYPEDEF(std::uint16_t, ModelIndex)
 } // namespace Anubis::Engine

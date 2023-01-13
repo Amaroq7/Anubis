@@ -126,6 +126,8 @@ namespace Anubis::Game
                                    std::string_view value,
                                    FuncCallType callType) = 0;
 
+        virtual void pfnClientDisconnect (nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;
+
         /**
          * @brief Returns entity.
          *

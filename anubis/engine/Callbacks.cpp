@@ -320,4 +320,24 @@ namespace Anubis::Engine::Callbacks::GameDLL
     {
         return static_cast<int>(getEngine()->allocString(szValue, FuncCallType::Hooks).value);
     }
+
+    int	pfnModelIndex (const char *m)
+    {
+        return static_cast<int>(getEngine()->modelIndex(m, FuncCallType::Hooks));
+    }
+    
+    int pfnRandomLong (int  lLow,  int  lHigh)
+    {
+        return getEngine()->randomLong(lLow, lHigh,FuncCallType::Hooks);
+    }
+
+	float pfnRandomFloat (float flLow, float flHigh)
+    {
+        return getEngine()->randomFloat(flLow, flHigh, FuncCallType::Hooks);
+    }
+
+    void pfnClientPrintf(edict_t* pEdict, PRINT_TYPE ptype, const char* szMsg)
+    {
+        getEngine()->clientPrint(getEngine()->getEdict(pEdict), static_cast<PrintType>(ptype), szMsg, FuncCallType::Hooks);
+    }
 } // namespace Anubis::Engine::Callbacks::GameDLL

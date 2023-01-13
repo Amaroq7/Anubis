@@ -52,4 +52,5 @@ namespace Anubis::Game::Callbacks::Engine
     void pfnGameShutdown();
     void pfnCvarValue(const edict_t *pEnt, const char *value);
     void pfnCvarValue2(const edict_t *pEnt, int requestID, const char *cvarName, const char *value);
+    void pfnClientDisconnect (edict_t *pEntity);
 } // namespace Anubis::Game::Callbacks::Engine

@@ -1053,6 +1053,74 @@ namespace Anubis::Engine
             str);
     }
 
+    ModelIndex Library::modelIndex(std::string_view model, FuncCallType callType) const 
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return ModelIndex(m_origEngineFuncs->pfnModelIndex(model.data()));
+        }
+
+        static auto hookChain = m_hooks->modelIndex();
+
+        return hookChain->callChain(
+            [this](std::string_view model)
+            {
+                return ModelIndex(m_origEngineFuncs->pfnModelIndex(model.data()));
+            },
+            model);
+    }
+
+    std::int32_t Library::randomLong(std::int32_t lLow, std::int32_t  lHigh, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnRandomLong(lLow, lHigh);
+        }
+
+        static auto hookChain = m_hooks->randomLong();
+
+        return hookChain->callChain(
+            [this](std::int32_t lLow, std::int32_t lHigh)
+            {
+                return m_origEngineFuncs->pfnRandomLong(lLow, lHigh);
+            },
+            lLow, lHigh);
+    }
+
+    float Library::randomFloat(float flLow, float flHigh, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnRandomFloat(flLow, flHigh);
+        }
+
+        static auto hookChain = m_hooks->randomFloat();
+
+        return hookChain->callChain(
+            [this](float flLow, float flHigh)
+            {
+                return m_origEngineFuncs->pfnRandomFloat(flLow, flHigh);
+            },
+            flLow, flHigh);
+    }
+
+    void Library::clientPrint(nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnClientPrintf(static_cast<edict_t*>(*pEdict), static_cast<PRINT_TYPE>(ptype), szMsg.data());
+        }
+
+        static auto hookChain = m_hooks->clientPrint();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg)
+            {
+                return m_origEngineFuncs->pfnClientPrintf(static_cast<edict_t*>(*pEdict), static_cast<PRINT_TYPE>(ptype), szMsg.data());
+            },
+            pEdict, ptype, szMsg);
+    }
+
     void Library::_replaceFuncs()
     {
         *m_engineFuncs = *m_origEngineFuncs;
@@ -1105,6 +1173,10 @@ namespace Anubis::Engine
         ASSIGN_ENG_FUNCS(pfnPvAllocEntPrivateData);
         ASSIGN_ENG_FUNCS(pfnSzFromIndex);
         ASSIGN_ENG_FUNCS(pfnAllocString);
+        ASSIGN_ENG_FUNCS(pfnModelIndex);
+        ASSIGN_ENG_FUNCS(pfnRandomLong);
+        ASSIGN_ENG_FUNCS(pfnRandomFloat);
+        ASSIGN_ENG_FUNCS(pfnClientPrintf);
 #undef ASSIGN_ENG_FUNCS
     }
 

@@ -191,6 +191,7 @@ namespace Anubis::Game
         ASSIGN_ENT_FUNC(pfnServerActivate);
         ASSIGN_ENT_FUNC(pfnServerDeactivate);
         ASSIGN_ENT_FUNC(pfnStartFrame);
+        ASSIGN_ENT_FUNC(pfnClientDisconnect);
 #undef ASSIGN_ENT_FUNC
 #define ASSIGN_NEW_DLL_FUNC(func) ((*m_newDllFunctions).func = Callbacks::Engine::func)
         ASSIGN_NEW_DLL_FUNC(pfnGameShutdown);
@@ -261,6 +262,23 @@ namespace Anubis::Game
             [this](nstd::observer_ptr<Engine::IEdict> edict)
             {
                 return m_gameLibDllFunctions->pfnSpawn(static_cast<edict_t *>(*edict));
+            },
+            pEntity);
+    }
+
+    void Library::pfnClientDisconnect(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType)
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_gameLibDllFunctions->pfnClientDisconnect(static_cast<edict_t*>(*pEntity));
+        }
+
+        static auto hookChain = m_hooks->clientDisconnect();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<Engine::IEdict> pEntity)
+            {
+                return m_gameLibDllFunctions->pfnClientDisconnect(static_cast<edict_t*>(*pEntity));
             },
             pEntity);
     }

@@ -84,6 +84,7 @@ namespace Anubis::Game
                            std::string_view cvarName,
                            std::string_view value,
                            FuncCallType callType) final;
+        void pfnClientDisconnect (nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) final;
 
         nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
         nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;

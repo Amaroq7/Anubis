@@ -182,6 +182,18 @@ namespace Anubis::Engine
     using AllocStringHook = Hook<StringOffset, std::string_view>;
     using AllocStringHookRegistry = HookRegistry<StringOffset, std::string_view>;
 
+    using ModelIndexHook = Hook<ModelIndex, std::string_view>;
+    using ModelIndexHookRegistry = HookRegistry<ModelIndex, std::string_view>;
+
+    using RandomLongHook = Hook<std::int32_t, std::int32_t, std::int32_t>;
+    using RandomLongHookRegistry = HookRegistry<std::int32_t, std::int32_t, std::int32_t>;
+
+    using RandomFloatHook = Hook<float, float, float>;
+    using RandomFloatHookRegistry = HookRegistry<float, float, float>;
+
+    using ClientPrintHook = Hook<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
+    using ClientPrintHookRegistry = HookRegistry<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -239,6 +251,10 @@ namespace Anubis::Engine
         nstd::observer_ptr<IEdAllocHookRegistry> edAlloc() final;
         nstd::observer_ptr<IStringFromOffsetHookRegistry> stringFromOffset() final;
         nstd::observer_ptr<IAllocStringHookRegistry> strAlloc() final;
+        nstd::observer_ptr<IModelIndexHookRegistry> modelIndex() final;
+        nstd::observer_ptr<IRandomLongHookRegistry> randomLong() final;
+        nstd::observer_ptr<IRandomFloatHookRegistry> randomFloat() final;
+        nstd::observer_ptr<IClientPrintHookRegistry> clientPrint() final;
 
     private:
         std::unique_ptr<PrecacheModelHookRegistry> m_precacheModelRegistry;
@@ -292,5 +308,9 @@ namespace Anubis::Engine
         std::unique_ptr<EdAllocHookRegistry> m_edAllocRegistry;
         std::unique_ptr<StringFromOffsetHookRegistry> m_stringFromOffsetRegistry;
         std::unique_ptr<AllocStringHookRegistry> m_strAllocRegistry;
+        std::unique_ptr<ModelIndexHookRegistry> m_modelIndexHookRegistry;
+        std::unique_ptr<RandomLongHookRegistry> m_randomLongHookRegistry;
+        std::unique_ptr<RandomFloatHookRegistry> m_randomFloatHookRegistry;
+        std::unique_ptr<ClientPrintHookRegistry> m_clientPrintHookRegistry;
     };
 } // namespace Anubis::Engine

@@ -64,6 +64,9 @@ namespace Anubis::Game
     using CvarValue2HookRegistry =
         HookRegistry<void, nstd::observer_ptr<Engine::IEdict>, std::uint32_t, std::string_view, std::string_view>;
 
+    using ClientDisconnectHook = Hook<void, nstd::observer_ptr<Engine::IEdict>>;
+    using ClientDisconnectHookRegistry = HookRegistry<void, nstd::observer_ptr<Engine::IEdict>>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -82,6 +85,7 @@ namespace Anubis::Game
         nstd::observer_ptr<IGameShutdownHookRegistry> gameShutdown() final;
         nstd::observer_ptr<ICvarValueHookRegistry> cvarValue() final;
         nstd::observer_ptr<ICvarValue2HookRegistry> cvarValue2() final;
+        nstd::observer_ptr<IClientDisconnectHookRegistry> clientDisconnect() final;
 
     private:
         std::unique_ptr<GameInitHookRegistry> m_gameInitRegistry;
@@ -96,5 +100,6 @@ namespace Anubis::Game
         std::unique_ptr<GameShutdownHookRegistry> m_gameShutdownRegistry;
         std::unique_ptr<CvarValueHookRegistry> m_cvarValueRegistry;
         std::unique_ptr<CvarValue2HookRegistry> m_cvarValue2Registry;
+        std::unique_ptr<ClientDisconnectHookRegistry> m_clientDisconnectHookRegistry;
     };
 } // namespace Anubis::Game

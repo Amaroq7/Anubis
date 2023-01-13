@@ -23,6 +23,7 @@
 
 typedef struct edict_s edict_t;
 typedef struct cvar_s cvar_t;
+enum PRINT_TYPE;
 
 namespace Anubis
 {
@@ -99,4 +100,8 @@ namespace Anubis::Engine::Callbacks::GameDLL
     void *pfnPvAllocEntPrivateData(edict_t *pEdict, std::int32_t cb);
     const char *pfnSzFromIndex(int iString);
     int pfnAllocString(const char *szValue);
+    int	pfnModelIndex (const char *m);
+    int pfnRandomLong (int  lLow,  int  lHigh);
+	float pfnRandomFloat (float flLow, float flHigh);
+    void pfnClientPrintf (edict_t* pEdict, PRINT_TYPE ptype, const char *szMsg );
 } // namespace Anubis::Engine::Callbacks::GameDLL

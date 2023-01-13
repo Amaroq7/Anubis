@@ -194,6 +194,18 @@ namespace Anubis::Engine
     using IAllocStringHook = IHook<StringOffset, std::string_view>;
     using IAllocStringHookRegistry = IHookRegistry<StringOffset, std::string_view>;
 
+    using IModelIndexHook = IHook<ModelIndex, std::string_view>;
+    using IModelIndexHookRegistry = IHookRegistry<ModelIndex, std::string_view>;
+
+    using IRandomLongHook = IHook<std::int32_t, std::int32_t, std::int32_t>;
+    using IRandomLongHookRegistry = IHookRegistry<std::int32_t, std::int32_t, std::int32_t>;
+
+    using IRandomFloatHook = IHook<float, float, float>;
+    using IRandomFloatHookRegistry = IHookRegistry<float, float, float>;
+
+    using IClientPrintHook = IHook<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
+    using IClientPrintHookRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
+
     class IHooks
     {
     public:
@@ -250,5 +262,9 @@ namespace Anubis::Engine
         virtual nstd::observer_ptr<IEdAllocHookRegistry> edAlloc() = 0;
         virtual nstd::observer_ptr<IStringFromOffsetHookRegistry> stringFromOffset() = 0;
         virtual nstd::observer_ptr<IAllocStringHookRegistry> strAlloc() = 0;
+        virtual nstd::observer_ptr<IModelIndexHookRegistry> modelIndex() = 0;
+        virtual nstd::observer_ptr<IRandomLongHookRegistry> randomLong() = 0;
+        virtual nstd::observer_ptr<IRandomFloatHookRegistry> randomFloat() = 0;
+        virtual nstd::observer_ptr<IClientPrintHookRegistry> clientPrint() = 0;
     };
 } // namespace Anubis::Engine

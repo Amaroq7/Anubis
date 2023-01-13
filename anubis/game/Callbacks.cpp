@@ -130,4 +130,9 @@ namespace Anubis::Game::Callbacks::Engine
         getGame()->pfnCvarValue2(getEngine()->getEdict(pEnt), static_cast<std::uint32_t>(requestID), cvarName, value,
                                  FuncCallType::Hooks);
     }
+
+    void pfnClientDisconnect(edict_t* pEntity)
+    {
+        getGame()->pfnClientDisconnect(getEngine()->getEdict(pEntity), FuncCallType::Hooks);
+    }
 } // namespace Anubis::Game::Callbacks::Engine

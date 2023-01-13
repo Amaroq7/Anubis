@@ -148,6 +148,12 @@ namespace Anubis::Engine
 
         [[nodiscard]] StringOffset allocString(std::string_view str, FuncCallType callType) const final;
 
+        ModelIndex modelIndex (std::string_view model, FuncCallType callType) const final;
+        std::int32_t randomLong (std::int32_t lLow, std::int32_t  lHigh, FuncCallType callType) const final;
+	    float randomFloat (float flLow, float flHigh, FuncCallType callType) const final;
+
+        void clientPrint (nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg, FuncCallType callType) const final;
+
         void removeHooks() final;
         void initPlayerEdicts();
 

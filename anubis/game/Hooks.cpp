@@ -33,7 +33,8 @@ namespace Anubis::Game
           m_startFrameRegistry(std::make_unique<StartFrameHookRegistry>()),
           m_gameShutdownRegistry(std::make_unique<GameShutdownHookRegistry>()),
           m_cvarValueRegistry(std::make_unique<CvarValueHookRegistry>()),
-          m_cvarValue2Registry(std::make_unique<CvarValue2HookRegistry>())
+          m_cvarValue2Registry(std::make_unique<CvarValue2HookRegistry>()),
+          m_clientDisconnectHookRegistry(std::make_unique<ClientDisconnectHookRegistry>())
     {
     }
 
@@ -95,5 +96,10 @@ namespace Anubis::Game
     nstd::observer_ptr<ICvarValue2HookRegistry> Hooks::cvarValue2()
     {
         return m_cvarValue2Registry;
+    }
+
+    nstd::observer_ptr<IClientDisconnectHookRegistry> Hooks::clientDisconnect()
+    {
+        return m_clientDisconnectHookRegistry;
     }
 } // namespace Anubis::Game

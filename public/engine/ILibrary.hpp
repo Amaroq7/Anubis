@@ -182,6 +182,12 @@ namespace Anubis::Engine
 
         [[nodiscard]] virtual StringOffset allocString(std::string_view str, FuncCallType callType) const = 0;
 
+        virtual ModelIndex modelIndex (std::string_view model, FuncCallType callType) const = 0;
+        virtual std::int32_t randomLong (std::int32_t lLow, std::int32_t  lHigh, FuncCallType callType) const = 0;
+	    virtual float randomFloat (float flLow, float flHigh, FuncCallType callType) const = 0;
+
+        virtual void clientPrint (nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg, FuncCallType callType) const = 0;
+
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const edict_t *edict) const = 0;
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const entvars_t *vars) const = 0;
         virtual std::unique_ptr<ITraceResult> createTraceResult(::TraceResult *tr) = 0;

@@ -92,7 +92,11 @@ namespace Anubis::Engine
           m_allocEntPrivDataRegistry(std::make_unique<AllocEntPrivateDataHookRegistry>()),
           m_edAllocRegistry(std::make_unique<EdAllocHookRegistry>()),
           m_stringFromOffsetRegistry(std::make_unique<StringFromOffsetHookRegistry>()),
-          m_strAllocRegistry(std::make_unique<AllocStringHookRegistry>())
+          m_strAllocRegistry(std::make_unique<AllocStringHookRegistry>()),
+          m_modelIndexHookRegistry(std::make_unique<ModelIndexHookRegistry>()),
+          m_randomLongHookRegistry(std::make_unique<RandomLongHookRegistry>()),
+          m_randomFloatHookRegistry(std::make_unique<RandomFloatHookRegistry>()),
+          m_clientPrintHookRegistry(std::make_unique<ClientPrintHookRegistry>())
     {
     }
 
@@ -350,4 +354,21 @@ namespace Anubis::Engine
     {
         return m_strAllocRegistry;
     }
+    nstd::observer_ptr<IModelIndexHookRegistry> Hooks::modelIndex() 
+    {
+        return m_modelIndexHookRegistry;
+    }
+    nstd::observer_ptr<IRandomLongHookRegistry> Hooks::randomLong()
+    {
+        return m_randomLongHookRegistry;
+    }
+    nstd::observer_ptr<IRandomFloatHookRegistry> Hooks::randomFloat()
+    {
+        return m_randomFloatHookRegistry;
+    }
+    nstd::observer_ptr<IClientPrintHookRegistry> Hooks::clientPrint()
+    {
+        return m_clientPrintHookRegistry;
+    } 
+
 } // namespace Anubis::Engine
