@@ -285,8 +285,10 @@ namespace Anubis::Engine::Callbacks::GameDLL
 
     edict_t *pfnPEntityOfEntIndex(int iEntIndex)
     {
-        return static_cast<edict_t *>(
-            *getEngine()->getEdict(static_cast<std::uint32_t>(iEntIndex), FuncCallType::Hooks));
+        nstd::observer_ptr<IEdict> edict =
+            getEngine()->getEdict(static_cast<std::uint32_t>(iEntIndex), FuncCallType::Hooks);
+
+        return edict ? static_cast<edict_t *>(*edict) : nullptr;
     }
 
     void *pfnPvAllocEntPrivateData(edict_t *pEdict, std::int32_t cb)
