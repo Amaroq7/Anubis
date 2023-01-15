@@ -194,6 +194,39 @@ namespace Anubis::Engine
     using ClientPrintHook = Hook<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
     using ClientPrintHookRegistry = HookRegistry<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
 
+    using EntIsOnFloorHook = Hook<bool, nstd::observer_ptr<IEdict>>;
+    using EntIsOnFloorHookRegistry = HookRegistry<bool, nstd::observer_ptr<IEdict>>;
+
+    using DropToFloorHook = Hook<std::int8_t, nstd::observer_ptr<IEdict>>;
+    using DropToFloorHookRegistry = HookRegistry<std::int8_t, nstd::observer_ptr<IEdict>>;
+
+    using EmitSoundHook = Hook<void, nstd::observer_ptr<IEdict>, Channel, std::string_view, float, float, SoundFlags, Pitch>;
+    using EmitSoundHookRegistry = HookRegistry<void, nstd::observer_ptr<IEdict>, Channel, std::string_view, float, float, SoundFlags, Pitch>;
+
+    using EmitAmbientSoundHook = Hook<void, nstd::observer_ptr<IEdict>, float*, std::string_view, float, float, SoundFlags, Pitch>;
+    using EmitAmbientSoundRegistry = HookRegistry<void, nstd::observer_ptr<IEdict>, float*, std::string_view, float, float, SoundFlags, Pitch>;
+
+    using TraceLinetHook = Hook<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using TraceLineHookRegistry = HookRegistry<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using TraceTossHook = Hook<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using TraceTossHookRegistry = HookRegistry<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using TraceMonsterHullHook = Hook<bool, nstd::observer_ptr<IEdict>, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using TraceMonsterHullHookRegistry = HookRegistry<bool, nstd::observer_ptr<IEdict>, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using TraceHullHook = Hook<void, const float*, const float*, int, int , nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using TraceHullHookRegistry = HookRegistry<void, const float*, const float*, int, int , nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using TraceModelHook = Hook<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using TraceModelHookRegistry = HookRegistry<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using TraceTextureHook = Hook<std::string_view, nstd::observer_ptr<IEdict>, const float*, const float*>;
+    using TraceTextureHookRegistry = HookRegistry<std::string_view, nstd::observer_ptr<IEdict>, const float*, const float*>;
+
+    using TraceSphereHook = Hook<void, const float*, const float*, int, float, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using TraceSphereHookRegistry = HookRegistry<void, const float*, const float*, int, float, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
     class Hooks final : public IHooks
     {
     public:
@@ -255,6 +288,17 @@ namespace Anubis::Engine
         nstd::observer_ptr<IRandomLongHookRegistry> randomLong() final;
         nstd::observer_ptr<IRandomFloatHookRegistry> randomFloat() final;
         nstd::observer_ptr<IClientPrintHookRegistry> clientPrint() final;
+        nstd::observer_ptr<IEntIsOnFloorHookRegistry> entIsOnFloor() final;
+        nstd::observer_ptr<IDropToFloorHookRegistry> dropToFloor() final;
+        nstd::observer_ptr<IEmitSoundHookRegistry> emitSound() final;
+        nstd::observer_ptr<IEmitAmbientSoundRegistry> emitAmbientSound() final;
+        nstd::observer_ptr<ITraceLineHookRegistry> traceLine() final;
+        nstd::observer_ptr<ITraceTossHookRegistry> traceToss() final;
+        nstd::observer_ptr<ITraceMonsterHullHookRegistry> traceMonsterHull() final;
+        nstd::observer_ptr<ITraceHullHookRegistry> traceHull() final;
+        nstd::observer_ptr<ITraceModelHookRegistry> traceModel() final;
+        nstd::observer_ptr<ITraceTextureHookRegistry> traceTexture() final;
+        nstd::observer_ptr<ITraceSphereHookRegistry> traceSphere() final;
 
     private:
         std::unique_ptr<PrecacheModelHookRegistry> m_precacheModelRegistry;
@@ -312,5 +356,16 @@ namespace Anubis::Engine
         std::unique_ptr<RandomLongHookRegistry> m_randomLongHookRegistry;
         std::unique_ptr<RandomFloatHookRegistry> m_randomFloatHookRegistry;
         std::unique_ptr<ClientPrintHookRegistry> m_clientPrintHookRegistry;
+        std::unique_ptr<EntIsOnFloorHookRegistry> m_entIsOnFloorHookRegistry;
+        std::unique_ptr<DropToFloorHookRegistry> m_dropToFloorHookRegistry;
+        std::unique_ptr<EmitSoundHookRegistry> m_emitSoundHookRegistry;
+        std::unique_ptr<EmitAmbientSoundRegistry> m_emitAmbientSoundRegistry;
+        std::unique_ptr<TraceLineHookRegistry> m_traceLineHookRegistry;
+        std::unique_ptr<TraceTossHookRegistry> m_traceTossHookRegistry;
+        std::unique_ptr<TraceMonsterHullHookRegistry> m_traceMonsterHullHookRegistry;
+        std::unique_ptr<TraceHullHookRegistry> m_traceHullHookRegistry;
+        std::unique_ptr<TraceModelHookRegistry> m_traceModelHookRegistry;
+        std::unique_ptr<TraceTextureHookRegistry> m_traceTextureHookRegistry;
+        std::unique_ptr<TraceSphereHookRegistry> m_traceSphereHookRegistry;
     };
 } // namespace Anubis::Engine

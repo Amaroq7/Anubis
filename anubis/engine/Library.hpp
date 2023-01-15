@@ -154,6 +154,18 @@ namespace Anubis::Engine
 
         void clientPrint (nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg, FuncCallType callType) const final;
 
+        bool entIsOnFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const final;
+	    std::int8_t dropToFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const final;
+        void emitSound(nstd::observer_ptr<IEdict> entity, Channel channel, std::string_view sample, float volume, float attenuation, SoundFlags fFlags, Pitch pitch, FuncCallType callType) const final;
+        void emitAmbientSound (nstd::observer_ptr<IEdict> entity, float *pos, std::string_view samp, float vol, float attenuation, SoundFlags fFlags, Pitch pitch, FuncCallType callType) const final;
+        void traceLine (const float *v1, const float *v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const final;
+        void traceToss (nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<IEdict> pentToIgnore, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const final;
+        bool traceMonsterHull (nstd::observer_ptr<IEdict> pEdict, const float *v1, const float *v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const final;
+        void traceHull (const float *v1, const float *v2, int fNoMonsters, int hullNumber, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const final;
+        void traceModel (const float *v1, const float *v2, int hullNumber, nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const final;
+        std::string_view traceTexture (nstd::observer_ptr<IEdict> pTextureEntity, const float *v1, const float *v2, FuncCallType callType) const final;
+        void traceSphere (const float *v1, const float *v2, int fNoMonsters, float radius, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const final;
+
         void removeHooks() final;
         void initPlayerEdicts();
 

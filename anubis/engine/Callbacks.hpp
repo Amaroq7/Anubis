@@ -25,6 +25,11 @@
 
 typedef struct edict_s edict_t;
 typedef struct cvar_s cvar_t;
+<<<<<<< HEAD
+=======
+typedef struct TraceResult TraceResult;
+enum PRINT_TYPE;
+>>>>>>> 11d6606 (New features)
 
 namespace Anubis
 {
@@ -105,4 +110,42 @@ namespace Anubis::Engine::Callbacks::GameDLL
     int pfnRandomLong(int lLow, int lHigh);
     float pfnRandomFloat(float flLow, float flHigh);
     void pfnClientPrintf(edict_t *pEdict, PRINT_TYPE ptype, const char *szMsg);
+    int pfnEntIsOnFloor(edict_t *e);
+    int pfnDropToFloor(edict_t *e);
+    void pfnEmitSound(edict_t *entity,
+                      int channel,
+                      const char *sample,
+                      /*int*/ float volume,
+                      float attenuation,
+                      int fFlags,
+                      int pitch);
+    void pfnEmitAmbientSound(edict_t *entity,
+                             float *pos,
+                             const char *samp,
+                             float vol,
+                             float attenuation,
+                             int fFlags,
+                             int pitch);
+    void pfnTraceLine(const float *v1, const float *v2, int fNoMonsters, edict_t *pentToSkip, TraceResult *ptr);
+    void pfnTraceToss(edict_t *pent, edict_t *pentToIgnore, TraceResult *ptr);
+    int pfnTraceMonsterHull(edict_t *pEdict,
+                            const float *v1,
+                            const float *v2,
+                            int fNoMonsters,
+                            edict_t *pentToSkip,
+                            TraceResult *ptr);
+    void pfnTraceHull(const float *v1,
+                      const float *v2,
+                      int fNoMonsters,
+                      int hullNumber,
+                      edict_t *pentToSkip,
+                      TraceResult *ptr);
+    void pfnTraceModel(const float *v1, const float *v2, int hullNumber, edict_t *pent, TraceResult *ptr);
+    const char *pfnTraceTexture(edict_t *pTextureEntity, const float *v1, const float *v2);
+    void pfnTraceSphere(const float *v1,
+                        const float *v2,
+                        int fNoMonsters,
+                        float radius,
+                        edict_t *pentToSkip,
+                        TraceResult *ptr);
 } // namespace Anubis::Engine::Callbacks::GameDLL

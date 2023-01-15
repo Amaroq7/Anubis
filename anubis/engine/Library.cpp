@@ -1121,6 +1121,193 @@ namespace Anubis::Engine
             pEdict, ptype, szMsg);
     }
 
+    bool Library::entIsOnFloor(nstd::observer_ptr<IEdict> e, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnEntIsOnFloor(static_cast<edict_t*>(*e));
+        }
+
+        static auto hookChain = m_hooks->entIsOnFloor();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> e)
+            {
+                return m_origEngineFuncs->pfnEntIsOnFloor(static_cast<edict_t*>(*e));
+            },
+            e);
+    }
+
+    std::int8_t Library::dropToFloor(nstd::observer_ptr<IEdict> e, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnDropToFloor(static_cast<edict_t*>(*e));
+        }
+
+        static auto hookChain = m_hooks->dropToFloor();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> e)
+            {
+                return m_origEngineFuncs->pfnDropToFloor(static_cast<edict_t*>(*e));
+            },
+            e);
+    }
+    
+    void Library::emitSound(nstd::observer_ptr<IEdict> entity, Channel channel, std::string_view sample, float volume, float attenuation, SoundFlags fFlags, Pitch pitch, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnEmitSound(static_cast<edict_t*>(*entity), static_cast<int>(channel), sample.data(), volume, attenuation, static_cast<int>(fFlags), static_cast<int>(pitch));
+        }
+
+        static auto hookChain = m_hooks->emitSound();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> entity, Channel channel, std::string_view sample, float volume, float attenuation, SoundFlags fFlags, Pitch pitch)
+            {
+                return m_origEngineFuncs->pfnEmitSound(static_cast<edict_t*>(*entity), static_cast<int>(channel), sample.data(), volume, attenuation, static_cast<int>(fFlags), static_cast<int>(pitch));
+            },
+            entity, channel, sample, volume, attenuation, fFlags, pitch);
+    }
+
+    void Library::emitAmbientSound(nstd::observer_ptr<IEdict> entity, float *pos, std::string_view samp, float vol, float attenuation, SoundFlags fFlags, Pitch pitch, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnEmitAmbientSound(static_cast<edict_t*>(*entity), pos, samp.data(), vol, attenuation, static_cast<int>(fFlags), static_cast<int>(pitch));
+        }
+
+        static auto hookChain = m_hooks->emitAmbientSound();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> entity, float *pos, std::string_view samp, float vol, float attenuation, SoundFlags fFlags, Pitch pitch)
+            {
+                return m_origEngineFuncs->pfnEmitAmbientSound(static_cast<edict_t*>(*entity), pos, samp.data(), vol, attenuation, static_cast<int>(fFlags), static_cast<int>(pitch));
+            },
+            entity, pos, samp, vol, attenuation, fFlags, pitch);
+    }
+
+    void Library::traceLine(const float* v1, const float* v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnTraceLine(v1, v2, fNoMonsters, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+        }
+
+        static auto hookChain = m_hooks->traceLine();
+
+        return hookChain->callChain(
+            [this](const float* v1, const float* v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr)
+            {
+                return m_origEngineFuncs->pfnTraceLine(v1, v2, fNoMonsters, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+            },
+            v1, v2, fNoMonsters, pentToSkip, ptr);
+    }
+
+    void Library::traceToss(nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<IEdict> pentToIgnore, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnTraceToss(static_cast<edict_t*>(*pent), static_cast<edict_t*>(*pentToIgnore), static_cast<::TraceResult*>(*ptr));
+        }
+
+        static auto hookChain = m_hooks->traceToss();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<IEdict> pentToIgnore, nstd::observer_ptr<ITraceResult> ptr)
+            {
+                return m_origEngineFuncs->pfnTraceToss(static_cast<edict_t*>(*pent), static_cast<edict_t*>(*pentToIgnore), static_cast<::TraceResult*>(*ptr));
+            },
+            pent, pentToIgnore, ptr);
+    }
+
+    bool Library::traceMonsterHull(nstd::observer_ptr<IEdict> pEdict, const float* v1, const float* v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnTraceMonsterHull(static_cast<edict_t*>(*pEdict), v1, v2, fNoMonsters, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+        }
+
+        static auto hookChain = m_hooks->traceMonsterHull();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> pEdict, const float* v1, const float* v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr)
+            {
+                return m_origEngineFuncs->pfnTraceMonsterHull(static_cast<edict_t*>(*pEdict), v1, v2, fNoMonsters, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+            },
+            pEdict, v1, v2, fNoMonsters, pentToSkip, ptr);
+    }
+
+    void Library::traceHull(const float* v1, const float* v2, int fNoMonsters, int hullNumber, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnTraceHull(v1, v2, fNoMonsters, hullNumber, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+        }
+
+        static auto hookChain = m_hooks->traceHull();
+
+        return hookChain->callChain(
+            [this](const float* v1, const float* v2, int fNoMonsters, int hullNumber, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr)
+            {
+                return m_origEngineFuncs->pfnTraceHull(v1, v2, fNoMonsters, hullNumber, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+            },
+            v1, v2, fNoMonsters, hullNumber, pentToSkip, ptr);
+    }
+
+    void Library::traceModel(const float* v1, const float* v2, int hullNumber, nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnTraceModel(v1, v2, hullNumber, static_cast<edict_t*>(*pent), static_cast<::TraceResult*>(*ptr));
+        }
+
+        static auto hookChain = m_hooks->traceModel();
+
+        return hookChain->callChain(
+            [this](const float* v1, const float* v2, int hullNumber, nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<ITraceResult> ptr)
+            {
+                return m_origEngineFuncs->pfnTraceModel(v1, v2, hullNumber, static_cast<edict_t*>(*pent), static_cast<::TraceResult*>(*ptr));
+            },
+            v1, v2, hullNumber, pent, ptr);
+    }
+
+    std::string_view Library::traceTexture(nstd::observer_ptr<IEdict> pTextureEntity, const float* v1, const float* v2, FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnTraceTexture(static_cast<edict_t*>(*pTextureEntity), v1, v2);
+        }
+
+        static auto hookChain = m_hooks->traceTexture();
+
+        return hookChain->callChain(
+            [this](nstd::observer_ptr<IEdict> pTextureEntity, const float* v1, const float* v2)
+            {
+                return m_origEngineFuncs->pfnTraceTexture(static_cast<edict_t*>(*pTextureEntity), v1, v2);
+            },
+            pTextureEntity, v1, v2);
+    }
+
+    void Library::traceSphere(const float* v1, const float* v2, int fNoMonsters, float radius, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr,FuncCallType callType) const
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return m_origEngineFuncs->pfnTraceSphere(v1, v2, fNoMonsters, radius, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+        }
+
+        static auto hookChain = m_hooks->traceSphere();
+
+        return hookChain->callChain(
+            [this](const float* v1, const float* v2, int fNoMonsters, float radius, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr)
+            {
+                return m_origEngineFuncs->pfnTraceSphere(v1, v2, fNoMonsters, radius, static_cast<edict_t*>(*pentToSkip), static_cast<::TraceResult*>(*ptr));
+            },
+            v1, v2, fNoMonsters, radius, pentToSkip, ptr);
+    }
+
     void Library::_replaceFuncs()
     {
         *m_engineFuncs = *m_origEngineFuncs;
@@ -1177,6 +1364,17 @@ namespace Anubis::Engine
         ASSIGN_ENG_FUNCS(pfnRandomLong);
         ASSIGN_ENG_FUNCS(pfnRandomFloat);
         ASSIGN_ENG_FUNCS(pfnClientPrintf);
+        ASSIGN_ENG_FUNCS(pfnEntIsOnFloor);
+        ASSIGN_ENG_FUNCS(pfnDropToFloor);
+        ASSIGN_ENG_FUNCS(pfnEmitSound);
+        ASSIGN_ENG_FUNCS(pfnEmitAmbientSound);
+        ASSIGN_ENG_FUNCS(pfnTraceLine);
+        ASSIGN_ENG_FUNCS(pfnTraceToss);
+        ASSIGN_ENG_FUNCS(pfnTraceMonsterHull);
+        ASSIGN_ENG_FUNCS(pfnTraceHull);
+        ASSIGN_ENG_FUNCS(pfnTraceModel);
+        ASSIGN_ENG_FUNCS(pfnTraceTexture);
+        ASSIGN_ENG_FUNCS(pfnTraceSphere);
 #undef ASSIGN_ENG_FUNCS
     }
 

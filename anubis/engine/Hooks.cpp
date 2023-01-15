@@ -96,7 +96,18 @@ namespace Anubis::Engine
           m_modelIndexHookRegistry(std::make_unique<ModelIndexHookRegistry>()),
           m_randomLongHookRegistry(std::make_unique<RandomLongHookRegistry>()),
           m_randomFloatHookRegistry(std::make_unique<RandomFloatHookRegistry>()),
-          m_clientPrintHookRegistry(std::make_unique<ClientPrintHookRegistry>())
+          m_clientPrintHookRegistry(std::make_unique<ClientPrintHookRegistry>()),
+          m_entIsOnFloorHookRegistry(std::make_unique<EntIsOnFloorHookRegistry>()),
+          m_dropToFloorHookRegistry(std::make_unique<DropToFloorHookRegistry>()),
+          m_emitSoundHookRegistry(std::make_unique<EmitSoundHookRegistry>()),
+          m_emitAmbientSoundRegistry(std::make_unique<EmitAmbientSoundRegistry>()),
+          m_traceLineHookRegistry(std::make_unique<TraceLineHookRegistry>()),
+          m_traceTossHookRegistry(std::make_unique<TraceTossHookRegistry>()),
+          m_traceMonsterHullHookRegistry(std::make_unique<TraceMonsterHullHookRegistry>()),
+          m_traceHullHookRegistry(std::make_unique<TraceHullHookRegistry>()),
+          m_traceModelHookRegistry(std::make_unique<TraceModelHookRegistry>()),
+          m_traceTextureHookRegistry(std::make_unique<TraceTextureHookRegistry>()),
+          m_traceSphereHookRegistry(std::make_unique<TraceSphereHookRegistry>())
     {
     }
 
@@ -370,5 +381,48 @@ namespace Anubis::Engine
     {
         return m_clientPrintHookRegistry;
     } 
-
+    nstd::observer_ptr<IEntIsOnFloorHookRegistry> Hooks::entIsOnFloor()
+    {
+        return m_entIsOnFloorHookRegistry;
+    }
+    nstd::observer_ptr<IDropToFloorHookRegistry> Hooks::dropToFloor()
+    {
+        return m_dropToFloorHookRegistry;
+    }
+    nstd::observer_ptr<IEmitSoundHookRegistry> Hooks::emitSound()
+    {
+        return m_emitSoundHookRegistry;
+    }
+    nstd::observer_ptr<IEmitAmbientSoundRegistry> Hooks::emitAmbientSound()
+    {
+        return m_emitAmbientSoundRegistry;
+    }
+    nstd::observer_ptr<ITraceLineHookRegistry> Hooks::traceLine()
+    {
+        return m_traceLineHookRegistry;
+    }
+    nstd::observer_ptr<ITraceTossHookRegistry> Hooks::traceToss()
+    {
+        return m_traceTossHookRegistry;
+    }
+    nstd::observer_ptr<ITraceMonsterHullHookRegistry> Hooks::traceMonsterHull()
+    {
+        return m_traceMonsterHullHookRegistry;
+    }
+    nstd::observer_ptr<ITraceHullHookRegistry> Hooks::traceHull()
+    {
+        return m_traceHullHookRegistry;
+    }
+    nstd::observer_ptr<ITraceModelHookRegistry> Hooks::traceModel()
+    {
+        return m_traceModelHookRegistry;
+    }
+    nstd::observer_ptr<ITraceTextureHookRegistry> Hooks::traceTexture()
+    {
+        return m_traceTextureHookRegistry;
+    }
+    nstd::observer_ptr<ITraceSphereHookRegistry> Hooks::traceSphere()
+    {
+        return m_traceSphereHookRegistry;
+    }
 } // namespace Anubis::Engine

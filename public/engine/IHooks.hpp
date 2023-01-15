@@ -38,6 +38,7 @@ namespace Anubis::Engine
     class IEdict;
     class ICvar;
     class IGameClient;
+    class ITraceResult;
 
     using IPrecacheModelHook = IHook<PrecacheId, std::string_view>;
     using IPrecacheModelHookRegistry = IHookRegistry<PrecacheId, std::string_view>;
@@ -206,6 +207,39 @@ namespace Anubis::Engine
     using IClientPrintHook = IHook<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
     using IClientPrintHookRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, PrintType, std::string_view>;
 
+    using IEntIsOnFloorHook = IHook<bool, nstd::observer_ptr<IEdict>>;
+    using IEntIsOnFloorHookRegistry = IHookRegistry<bool, nstd::observer_ptr<IEdict>>;
+
+    using IDropToFloorHook = IHook<std::int8_t, nstd::observer_ptr<IEdict>>;
+    using IDropToFloorHookRegistry = IHookRegistry<std::int8_t, nstd::observer_ptr<IEdict>>;
+
+    using IEmitSoundHook = IHook<void, nstd::observer_ptr<IEdict>, Channel, std::string_view, float, float, SoundFlags, Pitch>;
+    using IEmitSoundHookRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, Channel, std::string_view, float, float, SoundFlags, Pitch>;
+
+    using IEmitAmbientSoundHook = IHook<void, nstd::observer_ptr<IEdict>, float*, std::string_view, float, float, SoundFlags, Pitch>;
+    using IEmitAmbientSoundRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, float*, std::string_view, float, float, SoundFlags, Pitch>;
+
+    using ITraceLinetHook = IHook<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceLineHookRegistry = IHookRegistry<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using ITraceTossHook = IHook<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceTossHookRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using ITraceMonsterHullHook = IHook<bool, nstd::observer_ptr<IEdict>, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceMonsterHullHookRegistry = IHookRegistry<bool, nstd::observer_ptr<IEdict>, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using ITraceHullHook = IHook<void, const float*, const float*, int, int , nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceHullHookRegistry = IHookRegistry<void, const float*, const float*, int, int , nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using ITraceModelHook = IHook<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceModelHookRegistry = IHookRegistry<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
+    using ITraceTextureHook = IHook<std::string_view, nstd::observer_ptr<IEdict>, const float*, const float*>;
+    using ITraceTextureHookRegistry = IHookRegistry<std::string_view, nstd::observer_ptr<IEdict>, const float*, const float*>;
+
+    using ITraceSphereHook = IHook<void, const float*, const float*, int, float, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceSphereHookRegistry = IHookRegistry<void, const float*, const float*, int, float, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+
     class IHooks
     {
     public:
@@ -266,5 +300,16 @@ namespace Anubis::Engine
         virtual nstd::observer_ptr<IRandomLongHookRegistry> randomLong() = 0;
         virtual nstd::observer_ptr<IRandomFloatHookRegistry> randomFloat() = 0;
         virtual nstd::observer_ptr<IClientPrintHookRegistry> clientPrint() = 0;
+        virtual nstd::observer_ptr<IEntIsOnFloorHookRegistry> entIsOnFloor() = 0;
+        virtual nstd::observer_ptr<IDropToFloorHookRegistry> dropToFloor() = 0;
+        virtual nstd::observer_ptr<IEmitSoundHookRegistry> emitSound() = 0;
+        virtual nstd::observer_ptr<IEmitAmbientSoundRegistry> emitAmbientSound() = 0;
+        virtual nstd::observer_ptr<ITraceLineHookRegistry> traceLine() = 0;
+        virtual nstd::observer_ptr<ITraceTossHookRegistry> traceToss() = 0;
+        virtual nstd::observer_ptr<ITraceMonsterHullHookRegistry> traceMonsterHull() = 0;
+        virtual nstd::observer_ptr<ITraceHullHookRegistry> traceHull() = 0;
+        virtual nstd::observer_ptr<ITraceModelHookRegistry> traceModel() = 0;
+        virtual nstd::observer_ptr<ITraceTextureHookRegistry> traceTexture() = 0;
+        virtual nstd::observer_ptr<ITraceSphereHookRegistry> traceSphere() = 0;
     };
 } // namespace Anubis::Engine

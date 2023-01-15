@@ -23,6 +23,7 @@
 #include <engine/IEdict.hpp>
 #include <game/IBaseEntity.hpp>
 #include <game/ILibrary.hpp>
+#include <engine/ITraceResult.hpp>
 
 namespace Anubis::Engine::Callbacks::GameDLL
 {
@@ -341,5 +342,60 @@ namespace Anubis::Engine::Callbacks::GameDLL
     void pfnClientPrintf(edict_t* pEdict, PRINT_TYPE ptype, const char* szMsg)
     {
         getEngine()->clientPrint(getEngine()->getEdict(pEdict), static_cast<PrintType>(ptype), szMsg, FuncCallType::Hooks);
+    }
+
+    int pfnEntIsOnFloor(edict_t* e)
+    {
+        return getEngine()->entIsOnFloor(getEngine()->getEdict(e), FuncCallType::Hooks);
+    }
+
+    int	pfnDropToFloor(edict_t* e)
+    {
+        return getEngine()->dropToFloor(getEngine()->getEdict(e), FuncCallType::Hooks);
+    }
+
+    void pfnEmitSound(edict_t* entity, int channel, const char* sample, /*int*/float volume, float attenuation, int fFlags, int pitch)
+    {
+        getEngine()->emitSound(getEngine()->getEdict(entity), static_cast<Channel>(channel), sample, volume, attenuation, static_cast<SoundFlags>(fFlags), static_cast<Pitch>(pitch), FuncCallType::Hooks);
+    }
+
+    void pfnEmitAmbientSound(edict_t* entity, float* pos, const char* samp, float vol, float attenuation, int fFlags, int pitch)
+    {
+        getEngine()->emitAmbientSound(getEngine()->getEdict(entity), pos, samp, vol, attenuation,  static_cast<SoundFlags>(fFlags),  static_cast<Pitch>(pitch) ,FuncCallType::Hooks);
+    }
+
+    void pfnTraceLine(const float* v1, const float* v2, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
+    {
+        getEngine()->traceLine(v1, v2, fNoMonsters, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+    }
+    
+    void pfnTraceToss(edict_t* pent, edict_t* pentToIgnore, TraceResult* ptr)
+    {
+        getEngine()->traceToss(getEngine()->getEdict(pent), getEngine()->getEdict(pentToIgnore), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+    }
+
+    int pfnTraceMonsterHull(edict_t* pEdict, const float* v1, const float* v2, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
+    {
+        return getEngine()->traceMonsterHull(getEngine()->getEdict(pEdict), v1, v2, fNoMonsters, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+    }
+
+    void pfnTraceHull (const float *v1, const float *v2, int fNoMonsters, int hullNumber, edict_t *pentToSkip, TraceResult *ptr)
+    {
+        getEngine()->traceHull(v1, v2, fNoMonsters, hullNumber, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+    }
+
+    void pfnTraceModel(const float* v1, const float* v2, int hullNumber, edict_t* pent, TraceResult* ptr)
+    {
+        getEngine()->traceModel(v1, v2, hullNumber, getEngine()->getEdict(pent), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+    }
+
+    const char* pfnTraceTexture(edict_t* pTextureEntity, const float* v1, const float* v2)
+    {
+        return getEngine()->traceTexture(getEngine()->getEdict(pTextureEntity), v1, v2, FuncCallType::Hooks).data();
+    }
+
+    void pfnTraceSphere(const float* v1, const float* v2, int fNoMonsters, float radius, edict_t* pentToSkip, TraceResult* ptr)
+    {
+        getEngine()->traceSphere(v1, v2, fNoMonsters, radius, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
     }
 } // namespace Anubis::Engine::Callbacks::GameDLL
