@@ -28,8 +28,11 @@ typedef struct cvar_s cvar_t;
 <<<<<<< HEAD
 =======
 typedef struct TraceResult TraceResult;
+<<<<<<< HEAD
 enum PRINT_TYPE;
 >>>>>>> 11d6606 (New features)
+=======
+>>>>>>> 6fe75ba (Fix crashes)
 
 namespace Anubis
 {
