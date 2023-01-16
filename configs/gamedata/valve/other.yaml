@@ -3,6 +3,10 @@ global:
     windows: [ 0x85, 0xc0, 0x74, 0x3f, 0x50, 0xe8, 0x3f, 0x3f, 0x3f, 0x3f, 0x83, 0xc4, 0x04, 0x56, 0xe8, 0x3f, 0x3f, 0x3f, 0x3f, 0xa3 ]
     linux: g_pGameRules
     var: true
+CBaseEntity:
+  SUB_Remove:
+    linux: _ZN11CBaseEntity10SUB_RemoveEv
+    windows: ?SUB_Remove@CBaseEntity@@QAEXXZ
 CBasePlayer:
   GiveNamedItem:
     linux: _ZN11CBasePlayer13GiveNamedItemEPKc

@@ -86,18 +86,41 @@ namespace Anubis::Game::Valve
                     addresses.try_emplace(name->first.as<std::string>(),
                                           dlsym(m_libHandle.get(), name->second["linux"].as<std::string>().c_str()));
 #else
-                    bool var = name->second["var"].IsDefined() && name->second["var"].as<bool>();
-                    std::uint8_t mask =
-                        name->second["mask"].IsDefined() ? name->second["mask"].as<std::uint8_t>() : 0x3f;
-                    addresses.try_emplace(
-                        name->first.as<std::string>(),
-                        _findPattern(name->second["windows"].as<std::vector<std::uint8_t>>(), mask, var));
+                    if (!name->second["windows"].IsSequence())
+                    {
+                        nstd::observer_ptr<void> fnAddr =
+                            GetProcAddress(reinterpret_cast<HMODULE>(m_libHandle.get()),
+                                           name->second["windows"].as<std::string>().c_str());
+
+                        if (fnAddr)
+                        {
+                            addresses.try_emplace(name->first.as<std::string>(), fnAddr);
+                        }
+                        else
+                        {
+                            // TODO: print msg
+                        }
+                    }
+                    else
+                    {
+                        bool var = name->second["var"].IsDefined() && name->second["var"].as<bool>();
+                        std::uint8_t mask =
+                            name->second["mask"].IsDefined() ? name->second["mask"].as<std::uint8_t>() : 0x3f;
+                        addresses.try_emplace(
+                            name->first.as<std::string>(),
+                            _findPattern(name->second["windows"].as<std::vector<std::uint8_t>>(), mask, var));
+                    }
 #endif
                 }
                 m_other.try_emplace(typeIt->first.as<std::string>(), std::move(addresses));
             }
         }
         catch (const YAML::BadFile &e)
+        {
+            using namespace std::string_literals;
+            throw std::runtime_error("Error parsing yaml other.yaml file: "s + e.what());
+        }
+        catch (const YAML::BadConversion &e)
         {
             using namespace std::string_literals;
             throw std::runtime_error("Error parsing yaml other.yaml file: "s + e.what());
