@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "Config.hpp"
+
 #include <game/IBaseEntity.hpp>
 #include <engine/IEdict.hpp>
 
@@ -47,6 +49,18 @@ namespace Anubis::Game::Valve
 
         [[nodiscard]] bool isValid() const final;
         [[nodiscard]] bool isPlayer() const final;
+
+        template<typename t_ret = void, typename... t_args>
+        t_ret execFunc(std::string_view fnName, t_args... args) const
+        {
+#if defined __linux__
+            static auto fn = gConfig->getAddressFn<t_ret, void *, t_args...>(fnName, "CBaseEntity");
+            return fn(operator CBaseEntity *(), args...);
+#else
+            static auto fn = gConfig->getAddressFn<t_ret, void *, int, t_args...>(fnName, "CBaseEntity");
+            return fn(operator CBaseEntity *(), 0, args...);
+#endif
+        }
 
     public:
         explicit operator CBaseEntity *() const final;

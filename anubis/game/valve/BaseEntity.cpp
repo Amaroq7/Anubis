@@ -43,15 +43,7 @@ namespace Anubis::Game::Valve
 
     void BaseEntity::remove()
     {
-        if (m_entity->pev->health > 0)
-        {
-            // this situation can screw up monsters who can't tell their entity pointers are invalid.
-            m_entity->pev->health = 0;
-            gEngineLib->alert(Engine::AlertType::Aiconsole, "remove called on entity with health > 0\n",
-                              FuncCallType::Direct);
-        }
-
-        gEngineLib->removeEntity(m_edict, FuncCallType::Direct);
+        execFunc<>("SUB_Remove");
     }
 
     bool BaseEntity::isAlive() const
