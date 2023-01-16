@@ -31,34 +31,13 @@ namespace Anubis::Game::CStrike
     class EntityHolder final : public IEntityHolder
     {
     public:
-        nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
-        nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
-        nstd::observer_ptr<IBaseEntity> allocEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
+        std::unique_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
+        std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
 
-        nstd::observer_ptr<IBaseEntity> getBaseEntity(CBaseEntity *baseEntity);
-        nstd::observer_ptr<IBasePlayer> getBasePlayer(CBasePlayer *basePlayer);
-        nstd::observer_ptr<IBaseEntity> getBaseEntity(edict_t *edict) final;
-        nstd::observer_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars) final;
-
-    private:
-        const std::unique_ptr<BaseEntity> &_getEntity(nstd::observer_ptr<Engine::IEdict> edict)
-        {
-            static std::unique_ptr<BaseEntity> empty;
-
-            if (!edict || edict->isFree() || !edict->getPrivateData())
-            {
-                return empty;
-            }
-
-            if (auto it = m_entities.find(edict); it != m_entities.end())
-            {
-                return it->second;
-            }
-
-            return empty;
-        }
-
-        std::unordered_map<nstd::observer_ptr<Engine::IEdict>, std::unique_ptr<BaseEntity>> m_entities;
+        std::unique_ptr<IBaseEntity> getBaseEntity(CBaseEntity *baseEntity);
+        std::unique_ptr<IBasePlayer> getBasePlayer(CBasePlayer *basePlayer);
+        std::unique_ptr<IBaseEntity> getBaseEntity(edict_t *edict) final;
+        std::unique_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars) final;
     };
 
     const std::unique_ptr<EntityHolder> &getEntityHolder();

@@ -135,14 +135,15 @@ namespace Anubis
             return false;
         }
 
+        gPluginInfo->execHook(Game::SetupHookType::EntityHolder,
+                              nstd::make_observer<Game::IEntityHolder>(Game::CStrike::getEntityHolder()));
+
         return true;
     }
 
     void InstallVHooks()
     {
         // init vfunc stuff
-        gPluginInfo->execHook(Game::SetupHookType::EntityHolder,
-                              nstd::make_observer<Game::IEntityHolder>(Game::CStrike::getEntityHolder()));
         gPluginInfo->execHook(Game::SetupHookType::BasePlayerHooks,
                               nstd::make_observer<Game::IBasePlayerHooks>(Game::CStrike::getBasePlayerHooks()));
     }

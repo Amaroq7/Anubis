@@ -21,6 +21,7 @@
 
 #include <engine/Common.hpp>
 #include <engine/IHooks.hpp>
+#include <game/IBaseEntity.hpp>
 #include "HookChains.hpp"
 
 class IRehldsHookchains;
@@ -168,10 +169,9 @@ namespace Anubis::Engine
     using GetEntityOfEntityIdHook = Hook<nstd::observer_ptr<IEdict>, std::uint32_t>;
     using GetEntityOfEntityIdHookRegistry = HookRegistry<nstd::observer_ptr<IEdict>, std::uint32_t>;
 
-    using AllocEntPrivateDataHook =
-        Hook<nstd::observer_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
+    using AllocEntPrivateDataHook = Hook<std::unique_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
     using AllocEntPrivateDataHookRegistry =
-        HookRegistry<nstd::observer_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
+        HookRegistry<std::unique_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
 
     using EdAllocHook = Hook<nstd::observer_ptr<IEdict>>;
     using EdAllocHookRegistry = HookRegistry<nstd::observer_ptr<IEdict>>;
@@ -230,7 +230,7 @@ namespace Anubis::Engine
     class Hooks final : public IHooks
     {
     public:
-        explicit Hooks(nstd::observer_ptr<IRehldsHookchains> rehldsHooks);
+        Hooks(nstd::observer_ptr<IRehldsHookchains> rehldsHooks);
         ~Hooks() final = default;
 
         nstd::observer_ptr<IPrecacheModelHookRegistry> precacheModel() final;

@@ -94,6 +94,9 @@ namespace Anubis
             return false;
         }
 
+        gPluginInfo->execHook(Game::SetupHookType::EntityHolder,
+                              nstd::make_observer<Game::IEntityHolder>(Game::Valve::getEntityHolder()));
+
         return true;
     }
 
@@ -155,8 +158,6 @@ namespace Anubis
 
         Game::VFunc::gPevOffset = Game::Valve::gConfig->getVirtualOffset("pev");
 
-        gPluginInfo->execHook(Game::SetupHookType::EntityHolder,
-                              nstd::make_observer<Game::IEntityHolder>(Game::Valve::getEntityHolder()));
         gPluginInfo->execHook(Game::SetupHookType::BasePlayerHooks,
                               nstd::make_observer<Game::IBasePlayerHooks>(Game::Valve::getBasePlayerHooks()));
     }

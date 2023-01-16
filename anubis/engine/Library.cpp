@@ -35,8 +35,7 @@ using namespace std::string_literals;
 
 namespace Anubis::Engine
 {
-    Library::Library(std::unique_ptr<enginefuncs_t> &&engineFuncs,
-                     nstd::observer_ptr<globalvars_t> globals)
+    Library::Library(std::unique_ptr<enginefuncs_t> &&engineFuncs, nstd::observer_ptr<globalvars_t> globals)
         : m_engineFuncs(std::make_unique<enginefuncs_t>()),
           m_origEngineFuncs(std::move(engineFuncs)),
           m_engineGlobals(globals),
@@ -989,7 +988,9 @@ namespace Anubis::Engine
             entOffset);
     }
 
-    nstd::observer_ptr<Game::IBaseEntity> Library::allocEntPrivateData(nstd::observer_ptr<IEdict> edict, std::int32_t classSize, FuncCallType callType) const
+    std::unique_ptr<Game::IBaseEntity> Library::allocEntPrivateData(nstd::observer_ptr<IEdict> edict,
+                                                                    std::int32_t classSize,
+                                                                    FuncCallType callType) const
     {
         static nstd::observer_ptr<Game::ILibrary> gameLib = gAnubisApi->getGame();
         if (callType == FuncCallType::Direct)
@@ -997,7 +998,7 @@ namespace Anubis::Engine
             void *pvData = m_origEngineFuncs->pfnPvAllocEntPrivateData(static_cast<edict_t *>(*edict), classSize);
             if (pvData)
             {
-                return gameLib->allocEntity(edict);
+                return gameLib->getBaseEntity(edict);
             }
 
             return {};
@@ -1006,12 +1007,12 @@ namespace Anubis::Engine
         static auto hookChain = m_hooks->allocEntPrivData();
 
         return hookChain->callChain(
-            [this](nstd::observer_ptr<IEdict> edict, std::int32_t classSize) -> nstd::observer_ptr<Game::IBaseEntity>
+            [this](nstd::observer_ptr<IEdict> edict, std::int32_t classSize) -> std::unique_ptr<Game::IBaseEntity>
             {
                 void *pvData = m_origEngineFuncs->pfnPvAllocEntPrivateData(static_cast<edict_t *>(*edict), classSize);
                 if (pvData)
                 {
-                    return gameLib->allocEntity(edict);
+                    return gameLib->getBaseEntity(edict);
                 }
 
                 return {};
@@ -1053,7 +1054,7 @@ namespace Anubis::Engine
             str);
     }
 
-    ModelIndex Library::modelIndex(std::string_view model, FuncCallType callType) const 
+    ModelIndex Library::modelIndex(std::string_view model, FuncCallType callType) const
     {
         if (callType == FuncCallType::Direct)
         {
@@ -1070,7 +1071,7 @@ namespace Anubis::Engine
             model);
     }
 
-    std::int32_t Library::randomLong(std::int32_t lLow, std::int32_t  lHigh, FuncCallType callType) const
+    std::int32_t Library::randomLong(std::int32_t lLow, std::int32_t lHigh, FuncCallType callType) const
     {
         if (callType == FuncCallType::Direct)
         {
@@ -1104,11 +1105,15 @@ namespace Anubis::Engine
             flLow, flHigh);
     }
 
-    void Library::clientPrint(nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg, FuncCallType callType) const
+    void Library::clientPrint(nstd::observer_ptr<IEdict> pEdict,
+                              PrintType ptype,
+                              std::string_view szMsg,
+                              FuncCallType callType) const
     {
         if (callType == FuncCallType::Direct)
         {
-            return m_origEngineFuncs->pfnClientPrintf(static_cast<edict_t*>(*pEdict), static_cast<PRINT_TYPE>(ptype), szMsg.data());
+            return m_origEngineFuncs->pfnClientPrintf(static_cast<edict_t *>(*pEdict), static_cast<PRINT_TYPE>(ptype),
+                                                      szMsg.data());
         }
 
         static auto hookChain = m_hooks->clientPrint();
@@ -1116,7 +1121,8 @@ namespace Anubis::Engine
         return hookChain->callChain(
             [this](nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg)
             {
-                return m_origEngineFuncs->pfnClientPrintf(static_cast<edict_t*>(*pEdict), static_cast<PRINT_TYPE>(ptype), szMsg.data());
+                return m_origEngineFuncs->pfnClientPrintf(static_cast<edict_t *>(*pEdict),
+                                                          static_cast<PRINT_TYPE>(ptype), szMsg.data());
             },
             pEdict, ptype, szMsg);
     }
@@ -1436,7 +1442,8 @@ namespace Anubis::Engine
         m_gameClients.reserve(maxClientsLimit);
         for (std::size_t i = 0; i < maxClientsLimit; i++)
         {
-            m_gameClients.emplace_back(std::make_unique<GameClient>(m_reServerStatic->GetClient(static_cast<int>(i)), this));
+            m_gameClients.emplace_back(
+                std::make_unique<GameClient>(m_reServerStatic->GetClient(static_cast<int>(i)), this));
         }
     }
 

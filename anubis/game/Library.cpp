@@ -270,7 +270,7 @@ namespace Anubis::Game
     {
         if (callType == FuncCallType::Direct)
         {
-            return m_gameLibDllFunctions->pfnClientDisconnect(static_cast<edict_t*>(*pEntity));
+            return m_gameLibDllFunctions->pfnClientDisconnect(static_cast<edict_t *>(*pEntity));
         }
 
         static auto hookChain = m_hooks->clientDisconnect();
@@ -278,7 +278,7 @@ namespace Anubis::Game
         return hookChain->callChain(
             [this](nstd::observer_ptr<Engine::IEdict> pEntity)
             {
-                return m_gameLibDllFunctions->pfnClientDisconnect(static_cast<edict_t*>(*pEntity));
+                return m_gameLibDllFunctions->pfnClientDisconnect(static_cast<edict_t *>(*pEntity));
             },
             pEntity);
     }
@@ -502,12 +502,12 @@ namespace Anubis::Game
         return static_cast<Module::SystemHandle>(*m_gameLibrary);
     }
 
-    nstd::observer_ptr<IBaseEntity> Library::getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict)
+    std::unique_ptr<IBaseEntity> Library::getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict)
     {
         return m_entityHolder->getBaseEntity(edict);
     }
 
-    nstd::observer_ptr<IBasePlayer> Library::getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict)
+    std::unique_ptr<IBasePlayer> Library::getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict)
     {
         std::uint32_t idx = edict->getIndex();
         if (idx > m_maxClients || !idx)
@@ -556,11 +556,6 @@ namespace Anubis::Game
         {
             auto entityLib = std::make_unique<Module>(IPlugin::Type::EntityDLL, std::move(path));
 
-            if (!entityLib->initPlugin(gAnubisApi))
-            {
-                throw std::runtime_error("Cannot initialize entity library");
-            }
-
             entityLib->setupHook(SetupHookType::EntityHolder,
                                  [this](std::any entHolder)
                                  {
@@ -582,6 +577,11 @@ namespace Anubis::Game
                                          m_rules = rules;
                                      }
                                  });
+
+            if (!entityLib->initPlugin(gAnubisApi))
+            {
+                throw std::runtime_error("Cannot initialize entity library");
+            }
 
             entityLib->installVFHooks();
 
@@ -611,15 +611,7 @@ namespace Anubis::Game
         m_edictList = edictList;
     }
 
-    nstd::observer_ptr<IBaseEntity> Library::allocEntity(nstd::observer_ptr<Engine::IEdict> edict) const
-    {
-        if (m_entityHolder)
-            return m_entityHolder->allocEntity(edict);
-
-        return {};
-    }
-
-    nstd::observer_ptr<IBaseEntity> Library::getBaseEntity(edict_t *entity) const
+    std::unique_ptr<IBaseEntity> Library::getBaseEntity(edict_t *entity) const
     {
         if (m_entityHolder)
             return m_entityHolder->getBaseEntity(entity);

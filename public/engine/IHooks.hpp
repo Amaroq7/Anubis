@@ -182,9 +182,9 @@ namespace Anubis::Engine
     using IGetEntityOfEntityIdHookRegistry = IHookRegistry<nstd::observer_ptr<IEdict>, std::uint32_t>;
 
     using IAllocEntPrivateDataHook =
-        IHook<nstd::observer_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
+        IHook<std::unique_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
     using IAllocEntPrivateDataHookRegistry =
-        IHookRegistry<nstd::observer_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
+        IHookRegistry<std::unique_ptr<Game::IBaseEntity>, nstd::observer_ptr<IEdict>, std::int32_t>;
 
     using IEdAllocHook = IHook<nstd::observer_ptr<IEdict>>;
     using IEdAllocHookRegistry = IHookRegistry<nstd::observer_ptr<IEdict>>;

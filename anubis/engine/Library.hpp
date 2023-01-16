@@ -142,17 +142,20 @@ namespace Anubis::Engine
         [[nodiscard]] nstd::observer_ptr<IEdict> getEntityOfEntOffset(EntityOffset entOffset,
                                                                       FuncCallType callType) const final;
 
-        [[nodiscard]] nstd::observer_ptr<Game::IBaseEntity> allocEntPrivateData(nstd::observer_ptr<IEdict> edict,
-                                                                                std::int32_t classSize,
-                                                                                FuncCallType callType) const final;
+        [[nodiscard]] std::unique_ptr<Game::IBaseEntity> allocEntPrivateData(nstd::observer_ptr<IEdict> edict,
+                                                                             std::int32_t classSize,
+                                                                             FuncCallType callType) const final;
 
         [[nodiscard]] StringOffset allocString(std::string_view str, FuncCallType callType) const final;
 
-        ModelIndex modelIndex (std::string_view model, FuncCallType callType) const final;
-        std::int32_t randomLong (std::int32_t lLow, std::int32_t  lHigh, FuncCallType callType) const final;
-	    float randomFloat (float flLow, float flHigh, FuncCallType callType) const final;
+        ModelIndex modelIndex(std::string_view model, FuncCallType callType) const final;
+        std::int32_t randomLong(std::int32_t lLow, std::int32_t lHigh, FuncCallType callType) const final;
+        float randomFloat(float flLow, float flHigh, FuncCallType callType) const final;
 
-        void clientPrint (nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg, FuncCallType callType) const final;
+        void clientPrint(nstd::observer_ptr<IEdict> pEdict,
+                         PrintType ptype,
+                         std::string_view szMsg,
+                         FuncCallType callType) const final;
 
         bool entIsOnFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const final;
 	    std::int8_t dropToFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const final;

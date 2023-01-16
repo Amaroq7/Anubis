@@ -53,8 +53,7 @@ namespace Anubis::Game::Valve
         return false;
     }
 
-    std::optional<nstd::observer_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item
-                                                                             [[maybe_unused]]) const
+    std::optional<nstd::observer_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item) const
     {
         execFunc<void, const char *>("GiveNamedItem", item.data());
         return std::nullopt;

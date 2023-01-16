@@ -170,10 +170,9 @@ namespace Anubis::Engine
                                                            FuncCallType callType) const = 0;
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEntityOfEntOffset(EntityOffset entOffset,
                                                                               FuncCallType callType) const = 0;
-        [[nodiscard]] virtual nstd::observer_ptr<Game::IBaseEntity>
-            allocEntPrivateData(nstd::observer_ptr<IEdict> edict,
-                                std::int32_t classSize,
-                                FuncCallType callType) const = 0;
+        [[nodiscard]] virtual std::unique_ptr<Game::IBaseEntity> allocEntPrivateData(nstd::observer_ptr<IEdict> edict,
+                                                                                     std::int32_t classSize,
+                                                                                     FuncCallType callType) const = 0;
 
         [[nodiscard]] StringOffset makeString(std::string_view str) const
         {
@@ -182,11 +181,14 @@ namespace Anubis::Engine
 
         [[nodiscard]] virtual StringOffset allocString(std::string_view str, FuncCallType callType) const = 0;
 
-        virtual ModelIndex modelIndex (std::string_view model, FuncCallType callType) const = 0;
-        virtual std::int32_t randomLong (std::int32_t lLow, std::int32_t  lHigh, FuncCallType callType) const = 0;
-	    virtual float randomFloat (float flLow, float flHigh, FuncCallType callType) const = 0;
+        virtual ModelIndex modelIndex(std::string_view model, FuncCallType callType) const = 0;
+        virtual std::int32_t randomLong(std::int32_t lLow, std::int32_t lHigh, FuncCallType callType) const = 0;
+        virtual float randomFloat(float flLow, float flHigh, FuncCallType callType) const = 0;
 
-        virtual void clientPrint (nstd::observer_ptr<IEdict> pEdict, PrintType ptype, std::string_view szMsg, FuncCallType callType) const = 0;
+        virtual void clientPrint(nstd::observer_ptr<IEdict> pEdict,
+                                 PrintType ptype,
+                                 std::string_view szMsg,
+                                 FuncCallType callType) const = 0;
 
         virtual bool entIsOnFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const = 0;
 	    virtual std::int8_t dropToFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const = 0;

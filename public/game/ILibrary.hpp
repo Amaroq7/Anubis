@@ -126,21 +126,21 @@ namespace Anubis::Game
                                    std::string_view value,
                                    FuncCallType callType) = 0;
 
-        virtual void pfnClientDisconnect (nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;
+        virtual void pfnClientDisconnect(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;
 
         /**
          * @brief Returns entity.
          *
          * @return Edict's base entity representation.
          */
-        virtual nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) = 0;
+        virtual std::unique_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) = 0;
 
         /**
          * @brief Returns player entity.
          *
          * @return Edict's player entity representation.
          */
-        virtual nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
+        virtual std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
 
         virtual nstd::observer_ptr<IBasePlayerHooks> getCBasePlayerHooks() = 0;
         virtual nstd::observer_ptr<IRules> getRules() const = 0;
@@ -148,9 +148,7 @@ namespace Anubis::Game
         [[nodiscard]] virtual const std::unique_ptr<DLL_FUNCTIONS> &getDllFuncs() = 0;
         [[nodiscard]] virtual const std::unique_ptr<NEW_DLL_FUNCTIONS> &getNewDllFuncs() = 0;
         [[nodiscard]] virtual void *getSystemHandle() const = 0;
-        [[nodiscard]] virtual nstd::observer_ptr<IBaseEntity>
-            allocEntity(nstd::observer_ptr<Engine::IEdict> edict) const = 0;
         virtual void initVFuncHooks() = 0;
-        virtual nstd::observer_ptr<IBaseEntity> getBaseEntity(edict_t *entity) const = 0;
+        virtual std::unique_ptr<IBaseEntity> getBaseEntity(edict_t *entity) const = 0;
     };
 } // namespace Anubis::Game

@@ -84,14 +84,14 @@ namespace Anubis::Game
                            std::string_view cvarName,
                            std::string_view value,
                            FuncCallType callType) final;
-        void pfnClientDisconnect (nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) final;
+        void pfnClientDisconnect(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) final;
 
-        nstd::observer_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
-        nstd::observer_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
+        std::unique_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
+        std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
         nstd::observer_ptr<IBasePlayerHooks> getCBasePlayerHooks() final;
         nstd::observer_ptr<IRules> getRules() const final;
         void initVFuncHooks() final;
-        nstd::observer_ptr<IBaseEntity> getBaseEntity(edict_t *entity) const final;
+        std::unique_ptr<IBaseEntity> getBaseEntity(edict_t *entity) const final;
 
         const std::unique_ptr<DLL_FUNCTIONS> &getDllFuncs() final;
         const std::unique_ptr<NEW_DLL_FUNCTIONS> &getNewDllFuncs() final;
@@ -99,7 +99,6 @@ namespace Anubis::Game
         void setMaxClients(std::uint32_t maxClients);
         void setEdictList(edict_t *edictList);
         void freeEntitiesDLL();
-        [[nodiscard]] nstd::observer_ptr<IBaseEntity> allocEntity(nstd::observer_ptr<Engine::IEdict> edict) const final;
 
     private:
         void _loadGameDLL();
