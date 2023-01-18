@@ -31,10 +31,11 @@ namespace Anubis::Game::Valve
 {
     BaseEntity::BaseEntity(nstd::observer_ptr<Engine::IEdict> edict)
         : m_edict(edict),
-          m_entity(reinterpret_cast<CBaseEntity *>(edict->getPrivateData())),
-          m_serialNumber(edict->getSerialNumber())
+          m_entity(reinterpret_cast<CBaseEntity *>(edict->getPrivateData()))
     {
     }
+
+    BaseEntity::BaseEntity(CBaseEntity *entity) : m_edict(gEngineLib->getEdict(m_entity->pev)), m_entity(entity) {}
 
     nstd::observer_ptr<Engine::IEdict> BaseEntity::edict() const
     {
@@ -82,17 +83,11 @@ namespace Anubis::Game::Valve
 
     bool BaseEntity::isValid() const
     {
-        return !m_edict->isFree() && m_edict->getPrivateData() && m_serialNumber == m_edict->getSerialNumber();
+        return !m_edict->isFree() && m_edict->getPrivateData();
     }
 
     bool BaseEntity::isPlayer() const
     {
         return m_entity->IsPlayer();
-    }
-
-    void BaseEntity::updateSerialNumber(std::uint32_t serialNumber)
-    {
-        m_serialNumber = serialNumber;
-        m_entity = reinterpret_cast<CBaseEntity *>(m_edict->getPrivateData());
     }
 } // namespace Anubis::Game::Valve

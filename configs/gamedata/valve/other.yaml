@@ -7,6 +7,22 @@ CBaseEntity:
   SUB_Remove:
     linux: _ZN11CBaseEntity10SUB_RemoveEv
     windows: ?SUB_Remove@CBaseEntity@@QAEXXZ
+CBasePlayerItem:
+  DestroyItem:
+    linux: _ZN15CBasePlayerItem11DestroyItemEv
+    windows: ?DestroyItem@CBasePlayerItem@@QAEXXZ
+  DefaultTouch:
+    linux: _ZN15CBasePlayerItem12DefaultTouchEP11CBaseEntity
+    windows: ?DefaultTouch@CBasePlayerItem@@QAEXPAVCBaseEntity@@@Z
+  FallThink:
+    linux: _ZN15CBasePlayerItem9FallThinkEv
+    windows: ?FallThink@CBasePlayerItem@@QAEXXZ
+  Materialize:
+    linux: _ZN15CBasePlayerItem11MaterializeEv
+    windows: ?Materialize@CBasePlayerItem@@QAEXXZ
+  AttemptToMaterialize:
+    linux: _ZN15CBasePlayerItem20AttemptToMaterializeEv
+    windows: ?AttemptToMaterialize@CBasePlayerItem@@QAEXXZ
 CBasePlayer:
   GiveNamedItem:
     linux: _ZN11CBasePlayer13GiveNamedItemEPKc

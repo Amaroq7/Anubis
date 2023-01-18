@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 Anubis Development Team
+ *  Copyright (C) 2023 Anubis Development Team
  *
  *  This file is part of Anubis.
  *
@@ -23,29 +23,31 @@
 #include <observer_ptr.hpp>
 
 /**
- * @internal A internal representation of a base entity in gamedll
+ * @internal A internal representation of a base player ammo entity in gamedll
  */
 class CBasePlayerAmmo;
 
 namespace Anubis::Game
 {
-    class IBasePlayerAmmo: public virtual IBaseEntity
+    class IBasePlayerAmmo : public virtual IBaseEntity
     {
-        public:
-            ~IBasePlayerAmmo() override = default;
-            virtual void Spawn() = 0;
-	        void DefaultTouch( nstd::observer_ptr<IBaseEntity> pOther ) = 0; // default weapon touch
-	        virtual bool AddAmmo( nstd::observer_ptr<IBaseEntity> pOther ) = 0;
+    public:
+        ~IBasePlayerAmmo() override = default;
+        virtual void spawn() const = 0;
+        // default weapon touch
+        virtual void defaultTouch(nstd::observer_ptr<IBaseEntity> pOther) const = 0;
+        virtual bool addAmmo(nstd::observer_ptr<IBaseEntity> pOther) const = 0;
 
-	        void Materialize() = 0;
+        virtual void materialize() const = 0;
 
+        virtual std::unique_ptr<IBaseEntity> respawn() const = 0;
 
-                /**
-             * @cond INTERNAL
-             */
-            /**
-             * @internal Allows to get a internal representation of a base entity in the gamedll.
-             */
-            explicit virtual operator CBasePlayerAmmo *() const = 0;
+        /**
+         * @cond INTERNAL
+         */
+        /**
+         * @internal Allows to get a internal representation of a base entity in the gamedll.
+         */
+        explicit virtual operator CBasePlayerAmmo *() const = 0;
     };
-}
+} // namespace Anubis::Game

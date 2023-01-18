@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 Anubis Development Team
+ *  Copyright (C) 2023 Anubis Development Team
  *
  *  This file is part of Anubis.
  *
@@ -17,8 +17,6 @@
  *  along with Anubis.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
 #include "BasePlayerAmmo.hpp"
 
 namespace Anubis::Game::Valve
@@ -28,22 +26,31 @@ namespace Anubis::Game::Valve
     {
         return reinterpret_cast<CBasePlayerAmmo *>(m_entity);
     }
-    void BasePlayerAmmo::Spawn()
+
+    void BasePlayerAmmo::spawn() const
     {
-        operator CBasePlayerAmmo* ()->Spawn();
+        operator CBasePlayerAmmo *()->Spawn();
     }
-    void BasePlayerAmmo::DefaultTouch(nstd::observer_ptr<IBaseEntity> pOther)
+
+    void BasePlayerAmmo::defaultTouch(nstd::observer_ptr<IBaseEntity> pOther) const
     {
-        execFunc<>("DefaultTouch", static_cast<CBaseEntity*>(*pOther));
+        execFunc<>("DefaultTouch", static_cast<CBaseEntity *>(*pOther));
     }
-    bool BasePlayerAmmo::AddAmmo(nstd::observer_ptr<IBaseEntity> pOther)
+
+    bool BasePlayerAmmo::addAmmo(nstd::observer_ptr<IBaseEntity> pOther) const
     {
-        return operator CBasePlayerAmmo* ()->AddAmmo(static_cast<CBaseEntity*>(*pOther)) == TRUE;
+        return operator CBasePlayerAmmo *()->AddAmmo(static_cast<CBaseEntity *>(*pOther)) == TRUE;
     }
-    void BasePlayerAmmo::Materialize()
+
+    void BasePlayerAmmo::materialize() const
     {
         execFunc<>("Materialize");
     }
 
- 
-}
+    std::unique_ptr<IBaseEntity> BasePlayerAmmo::respawn() const
+    {
+        // CStrike only
+        return {};
+    }
+
+} // namespace Anubis::Game::Valve

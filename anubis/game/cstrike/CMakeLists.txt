@@ -8,7 +8,10 @@ set(SRC_FILES
         BaseEntity.cpp
         BasePlayer.cpp
         ValveInterface.cpp
-        Rules.cpp)
+        Rules.cpp
+        BasePlayerItem.cpp
+        BasePlayerWeapon.cpp
+        BasePlayerAmmo.cpp)
 
 add_library(${PROJECT_NAME} MODULE ${SRC_FILES})
 

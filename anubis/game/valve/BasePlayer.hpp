@@ -36,7 +36,7 @@ namespace Anubis::Game::Valve
         static constexpr const char *CLASS_NAME = "player";
 
     public:
-        explicit BasePlayer(nstd::observer_ptr<Engine::IEdict> edict);
+        BasePlayer(nstd::observer_ptr<Engine::IEdict> edict);
         ~BasePlayer() final = default;
 
     public:

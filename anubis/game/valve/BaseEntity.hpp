@@ -35,6 +35,7 @@ namespace Anubis::Game::Valve
     {
     public:
         explicit BaseEntity(nstd::observer_ptr<Engine::IEdict> edict);
+        explicit BaseEntity(CBaseEntity *entity);
         ~BaseEntity() override = default;
 
         [[nodiscard]] nstd::observer_ptr<Engine::IEdict> edict() const final;
@@ -66,12 +67,8 @@ namespace Anubis::Game::Valve
         explicit operator CBaseEntity *() const final;
         explicit operator entvars_t *() const final;
 
-    public:
-        void updateSerialNumber(std::uint32_t serialNumber);
-
     protected:
         nstd::observer_ptr<Engine::IEdict> m_edict;
         CBaseEntity *m_entity;
-        std::uint32_t m_serialNumber;
     };
 } // namespace Anubis::Game::Valve

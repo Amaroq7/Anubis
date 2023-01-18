@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 Anubis Development Team
+ *  Copyright (C) 2023 Anubis Development Team
  *
  *  This file is part of Anubis.
  *
@@ -17,33 +17,38 @@
  *  along with Anubis.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
 #include "BasePlayerAmmo.hpp"
 
-namespace Anubis::Game::Valve
+namespace Anubis::Game::CStrike
 {
     BasePlayerAmmo::BasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict) : BaseEntity(edict) {};
     BasePlayerAmmo::operator CBasePlayerAmmo *() const
     {
         return reinterpret_cast<CBasePlayerAmmo *>(m_entity);
     }
-    void BasePlayerAmmo::Spawn()
+
+    void BasePlayerAmmo::spawn() const
     {
-        operator CBasePlayerAmmo* ()->Spawn();
+        operator CBasePlayerAmmo *()->Spawn();
     }
-    void BasePlayerAmmo::DefaultTouch(nstd::observer_ptr<IBaseEntity> pOther)
+    void BasePlayerAmmo::defaultTouch(nstd::observer_ptr<IBaseEntity> pOther [[maybe_unused]]) const
     {
-        execFunc<>("DefaultTouch", static_cast<CBaseEntity*>(*pOther));
-    }
-    bool BasePlayerAmmo::AddAmmo(nstd::observer_ptr<IBaseEntity> pOther)
-    {
-        return operator CBasePlayerAmmo* ()->AddAmmo(static_cast<CBaseEntity*>(*pOther)) == TRUE;
-    }
-    void BasePlayerAmmo::Materialize()
-    {
-        execFunc<>("Materialize");
+        // HL Only
     }
 
- 
-}
+    bool BasePlayerAmmo::addAmmo(nstd::observer_ptr<IBaseEntity> pOther) const
+    {
+        return operator CBasePlayerAmmo *()->AddAmmo(static_cast<CBaseEntity *>(*pOther)) == TRUE;
+    }
+
+    void BasePlayerAmmo::materialize() const
+    {
+        // HL Only
+    }
+
+    std::unique_ptr<IBaseEntity> BasePlayerAmmo::respawn() const
+    {
+        return std::make_unique<BaseEntity>(operator CBasePlayerAmmo *()->Respawn());
+    }
+
+} // namespace Anubis::Game::CStrike

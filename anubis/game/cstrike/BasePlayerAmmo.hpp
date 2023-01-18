@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2021 Anubis Development Team
+ *  Copyright (C) 2023 Anubis Development Team
  *
  *  This file is part of Anubis.
  *
@@ -20,39 +20,30 @@
 #pragma once
 
 #include <game/IBasePlayerAmmo.hpp>
-#include <observer_ptr.hpp>
+#include "BaseEntity.hpp"
+
 #include <extdll.h>
 #include <tier0/platform.h>
 #include <util.h>
 #include <cbase.h>
 #include <weapons.h>
 
-namespace Anubis::Game::cstrike
+namespace Anubis::Game::CStrike
 {
-    class BasePlayerAmmo: public BaseEntity, public virtual IBasePlayerAmmo
+    class BasePlayerAmmo : public BaseEntity, public virtual IBasePlayerAmmo
     {
-        public:
-            BasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict);
-            ~BasePlayerAmmo() override = default;
-            void Spawn() final;
-	        void DefaultTouch( nstd::observer_ptr<IBaseEntity> pOther ) final; // default weapon touch
-	        bool AddAmmo( nstd::observer_ptr<IBaseEntity> pOther ) final;
+    public:
+        BasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict);
+        ~BasePlayerAmmo() override = default;
 
-	        void Materialize() final;
+        void spawn() const final;
+        void defaultTouch(nstd::observer_ptr<IBaseEntity> pOther) const final;
+        bool addAmmo(nstd::observer_ptr<IBaseEntity> pOther) const final;
 
-            explicit operator CBasePlayerAmmo *() const final;
+        void materialize() const final;
 
-            template<typename t_ret = void, typename... t_args>
-        t_ret execFunc(std::string_view fnName, t_args... args) const
-        {
-    #if defined __linux__
-                static auto fn = gConfig->getAddressFn<t_ret, void *, t_args...>(fnName, "CBasePlayerAmmo");
-                return fn(operator CBasePlayerAmmo *(), args...);
-    #else
-                static auto fn = gConfig->getAddressFn<t_ret, void *, int, t_args...>(fnName, "CBasePlayerAmmo");
-                return fn(operator CBasePlayerAmmo *(), 0, args...);
-    #endif
-        }
-            
+        std::unique_ptr<IBaseEntity> respawn() const final;
+
+        explicit operator CBasePlayerAmmo *() const final;
     };
-}
+} // namespace Anubis::Game::CStrike

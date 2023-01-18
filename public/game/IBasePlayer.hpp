@@ -63,7 +63,7 @@ namespace Anubis::Game
         /**
          * @endcond
          */
-         
+
     public:
         static inline std::intptr_t VTable;
     };
