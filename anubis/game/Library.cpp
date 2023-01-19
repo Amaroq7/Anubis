@@ -286,28 +286,28 @@ namespace Anubis::Game
     bool Library::pfnClientConnect(nstd::observer_ptr<Engine::IEdict> pEntity,
                                    std::string_view pszName,
                                    std::string_view pszAddress,
-                                   std::string &szRejectReason,
+                                   nstd::observer_ptr<std::string> szRejectReason,
                                    FuncCallType callType)
     {
         if (callType == FuncCallType::Direct)
         {
             return m_gameLibDllFunctions->pfnClientConnect(static_cast<edict_t *>(*pEntity), pszName.data(),
-                                                           pszAddress.data(), szRejectReason.data());
+                                                           pszAddress.data(), szRejectReason->data());
         }
 
         static auto hookChain = m_hooks->clientConnect();
 
         return hookChain->callChain(
             [this](nstd::observer_ptr<Engine::IEdict> pEntity, std::string_view pszName, std::string_view pszAddress,
-                   std::string &szRejectReason)
+                   nstd::observer_ptr<std::string> szRejectReason)
             {
                 constexpr const std::size_t REASON_REJECT_MAX_LEN = 128;
-                if (szRejectReason.capacity() < REASON_REJECT_MAX_LEN)
+                if (szRejectReason->capacity() < REASON_REJECT_MAX_LEN)
                 {
-                    szRejectReason.resize(REASON_REJECT_MAX_LEN);
+                    szRejectReason->resize(REASON_REJECT_MAX_LEN);
                 }
                 return m_gameLibDllFunctions->pfnClientConnect(static_cast<edict_t *>(*pEntity), pszName.data(),
-                                                               pszAddress.data(), szRejectReason.data()) == TRUE;
+                                                               pszAddress.data(), szRejectReason->data()) == TRUE;
             },
             pEntity, pszName, pszAddress, szRejectReason);
     }

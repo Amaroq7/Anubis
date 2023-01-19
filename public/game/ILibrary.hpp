@@ -106,7 +106,7 @@ namespace Anubis::Game
         virtual bool pfnClientConnect(nstd::observer_ptr<Engine::IEdict> pEntity,
                                       std::string_view pszName,
                                       std::string_view pszAddress,
-                                      std::string &szRejectReason,
+                                      nstd::observer_ptr<std::string> szRejectReason,
                                       FuncCallType callType) = 0;
         virtual void pfnClientPutInServer(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;
         virtual void pfnClientCommand(nstd::observer_ptr<Engine::IEdict> pEntity, FuncCallType callType) = 0;

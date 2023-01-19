@@ -38,10 +38,16 @@ namespace Anubis::Game
     using ISpawnHook = IHook<std::int32_t, nstd::observer_ptr<Engine::IEdict>>;
     using ISpawnHookRegistry = IHookRegistry<std::int32_t, nstd::observer_ptr<Engine::IEdict>>;
 
-    using IClientConnectHook =
-        IHook<bool, nstd::observer_ptr<Engine::IEdict>, std::string_view, std::string_view, std::string &>;
-    using IClientConnectHookRegistry =
-        IHookRegistry<bool, nstd::observer_ptr<Engine::IEdict>, std::string_view, std::string_view, std::string &>;
+    using IClientConnectHook = IHook<bool,
+                                     nstd::observer_ptr<Engine::IEdict>,
+                                     std::string_view,
+                                     std::string_view,
+                                     nstd::observer_ptr<std::string>>;
+    using IClientConnectHookRegistry = IHookRegistry<bool,
+                                                     nstd::observer_ptr<Engine::IEdict>,
+                                                     std::string_view,
+                                                     std::string_view,
+                                                     nstd::observer_ptr<std::string>>;
 
     using IClientPutinServerHook = IHook<void, nstd::observer_ptr<Engine::IEdict>>;
     using IClientPutinServerHookRegistry = IHookRegistry<void, nstd::observer_ptr<Engine::IEdict>>;

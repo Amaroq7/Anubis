@@ -1160,7 +1160,7 @@ namespace Anubis::Engine
             },
             e);
     }
-    
+
     void Library::emitSound(nstd::observer_ptr<IEdict> entity, Channel channel, std::string_view sample, float volume, float attenuation, SoundFlags fFlags, Pitch pitch, FuncCallType callType) const
     {
         if (callType == FuncCallType::Direct)

@@ -68,10 +68,10 @@ namespace Anubis::Game::Callbacks::Engine
         }
         rejectReason.clear();
 
-        if (!getGame()->pfnClientConnect(getEngine()->getEdict(pEntity), pszName, pszAddress, rejectReason,
+        if (!getGame()->pfnClientConnect(getEngine()->getEdict(pEntity), pszName, pszAddress, &rejectReason,
                                          FuncCallType::Hooks))
         {
-            rejectReason = szRejectReason;
+            std::strncpy(szRejectReason, rejectReason.c_str(), REASON_REJECT_MAX_LEN);
             return FALSE;
         }
         return TRUE;
@@ -131,7 +131,7 @@ namespace Anubis::Game::Callbacks::Engine
                                  FuncCallType::Hooks);
     }
 
-    void pfnClientDisconnect(edict_t* pEntity)
+    void pfnClientDisconnect(edict_t *pEntity)
     {
         getGame()->pfnClientDisconnect(getEngine()->getEdict(pEntity), FuncCallType::Hooks);
     }
