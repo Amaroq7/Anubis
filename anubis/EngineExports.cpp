@@ -35,7 +35,7 @@ namespace
     template<typename... t_args>
     void serverPrint(nstd::observer_ptr<enginefuncs_t> engFuncs, std::string_view format, t_args... args)
     {
-        std::invoke(engFuncs->pfnServerPrint, fmt::vformat(format, fmt::make_format_args(format, args...)).c_str());
+        std::invoke(engFuncs->pfnServerPrint, fmt::vformat(format, fmt::make_format_args(args...)).c_str());
     }
 
     template<typename... t_args>
@@ -44,14 +44,14 @@ namespace
                      std::string_view format,
                      t_args... args)
     {
-        std::invoke(engFuncs->pfnServerPrint, fmt::vformat(ts, format, fmt::make_format_args(format, args...)).c_str());
+        std::invoke(engFuncs->pfnServerPrint, fmt::vformat(ts, format, fmt::make_format_args(args...)).c_str());
     }
 
     template<typename... t_args>
     void serverPrint(std::string_view format, t_args... args)
     {
         static nstd::observer_ptr<Anubis::Engine::ILibrary> engLib = Anubis::gAnubisApi->getEngine();
-        engLib->print(fmt::vformat(format, fmt::make_format_args(format, args...)), Anubis::FuncCallType::Direct);
+        engLib->print(fmt::vformat(format, fmt::make_format_args(args...)), Anubis::FuncCallType::Direct);
     };
 
     void printStartUpMsg(nstd::observer_ptr<enginefuncs_t> engFuncs)

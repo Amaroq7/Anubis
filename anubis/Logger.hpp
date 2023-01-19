@@ -56,7 +56,7 @@ namespace Anubis
                 return;
             }
 
-            logMsg(dest, level, fmt::vformat(format, fmt::make_format_args(format, args...)));
+            logMsg(dest, level, fmt::vformat(format, fmt::make_format_args(args...)));
         }
 
     private:
