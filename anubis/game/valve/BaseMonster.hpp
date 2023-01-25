@@ -27,7 +27,7 @@ namespace Anubis::Game::Valve
     class BaseMonster : public BaseToggle, public virtual IBaseMonster
     {
     public:
-        BaseMonster(nstd::observer_ptr<Engine::IEdict> edict) : BaseToggle(edict) {};
+        explicit BaseMonster(nstd::observer_ptr<Engine::IEdict> edict) : BaseToggle(edict) {};
         ~BaseMonster() override = default;
     };
 } // namespace Anubis::Game::Valve

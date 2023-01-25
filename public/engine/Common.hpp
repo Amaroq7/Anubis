@@ -79,8 +79,8 @@ namespace Anubis::Engine
         Body,
         Stream,
         Static,
-        Networkvoice_base,
-        Networkvoice_end = 500,
+        NetworkVoiceBase,
+        NetworkVoiceEnd = 500,
         Bot
     };
 
@@ -93,15 +93,15 @@ namespace Anubis::Engine
 
     enum class SoundFlags : std::uint16_t
     {
-        Volume = (1<<0),
-        Attenuation = (1<<1),
-        Large_index = (1<<2),
-        Pitch = (1<<3),
-        Sentence = (1<<4),
-        Stop = (1<<5),
-        Change_vol = (1<<6),
-        Change_pitch = (1<<7),
-        Spawning = (1<<8)
+        Volume = (1 << 0),
+        Attenuation = (1 << 1),
+        Large_index = (1 << 2),
+        Pitch = (1 << 3),
+        Sentence = (1 << 4),
+        Stop = (1 << 5),
+        Change_vol = (1 << 6),
+        Change_pitch = (1 << 7),
+        Spawning = (1 << 8)
     };
 
     /**

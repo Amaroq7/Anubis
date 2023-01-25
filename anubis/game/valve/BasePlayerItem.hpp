@@ -22,12 +22,6 @@
 #include <game/IBasePlayerItem.hpp>
 #include "BaseAnimating.hpp"
 
-#include <extdll.h>
-#include <tier0/platform.h>
-#include <util.h>
-#include <cbase.h>
-#include <weapons.h>
-
 #include <variant>
 
 namespace Anubis::Game::Valve
@@ -62,7 +56,7 @@ namespace Anubis::Game::Valve
     class BasePlayerItem : public BaseAnimating, public virtual IBasePlayerItem
     {
     public:
-        BasePlayerItem(nstd::observer_ptr<Engine::IEdict> edict);
+        explicit BasePlayerItem(nstd::observer_ptr<Engine::IEdict> edict);
         ~BasePlayerItem() override = default;
 
         void setObjectCollisionBox() const override;

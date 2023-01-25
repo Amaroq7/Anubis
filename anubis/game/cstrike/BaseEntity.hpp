@@ -44,6 +44,8 @@ namespace Anubis::Game::CStrike
                         DmgType bitsDamageType) final;
         [[nodiscard]] bool isValid() const final;
         [[nodiscard]] bool isPlayer() const final;
+        void spawn() const final;
+        std::unique_ptr<IBaseEntity> respawn() const final;
 
     public:
         explicit operator CBaseEntity *() const final;

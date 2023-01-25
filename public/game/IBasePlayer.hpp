@@ -23,6 +23,7 @@
 #include "IBaseMonster.hpp"
 
 #include <optional>
+#include <memory>
 
 /**
  * @internal An internal representation of a base player in gamedll
@@ -40,9 +41,9 @@ namespace Anubis::Game
         virtual void removeShield() = 0;
         virtual void dropShield(bool deploy) = 0;
         [[nodiscard]] virtual bool hasShield() const = 0;
-        [[nodiscard]] virtual std::optional<nstd::observer_ptr<IBaseEntity>>
+        [[nodiscard]] virtual std::optional<std::unique_ptr<IBaseEntity>>
             giveNamedItem(std::string_view item) const = 0;
-        [[nodiscard]] virtual nstd::observer_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const = 0;
+        [[nodiscard]] virtual std::unique_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const = 0;
         [[nodiscard]] virtual bool hasNamedPlayerItem(std::string_view item) const = 0;
         virtual void renewItems() = 0;
         virtual void packDeadPlayerItems() = 0;

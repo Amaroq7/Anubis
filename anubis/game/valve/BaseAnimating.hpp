@@ -27,7 +27,7 @@ namespace Anubis::Game::Valve
     class BaseAnimating : public BaseDelay, public virtual IBaseAnimating
     {
     public:
-        BaseAnimating(nstd::observer_ptr<Engine::IEdict> edict) : BaseDelay(edict) {}
+        explicit BaseAnimating(nstd::observer_ptr<Engine::IEdict> edict) : BaseDelay(edict) {}
         ~BaseAnimating() override = default;
     };
 } // namespace Anubis::Game::Valve

@@ -50,6 +50,8 @@ namespace Anubis::Game::Valve
 
         [[nodiscard]] bool isValid() const final;
         [[nodiscard]] bool isPlayer() const final;
+        void spawn() const final;
+        std::unique_ptr<IBaseEntity> respawn() const final;
 
         template<typename t_ret = void, typename... t_args>
         t_ret execFunc(std::string_view fnName, t_args... args) const

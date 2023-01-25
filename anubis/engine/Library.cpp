@@ -520,7 +520,8 @@ namespace Anubis::Engine
     {
         if (callType == FuncCallType::Direct)
         {
-            return m_origEngineFuncs->pfnInfoKeyValue(infobuffer, key.data());
+            char *result = m_origEngineFuncs->pfnInfoKeyValue(infobuffer, key.data());
+            return (result) ? std::string_view {result} : std::string_view {};
         }
 
         static auto hookChain = m_hooks->infoKeyValue();
@@ -528,7 +529,8 @@ namespace Anubis::Engine
         return hookChain->callChain(
             [this](InfoBuffer infobuffer, std::string_view key)
             {
-                return std::string_view(m_origEngineFuncs->pfnInfoKeyValue(infobuffer, key.data()));
+                char *result = m_origEngineFuncs->pfnInfoKeyValue(infobuffer, key.data());
+                return (result) ? std::string_view {result} : std::string_view {};
             },
             infobuffer, key);
     }

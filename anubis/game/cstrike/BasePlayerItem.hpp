@@ -62,7 +62,7 @@ namespace Anubis::Game::CStrike
     class BasePlayerItem : public BaseAnimating, public virtual IBasePlayerItem
     {
     public:
-        BasePlayerItem(nstd::observer_ptr<Engine::IEdict> edict);
+        explicit BasePlayerItem(nstd::observer_ptr<Engine::IEdict> edict);
         ~BasePlayerItem() override = default;
 
         void setObjectCollisionBox() const override;

@@ -58,6 +58,8 @@ namespace Anubis::Game
                                               DmgType bitsDamageType) = 0;
         [[nodiscard]] virtual bool isValid() const = 0;
         [[nodiscard]] virtual bool isPlayer() const = 0;
+        virtual void spawn() const = 0;
+        virtual std::unique_ptr<IBaseEntity> respawn() const = 0;
 
         /**
          * @cond INTERNAL

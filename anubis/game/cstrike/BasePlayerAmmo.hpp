@@ -22,11 +22,7 @@
 #include <game/IBasePlayerAmmo.hpp>
 #include "BaseEntity.hpp"
 
-#include <extdll.h>
-#include <tier0/platform.h>
-#include <util.h>
-#include <cbase.h>
-#include <weapons.h>
+class CBasePlayerAmmo;
 
 namespace Anubis::Game::CStrike
 {
@@ -36,13 +32,10 @@ namespace Anubis::Game::CStrike
         BasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict);
         ~BasePlayerAmmo() override = default;
 
-        void spawn() const final;
         void defaultTouch(nstd::observer_ptr<IBaseEntity> pOther) const final;
         bool addAmmo(nstd::observer_ptr<IBaseEntity> pOther) const final;
 
         void materialize() const final;
-
-        std::unique_ptr<IBaseEntity> respawn() const final;
 
         explicit operator CBasePlayerAmmo *() const final;
     };

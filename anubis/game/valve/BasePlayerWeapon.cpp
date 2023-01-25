@@ -22,6 +22,12 @@
 
 #include <engine/IEdict.hpp>
 
+#include <extdll.h>
+#include <tier0/platform.h>
+#include <util.h>
+#include <cbase.h>
+#include <weapons.h>
+
 namespace Anubis::Game::Valve
 {
     BasePlayerWeapon::BasePlayerWeapon(nstd::observer_ptr<Engine::IEdict> edict) : BasePlayerItem(edict) {}

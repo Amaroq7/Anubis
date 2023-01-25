@@ -27,7 +27,7 @@ namespace Anubis::Game::Valve
     class BaseDelay : public BaseEntity, public virtual IBaseDelay
     {
     public:
-        BaseDelay(nstd::observer_ptr<Engine::IEdict> edict) : BaseEntity(edict) {}
+        explicit BaseDelay(nstd::observer_ptr<Engine::IEdict> edict) : BaseEntity(edict) {}
         ~BaseDelay() override = default;
     };
 } // namespace Anubis::Game::Valve

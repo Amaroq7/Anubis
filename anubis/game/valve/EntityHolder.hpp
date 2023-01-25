@@ -20,8 +20,15 @@
 #pragma once
 
 #include <game/IEntityHolder.hpp>
-#include <memory>
 #include "BaseEntity.hpp"
+#include "AnubisExports.hpp"
+#include "BasePlayerItem.hpp"
+#include "BasePlayerWeapon.hpp"
+#include "BasePlayerAmmo.hpp"
+#include "BasePlayer.hpp"
+
+#include <memory>
+#include <type_traits>
 
 class CBasePlayer;
 
@@ -34,11 +41,45 @@ namespace Anubis::Game::Valve
     public:
         std::unique_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) final;
         std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) final;
+        std::unique_ptr<IBasePlayerItem> getBasePlayerItem(nstd::observer_ptr<Engine::IEdict> edict) final;
+        std::unique_ptr<IBasePlayerWeapon> getBasePlayerWeapon(nstd::observer_ptr<Engine::IEdict> edict) final;
+        std::unique_ptr<IBasePlayerAmmo> getBasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict) final;
 
         std::unique_ptr<IBaseEntity> getBaseEntity(CBaseEntity *baseEntity);
         std::unique_ptr<IBasePlayer> getBasePlayer(CBasePlayer *basePlayer);
         std::unique_ptr<IBaseEntity> getBaseEntity(edict_t *edict) final;
         std::unique_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars) final;
+
+    private:
+        template<typename T,
+                 typename U,
+                 typename = std::enable_if_t<
+                     std::conjunction_v<std::is_base_of<IBaseEntity, T>, std::is_base_of<BaseEntity, U>>>>
+        std::unique_ptr<T> _getEntity(nstd::observer_ptr<Engine::IEdict> edict) const
+        {
+            if constexpr (std::is_same_v<IBaseEntity, T>)
+            {
+                return std::make_unique<U>(edict);
+            }
+            else if constexpr (std::is_same_v<IBasePlayer, T>)
+            {
+                if (edict->getIndex() != 0u && edict->getIndex() <= gEngineLib->getMaxClients())
+                {
+                    return std::make_unique<BasePlayer>(edict);
+                }
+
+                return {};
+            }
+            else
+            {
+                if (edict->getIndex() > gEngineLib->getMaxClients())
+                {
+                    return std::make_unique<U>(edict);
+                }
+            }
+
+            return nullptr;
+        }
     };
 
     const std::unique_ptr<EntityHolder> &getEntityHolder();

@@ -33,14 +33,11 @@ namespace Anubis::Game
     {
     public:
         ~IBasePlayerAmmo() override = default;
-        virtual void spawn() const = 0;
         // default weapon touch
         virtual void defaultTouch(nstd::observer_ptr<IBaseEntity> pOther) const = 0;
         virtual bool addAmmo(nstd::observer_ptr<IBaseEntity> pOther) const = 0;
 
         virtual void materialize() const = 0;
-
-        virtual std::unique_ptr<IBaseEntity> respawn() const = 0;
 
         /**
          * @cond INTERNAL

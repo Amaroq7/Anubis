@@ -18,6 +18,7 @@
  */
 
 #include "BasePlayerAmmo.hpp"
+#include "ReGameHeaders.hpp"
 
 namespace Anubis::Game::CStrike
 {
@@ -27,10 +28,6 @@ namespace Anubis::Game::CStrike
         return reinterpret_cast<CBasePlayerAmmo *>(m_entity);
     }
 
-    void BasePlayerAmmo::spawn() const
-    {
-        operator CBasePlayerAmmo *()->Spawn();
-    }
     void BasePlayerAmmo::defaultTouch(nstd::observer_ptr<IBaseEntity> pOther [[maybe_unused]]) const
     {
         // HL Only
@@ -44,11 +41,6 @@ namespace Anubis::Game::CStrike
     void BasePlayerAmmo::materialize() const
     {
         // HL Only
-    }
-
-    std::unique_ptr<IBaseEntity> BasePlayerAmmo::respawn() const
-    {
-        return std::make_unique<BaseEntity>(operator CBasePlayerAmmo *()->Respawn());
     }
 
 } // namespace Anubis::Game::CStrike

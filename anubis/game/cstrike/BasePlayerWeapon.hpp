@@ -27,7 +27,7 @@ namespace Anubis::Game::CStrike
     class BasePlayerWeapon : public BasePlayerItem, public virtual IBasePlayerWeapon
     {
     public:
-        BasePlayerWeapon(nstd::observer_ptr<Engine::IEdict> edict);
+        explicit BasePlayerWeapon(nstd::observer_ptr<Engine::IEdict> edict);
         ~BasePlayerWeapon() override = default;
 
         bool addToPlayer(nstd::observer_ptr<IBasePlayer> pPlayer) const override;

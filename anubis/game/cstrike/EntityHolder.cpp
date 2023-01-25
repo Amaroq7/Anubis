@@ -18,9 +18,6 @@
  */
 
 #include "EntityHolder.hpp"
-#include "BasePlayer.hpp"
-#include "AnubisExports.hpp"
-#include "ReGameHeaders.hpp"
 
 namespace Anubis::Game::CStrike
 {
@@ -37,12 +34,22 @@ namespace Anubis::Game::CStrike
 
     std::unique_ptr<IBasePlayer> EntityHolder::getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict)
     {
-        if (edict->getIndex() != 0u && edict->getIndex() <= gEngineLib->getMaxClients())
-        {
-            return std::make_unique<BasePlayer>(edict);
-        }
+        return _getEntity<IBasePlayer, BasePlayer>(edict);
+    }
 
-        return {};
+    std::unique_ptr<IBasePlayerItem> EntityHolder::getBasePlayerItem(nstd::observer_ptr<Engine::IEdict> edict)
+    {
+        return _getEntity<IBasePlayerItem, BasePlayerItem>(edict);
+    }
+
+    std::unique_ptr<IBasePlayerWeapon> EntityHolder::getBasePlayerWeapon(nstd::observer_ptr<Engine::IEdict> edict)
+    {
+        return _getEntity<IBasePlayerWeapon, BasePlayerWeapon>(edict);
+    }
+
+    std::unique_ptr<IBasePlayerAmmo> EntityHolder::getBasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict)
+    {
+        return _getEntity<IBasePlayerAmmo, BasePlayerAmmo>(edict);
     }
 
     std::unique_ptr<IBaseEntity> EntityHolder::getBaseEntity(CBaseEntity *baseEntity)

@@ -90,4 +90,14 @@ namespace Anubis::Game::Valve
     {
         return m_entity->IsPlayer();
     }
+
+    void BaseEntity::spawn() const
+    {
+        operator CBaseEntity *()->Spawn();
+    }
+
+    std::unique_ptr<IBaseEntity> BaseEntity::respawn() const
+    {
+        return std::make_unique<BaseEntity>(operator CBaseEntity *()->Respawn());
+    }
 } // namespace Anubis::Game::Valve

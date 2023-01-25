@@ -92,4 +92,14 @@ namespace Anubis::Game::CStrike
     {
         return m_entity->IsPlayer() == TRUE;
     }
+
+    void BaseEntity::spawn() const
+    {
+        operator CBaseEntity *()->Spawn();
+    }
+
+    std::unique_ptr<IBaseEntity> BaseEntity::respawn() const
+    {
+        return std::make_unique<BaseEntity>(operator CBaseEntity *()->Respawn());
+    }
 } // namespace Anubis::Game::CStrike

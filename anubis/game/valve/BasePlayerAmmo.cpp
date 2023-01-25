@@ -19,17 +19,18 @@
 
 #include "BasePlayerAmmo.hpp"
 
+#include <extdll.h>
+#include <tier0/platform.h>
+#include <util.h>
+#include <cbase.h>
+#include <weapons.h>
+
 namespace Anubis::Game::Valve
 {
     BasePlayerAmmo::BasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict) : BaseEntity(edict) {};
     BasePlayerAmmo::operator CBasePlayerAmmo *() const
     {
         return reinterpret_cast<CBasePlayerAmmo *>(m_entity);
-    }
-
-    void BasePlayerAmmo::spawn() const
-    {
-        operator CBasePlayerAmmo *()->Spawn();
     }
 
     void BasePlayerAmmo::defaultTouch(nstd::observer_ptr<IBaseEntity> pOther) const
@@ -45,12 +46,6 @@ namespace Anubis::Game::Valve
     void BasePlayerAmmo::materialize() const
     {
         execFunc<>("Materialize");
-    }
-
-    std::unique_ptr<IBaseEntity> BasePlayerAmmo::respawn() const
-    {
-        // CStrike only
-        return {};
     }
 
 } // namespace Anubis::Game::Valve

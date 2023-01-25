@@ -55,12 +55,12 @@ namespace Anubis::Game::CStrike
         return operator CBasePlayer *()->m_bOwnsShield;
     }
 
-    std::optional<nstd::observer_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item) const
+    std::optional<std::unique_ptr<IBaseEntity>> BasePlayer::giveNamedItem(std::string_view item) const
     {
         return getEntityHolder()->getBaseEntity(operator CBasePlayer *()->CSPlayer()->GiveNamedItem(item.data()));
     }
 
-    nstd::observer_ptr<IBaseEntity> BasePlayer::giveNamedItemEx(std::string_view item) const
+    std::unique_ptr<IBaseEntity> BasePlayer::giveNamedItemEx(std::string_view item) const
     {
         return getEntityHolder()->getBaseEntity(operator CBasePlayer *()->CSPlayer()->GiveNamedItemEx(item.data()));
     }

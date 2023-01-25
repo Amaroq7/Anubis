@@ -22,6 +22,9 @@
 #include <observer_ptr.hpp>
 #include <game/IBasePlayer.hpp>
 #include <engine/IEdict.hpp>
+#include <game/IBasePlayerItem.hpp>
+#include <game/IBasePlayerWeapon.hpp>
+#include <game/IBasePlayerAmmo.hpp>
 
 #include <memory>
 #include <unordered_map>
@@ -33,6 +36,9 @@ namespace Anubis::Game
     public:
         virtual std::unique_ptr<IBaseEntity> getBaseEntity(nstd::observer_ptr<Engine::IEdict> edict) = 0;
         virtual std::unique_ptr<IBasePlayer> getBasePlayer(nstd::observer_ptr<Engine::IEdict> edict) = 0;
+        virtual std::unique_ptr<IBasePlayerItem> getBasePlayerItem(nstd::observer_ptr<Engine::IEdict> edict) = 0;
+        virtual std::unique_ptr<IBasePlayerWeapon> getBasePlayerWeapon(nstd::observer_ptr<Engine::IEdict> edict) = 0;
+        virtual std::unique_ptr<IBasePlayerAmmo> getBasePlayerAmmo(nstd::observer_ptr<Engine::IEdict> edict) = 0;
 
         virtual std::unique_ptr<IBaseEntity> getBaseEntity(edict_t *edict) = 0;
         virtual std::unique_ptr<IBaseEntity> getBaseEntity(entvars_t *entVars) = 0;

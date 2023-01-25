@@ -36,7 +36,7 @@ namespace Anubis::Game::Valve
         static constexpr const char *CLASS_NAME = "player";
 
     public:
-        BasePlayer(nstd::observer_ptr<Engine::IEdict> edict);
+        explicit BasePlayer(nstd::observer_ptr<Engine::IEdict> edict);
         ~BasePlayer() final = default;
 
     public:
@@ -45,8 +45,8 @@ namespace Anubis::Game::Valve
         void removeShield() final;
         void dropShield(bool deploy) final;
         [[nodiscard]] bool hasShield() const final;
-        [[nodiscard]] std::optional<nstd::observer_ptr<IBaseEntity>> giveNamedItem(std::string_view item) const final;
-        [[nodiscard]] nstd::observer_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const final;
+        [[nodiscard]] std::optional<std::unique_ptr<IBaseEntity>> giveNamedItem(std::string_view item) const final;
+        [[nodiscard]] std::unique_ptr<IBaseEntity> giveNamedItemEx(std::string_view item) const final;
         [[nodiscard]] bool hasNamedPlayerItem(std::string_view item) const final;
         void renewItems() final;
         void packDeadPlayerItems() final;
