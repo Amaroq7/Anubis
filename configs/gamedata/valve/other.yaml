@@ -49,6 +49,27 @@ CBasePlayer:
     linux: _ZN11CBasePlayer14DropPlayerItemEPc
     windows: [ 0x83, 0xec, 0x38, 0x53, 0x8b, 0xd9, 0x8b, 0x0d, 0x3f, 0x3f, 0x3f, 0x3f, 0x55 ]
     mask: 0x3f
+  SwitchWeapon:
+    linux: _ZN11CBasePlayer12SwitchWeaponEP15CBasePlayerItem
+    windows:
+  DeathSound:
+    linux: _ZN11CBasePlayer10DeathSoundEv
+    windows:
+  AddPlayerItem:
+    linux: _ZN11CBasePlayer13AddPlayerItemEP15CBasePlayerItem
+    windows:
+  RemovePlayerItem:
+    linux: _ZN11CBasePlayer16RemovePlayerItemEP15CBasePlayerItem
+    windows:
+  HasPlayerItem:
+    linux: _ZN11CBasePlayer13HasPlayerItemEP15CBasePlayerItem
+    windows:
+  HasWeapons:
+    linux: _ZN11CBasePlayer10HasWeaponsEv
+    windows:
+  GiveAmmo:
+    linux: _ZN11CBasePlayer8GiveAmmoEiPci
+    windows:
 CBasePlayerAmmo:
   DefaultTouch:
     linux: _ZN15CBasePlayerAmmo12DefaultTouchEP11CBaseEntity
