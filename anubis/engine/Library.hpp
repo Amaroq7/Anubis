@@ -226,6 +226,8 @@ namespace Anubis::Engine
                      std::array<float, 3> max,
                      FuncCallType callType) const final;
 
+        nstd::observer_ptr<IEdict> createNamedEntity(StringOffset name, FuncCallType callType) final;
+
         void removeHooks() final;
         void initPlayerEdicts();
 

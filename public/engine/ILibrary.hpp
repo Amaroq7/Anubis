@@ -130,6 +130,7 @@ namespace Anubis::Engine
         virtual nstd::observer_ptr<ICvar> getCvar(std::string_view name, FuncCallType callType) = 0;
         virtual void setModel(nstd::observer_ptr<IEdict> pEdict, std::string_view model, FuncCallType callType) = 0;
         virtual nstd::observer_ptr<IEdict> createEntity(FuncCallType callType) = 0;
+        virtual nstd::observer_ptr<IEdict> createNamedEntity(StringOffset name, FuncCallType callType) = 0;
         virtual void removeEntity(nstd::observer_ptr<IEdict> pEdict, FuncCallType callType) = 0;
         virtual void alert(AlertType alertType, std::string_view msg, FuncCallType callType) = 0;
         virtual void print(std::string_view szMsg, FuncCallType callType) = 0;

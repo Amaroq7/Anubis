@@ -496,4 +496,10 @@ namespace Anubis::Engine::Callbacks::GameDLL
 
         getEngine()->setSize(getEngine()->getEdict(e), min, max, FuncCallType::Hooks);
     }
+
+    edict_t *pfnCreateNamedEntity(int className)
+    {
+        return static_cast<edict_t *>(*getEngine()->createNamedEntity(
+            StringOffset {static_cast<StringOffset::BaseType>(className)}, FuncCallType::Hooks));
+    }
 } // namespace Anubis::Engine::Callbacks::GameDLL

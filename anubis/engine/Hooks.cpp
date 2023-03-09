@@ -109,7 +109,8 @@ namespace Anubis::Engine
           m_traceTextureHookRegistry(std::make_unique<TraceTextureHookRegistry>()),
           m_traceSphereHookRegistry(std::make_unique<TraceSphereHookRegistry>()),
           m_setOriginHookRegistry(std::make_unique<SetOriginHookRegistry>()),
-          m_setSizeHookRegistry(std::make_unique<SetSizeHookRegistry>())
+          m_setSizeHookRegistry(std::make_unique<SetSizeHookRegistry>()),
+          m_createNamedEntityHookRegistry(std::make_unique<CreateNamedEntityHookRegistry>())
     {
     }
 
@@ -434,5 +435,9 @@ namespace Anubis::Engine
     nstd::observer_ptr<ISetSizeHookRegistry> Hooks::setSize()
     {
         return m_setSizeHookRegistry;
+    }
+    nstd::observer_ptr<ICreateNamedEntityHookRegistry> Hooks::createNamedEntity()
+    {
+        return m_createNamedEntityHookRegistry;
     }
 } // namespace Anubis::Engine

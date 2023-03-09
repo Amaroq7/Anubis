@@ -1444,6 +1444,23 @@ namespace Anubis::Engine
             entity, min, max);
     }
 
+    nstd::observer_ptr<IEdict> Library::createNamedEntity(StringOffset name, FuncCallType callType)
+    {
+        if (callType == FuncCallType::Direct)
+        {
+            return getEdict(m_origEngineFuncs->pfnCreateNamedEntity(static_cast<int>(name.value)));
+        }
+
+        static auto hookChain = m_hooks->createNamedEntity();
+
+        return hookChain->callChain(
+            [this](StringOffset name)
+            {
+                return getEdict(m_origEngineFuncs->pfnCreateNamedEntity(static_cast<int>(name.value)));
+            },
+            name);
+    }
+
     void Library::_replaceFuncs()
     {
         *m_engineFuncs = *m_origEngineFuncs;
@@ -1513,6 +1530,7 @@ namespace Anubis::Engine
         ASSIGN_ENG_FUNCS(pfnTraceSphere);
         ASSIGN_ENG_FUNCS(pfnSetOrigin);
         ASSIGN_ENG_FUNCS(pfnSetSize);
+        ASSIGN_ENG_FUNCS(pfnCreateNamedEntity);
 #undef ASSIGN_ENG_FUNCS
     }
 

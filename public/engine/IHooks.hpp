@@ -335,6 +335,9 @@ namespace Anubis::Engine
     using ISetSizeHookRegistry =
         IHookRegistry<void, nstd::observer_ptr<IEdict>, std::array<float, 3>, std::array<float, 3>>;
 
+    using ICreateNamedEntityHook = IHook<nstd::observer_ptr<IEdict>, StringOffset>;
+    using ICreateNamedEntityHookRegistry = IHookRegistry<nstd::observer_ptr<IEdict>, StringOffset>;
+
     class IHooks
     {
     public:
@@ -408,5 +411,6 @@ namespace Anubis::Engine
         virtual nstd::observer_ptr<ITraceSphereHookRegistry> traceSphere() = 0;
         virtual nstd::observer_ptr<ISetOriginHookRegistry> setOrigin() = 0;
         virtual nstd::observer_ptr<ISetSizeHookRegistry> setSize() = 0;
+        virtual nstd::observer_ptr<ICreateNamedEntityHookRegistry> createNamedEntity() = 0;
     };
 } // namespace Anubis::Engine

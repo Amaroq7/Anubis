@@ -147,4 +147,5 @@ namespace Anubis::Engine::Callbacks::GameDLL
 
     void pfnSetOrigin(edict_t *e, const float *rgflOrigin);
     void pfnSetSize(edict_t *e, const float *rgflMin, const float *rgflMax);
+    edict_t *pfnCreateNamedEntity(int className);
 } // namespace Anubis::Engine::Callbacks::GameDLL
