@@ -324,78 +324,176 @@ namespace Anubis::Engine::Callbacks::GameDLL
         return static_cast<int>(getEngine()->allocString(szValue, FuncCallType::Hooks).value);
     }
 
-    int	pfnModelIndex (const char *m)
+    int pfnModelIndex(const char *m)
     {
         return static_cast<int>(getEngine()->modelIndex(m, FuncCallType::Hooks));
     }
-    
-    int pfnRandomLong (int  lLow,  int  lHigh)
+
+    int pfnRandomLong(int lLow, int lHigh)
     {
-        return getEngine()->randomLong(lLow, lHigh,FuncCallType::Hooks);
+        return getEngine()->randomLong(lLow, lHigh, FuncCallType::Hooks);
     }
 
-	float pfnRandomFloat (float flLow, float flHigh)
+    float pfnRandomFloat(float flLow, float flHigh)
     {
         return getEngine()->randomFloat(flLow, flHigh, FuncCallType::Hooks);
     }
 
-    void pfnClientPrintf(edict_t* pEdict, PRINT_TYPE ptype, const char* szMsg)
+    void pfnClientPrintf(edict_t *pEdict, PRINT_TYPE ptype, const char *szMsg)
     {
-        getEngine()->clientPrint(getEngine()->getEdict(pEdict), static_cast<PrintType>(ptype), szMsg, FuncCallType::Hooks);
+        getEngine()->clientPrint(getEngine()->getEdict(pEdict), static_cast<PrintType>(ptype), szMsg,
+                                 FuncCallType::Hooks);
     }
 
-    int pfnEntIsOnFloor(edict_t* e)
+    int pfnEntIsOnFloor(edict_t *e)
     {
         return getEngine()->entIsOnFloor(getEngine()->getEdict(e), FuncCallType::Hooks);
     }
 
-    int	pfnDropToFloor(edict_t* e)
+    int pfnDropToFloor(edict_t *e)
     {
         return getEngine()->dropToFloor(getEngine()->getEdict(e), FuncCallType::Hooks);
     }
 
-    void pfnEmitSound(edict_t* entity, int channel, const char* sample, /*int*/float volume, float attenuation, int fFlags, int pitch)
+    void pfnEmitSound(edict_t *entity,
+                      int channel,
+                      const char *sample,
+                      /*int*/ float volume,
+                      float attenuation,
+                      int fFlags,
+                      int pitch)
     {
-        getEngine()->emitSound(getEngine()->getEdict(entity), static_cast<Channel>(channel), sample, volume, attenuation, static_cast<SoundFlags>(fFlags), static_cast<Pitch>(pitch), FuncCallType::Hooks);
+        getEngine()->emitSound(getEngine()->getEdict(entity), static_cast<Channel>(channel), sample,
+                               Engine::toSndVolume(volume), Engine::toSndAttenution(attenuation),
+                               static_cast<SoundFlags>(fFlags), static_cast<Pitch>(pitch), FuncCallType::Hooks);
     }
 
-    void pfnEmitAmbientSound(edict_t* entity, float* pos, const char* samp, float vol, float attenuation, int fFlags, int pitch)
+    void pfnEmitAmbientSound(edict_t *entity,
+                             float *pos,
+                             const char *samp,
+                             float vol,
+                             float attenuation,
+                             int fFlags,
+                             int pitch)
     {
-        getEngine()->emitAmbientSound(getEngine()->getEdict(entity), pos, samp, vol, attenuation,  static_cast<SoundFlags>(fFlags),  static_cast<Pitch>(pitch) ,FuncCallType::Hooks);
+        std::array<float, 3> posArr = {};
+        std::copy_n(pos, posArr.size(), posArr.begin());
+
+        getEngine()->emitAmbientSound(getEngine()->getEdict(entity), posArr, samp, Engine::toSndVolume(vol),
+                                      Engine::toSndAttenution(attenuation), static_cast<SoundFlags>(fFlags),
+                                      static_cast<Pitch>(pitch), FuncCallType::Hooks);
     }
 
-    void pfnTraceLine(const float* v1, const float* v2, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
+    void pfnTraceLine(const float *v1, const float *v2, int fNoMonsters, edict_t *pentToSkip, TraceResult *ptr)
     {
-        getEngine()->traceLine(v1, v2, fNoMonsters, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
-    }
-    
-    void pfnTraceToss(edict_t* pent, edict_t* pentToIgnore, TraceResult* ptr)
-    {
-        getEngine()->traceToss(getEngine()->getEdict(pent), getEngine()->getEdict(pentToIgnore), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+        std::array<float, 3> start = {};
+        std::array<float, 3> end = {};
+
+        std::copy_n(v1, start.size(), start.begin());
+        std::copy_n(v2, end.size(), end.begin());
+
+        getEngine()->traceLine(start, end, static_cast<TraceMonsters>(fNoMonsters), getEngine()->getEdict(pentToSkip),
+                               getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
     }
 
-    int pfnTraceMonsterHull(edict_t* pEdict, const float* v1, const float* v2, int fNoMonsters, edict_t* pentToSkip, TraceResult* ptr)
+    void pfnTraceToss(edict_t *pent, edict_t *pentToIgnore, TraceResult *ptr)
     {
-        return getEngine()->traceMonsterHull(getEngine()->getEdict(pEdict), v1, v2, fNoMonsters, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+        getEngine()->traceToss(getEngine()->getEdict(pent), getEngine()->getEdict(pentToIgnore),
+                               getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
     }
 
-    void pfnTraceHull (const float *v1, const float *v2, int fNoMonsters, int hullNumber, edict_t *pentToSkip, TraceResult *ptr)
+    int pfnTraceMonsterHull(edict_t *pEdict,
+                            const float *v1,
+                            const float *v2,
+                            int fNoMonsters,
+                            edict_t *pentToSkip,
+                            TraceResult *ptr)
     {
-        getEngine()->traceHull(v1, v2, fNoMonsters, hullNumber, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+        std::array<float, 3> start = {};
+        std::array<float, 3> end = {};
+
+        std::copy_n(v1, start.size(), start.begin());
+        std::copy_n(v2, end.size(), end.begin());
+
+        return getEngine()->traceMonsterHull(getEngine()->getEdict(pEdict), start, end,
+                                             static_cast<TraceMonsters>(fNoMonsters), getEngine()->getEdict(pentToSkip),
+                                             getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
     }
 
-    void pfnTraceModel(const float* v1, const float* v2, int hullNumber, edict_t* pent, TraceResult* ptr)
+    void pfnTraceHull(const float *v1,
+                      const float *v2,
+                      int fNoMonsters,
+                      int hullNumber,
+                      edict_t *pentToSkip,
+                      TraceResult *ptr)
     {
-        getEngine()->traceModel(v1, v2, hullNumber, getEngine()->getEdict(pent), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+        std::array<float, 3> start = {};
+        std::array<float, 3> end = {};
+
+        std::copy_n(v1, start.size(), start.begin());
+        std::copy_n(v2, end.size(), end.begin());
+
+        getEngine()->traceHull(start, end, static_cast<TraceMonsters>(fNoMonsters), static_cast<HullNumber>(hullNumber),
+                               getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr),
+                               FuncCallType::Hooks);
     }
 
-    const char* pfnTraceTexture(edict_t* pTextureEntity, const float* v1, const float* v2)
+    void pfnTraceModel(const float *v1, const float *v2, int hullNumber, edict_t *pent, TraceResult *ptr)
     {
-        return getEngine()->traceTexture(getEngine()->getEdict(pTextureEntity), v1, v2, FuncCallType::Hooks).data();
+        std::array<float, 3> start = {};
+        std::array<float, 3> end = {};
+
+        std::copy_n(v1, start.size(), start.begin());
+        std::copy_n(v2, end.size(), end.begin());
+
+        getEngine()->traceModel(start, end, static_cast<HullNumber>(hullNumber), getEngine()->getEdict(pent),
+                                getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
     }
 
-    void pfnTraceSphere(const float* v1, const float* v2, int fNoMonsters, float radius, edict_t* pentToSkip, TraceResult* ptr)
+    const char *pfnTraceTexture(edict_t *pTextureEntity, const float *v1, const float *v2)
     {
-        getEngine()->traceSphere(v1, v2, fNoMonsters, radius, getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr), FuncCallType::Hooks);
+        std::array<float, 3> start = {};
+        std::array<float, 3> end = {};
+
+        std::copy_n(v1, start.size(), start.begin());
+        std::copy_n(v2, end.size(), end.begin());
+
+        return getEngine()->traceTexture(getEngine()->getEdict(pTextureEntity), start, end, FuncCallType::Hooks).data();
+    }
+
+    void pfnTraceSphere(const float *v1,
+                        const float *v2,
+                        int fNoMonsters,
+                        float radius,
+                        edict_t *pentToSkip,
+                        TraceResult *ptr)
+    {
+        std::array<float, 3> start = {};
+        std::array<float, 3> end = {};
+
+        std::copy_n(v1, start.size(), start.begin());
+        std::copy_n(v2, end.size(), end.begin());
+
+        getEngine()->traceSphere(start, end, static_cast<TraceMonsters>(fNoMonsters), radius,
+                                 getEngine()->getEdict(pentToSkip), getEngine()->createTraceResult(ptr),
+                                 FuncCallType::Hooks);
+    }
+
+    void pfnSetOrigin(edict_t *e, const float *rgflOrigin)
+    {
+        std::array<float, 3> origin = {};
+        std::copy_n(rgflOrigin, origin.size(), origin.begin());
+
+        getEngine()->setOrigin(getEngine()->getEdict(e), origin, FuncCallType::Hooks);
+    }
+
+    void pfnSetSize(edict_t *e, const float *rgflMin, const float *rgflMax)
+    {
+        std::array<float, 3> min = {};
+        std::array<float, 3> max = {};
+        std::copy_n(rgflMin, min.size(), min.begin());
+        std::copy_n(rgflMax, max.size(), max.begin());
+
+        getEngine()->setSize(getEngine()->getEdict(e), min, max, FuncCallType::Hooks);
     }
 } // namespace Anubis::Engine::Callbacks::GameDLL

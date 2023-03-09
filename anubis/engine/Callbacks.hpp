@@ -144,4 +144,7 @@ namespace Anubis::Engine::Callbacks::GameDLL
                         float radius,
                         edict_t *pentToSkip,
                         TraceResult *ptr);
+
+    void pfnSetOrigin(edict_t *e, const float *rgflOrigin);
+    void pfnSetSize(edict_t *e, const float *rgflMin, const float *rgflMax);
 } // namespace Anubis::Engine::Callbacks::GameDLL

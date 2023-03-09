@@ -213,32 +213,127 @@ namespace Anubis::Engine
     using IDropToFloorHook = IHook<std::int8_t, nstd::observer_ptr<IEdict>>;
     using IDropToFloorHookRegistry = IHookRegistry<std::int8_t, nstd::observer_ptr<IEdict>>;
 
-    using IEmitSoundHook = IHook<void, nstd::observer_ptr<IEdict>, Channel, std::string_view, float, float, SoundFlags, Pitch>;
-    using IEmitSoundHookRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, Channel, std::string_view, float, float, SoundFlags, Pitch>;
+    using IEmitSoundHook = IHook<void,
+                                 nstd::observer_ptr<IEdict>,
+                                 Channel,
+                                 std::string_view,
+                                 SndVolume,
+                                 SndAttenuation,
+                                 SoundFlags,
+                                 Pitch>;
+    using IEmitSoundHookRegistry = IHookRegistry<void,
+                                                 nstd::observer_ptr<IEdict>,
+                                                 Channel,
+                                                 std::string_view,
+                                                 SndVolume,
+                                                 SndAttenuation,
+                                                 SoundFlags,
+                                                 Pitch>;
 
-    using IEmitAmbientSoundHook = IHook<void, nstd::observer_ptr<IEdict>, float*, std::string_view, float, float, SoundFlags, Pitch>;
-    using IEmitAmbientSoundRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, float*, std::string_view, float, float, SoundFlags, Pitch>;
+    using IEmitAmbientSoundHook = IHook<void,
+                                        nstd::observer_ptr<IEdict>,
+                                        std::array<float, 3>,
+                                        std::string_view,
+                                        SndVolume,
+                                        SndAttenuation,
+                                        SoundFlags,
+                                        Pitch>;
+    using IEmitAmbientSoundRegistry = IHookRegistry<void,
+                                                    nstd::observer_ptr<IEdict>,
+                                                    std::array<float, 3>,
+                                                    std::string_view,
+                                                    SndVolume,
+                                                    SndAttenuation,
+                                                    SoundFlags,
+                                                    Pitch>;
 
-    using ITraceLinetHook = IHook<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
-    using ITraceLineHookRegistry = IHookRegistry<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceLineHook = IHook<void,
+                                 std::array<float, 3>,
+                                 std::array<float, 3>,
+                                 TraceMonsters,
+                                 nstd::observer_ptr<IEdict>,
+                                 nstd::observer_ptr<ITraceResult>>;
+    using ITraceLineHookRegistry = IHookRegistry<void,
+                                                 std::array<float, 3>,
+                                                 std::array<float, 3>,
+                                                 TraceMonsters,
+                                                 nstd::observer_ptr<IEdict>,
+                                                 nstd::observer_ptr<ITraceResult>>;
 
-    using ITraceTossHook = IHook<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
-    using ITraceTossHookRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceTossHook =
+        IHook<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceTossHookRegistry =
+        IHookRegistry<void, nstd::observer_ptr<IEdict>, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
 
-    using ITraceMonsterHullHook = IHook<bool, nstd::observer_ptr<IEdict>, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
-    using ITraceMonsterHullHookRegistry = IHookRegistry<bool, nstd::observer_ptr<IEdict>, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceMonsterHullHook = IHook<bool,
+                                        nstd::observer_ptr<IEdict>,
+                                        std::array<float, 3>,
+                                        std::array<float, 3>,
+                                        TraceMonsters,
+                                        nstd::observer_ptr<IEdict>,
+                                        nstd::observer_ptr<ITraceResult>>;
+    using ITraceMonsterHullHookRegistry = IHookRegistry<bool,
+                                                        nstd::observer_ptr<IEdict>,
+                                                        std::array<float, 3>,
+                                                        std::array<float, 3>,
+                                                        TraceMonsters,
+                                                        nstd::observer_ptr<IEdict>,
+                                                        nstd::observer_ptr<ITraceResult>>;
 
-    using ITraceHullHook = IHook<void, const float*, const float*, int, int , nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
-    using ITraceHullHookRegistry = IHookRegistry<void, const float*, const float*, int, int , nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceHullHook = IHook<void,
+                                 std::array<float, 3>,
+                                 std::array<float, 3>,
+                                 TraceMonsters,
+                                 HullNumber,
+                                 nstd::observer_ptr<IEdict>,
+                                 nstd::observer_ptr<ITraceResult>>;
+    using ITraceHullHookRegistry = IHookRegistry<void,
+                                                 std::array<float, 3>,
+                                                 std::array<float, 3>,
+                                                 TraceMonsters,
+                                                 HullNumber,
+                                                 nstd::observer_ptr<IEdict>,
+                                                 nstd::observer_ptr<ITraceResult>>;
 
-    using ITraceModelHook = IHook<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
-    using ITraceModelHookRegistry = IHookRegistry<void, const float*, const float*, int, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceModelHook = IHook<void,
+                                  std::array<float, 3>,
+                                  std::array<float, 3>,
+                                  HullNumber,
+                                  nstd::observer_ptr<IEdict>,
+                                  nstd::observer_ptr<ITraceResult>>;
+    using ITraceModelHookRegistry = IHookRegistry<void,
+                                                  std::array<float, 3>,
+                                                  std::array<float, 3>,
+                                                  HullNumber,
+                                                  nstd::observer_ptr<IEdict>,
+                                                  nstd::observer_ptr<ITraceResult>>;
 
-    using ITraceTextureHook = IHook<std::string_view, nstd::observer_ptr<IEdict>, const float*, const float*>;
-    using ITraceTextureHookRegistry = IHookRegistry<std::string_view, nstd::observer_ptr<IEdict>, const float*, const float*>;
+    using ITraceTextureHook =
+        IHook<std::string_view, nstd::observer_ptr<IEdict>, std::array<float, 3>, std::array<float, 3>>;
+    using ITraceTextureHookRegistry =
+        IHookRegistry<std::string_view, nstd::observer_ptr<IEdict>, std::array<float, 3>, std::array<float, 3>>;
 
-    using ITraceSphereHook = IHook<void, const float*, const float*, int, float, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
-    using ITraceSphereHookRegistry = IHookRegistry<void, const float*, const float*, int, float, nstd::observer_ptr<IEdict>, nstd::observer_ptr<ITraceResult>>;
+    using ITraceSphereHook = IHook<void,
+                                   std::array<float, 3>,
+                                   std::array<float, 3>,
+                                   TraceMonsters,
+                                   float,
+                                   nstd::observer_ptr<IEdict>,
+                                   nstd::observer_ptr<ITraceResult>>;
+    using ITraceSphereHookRegistry = IHookRegistry<void,
+                                                   std::array<float, 3>,
+                                                   std::array<float, 3>,
+                                                   TraceMonsters,
+                                                   float,
+                                                   nstd::observer_ptr<IEdict>,
+                                                   nstd::observer_ptr<ITraceResult>>;
+
+    using ISetOriginHook = IHook<void, nstd::observer_ptr<IEdict>, std::array<float, 3>>;
+    using ISetOriginHookRegistry = IHookRegistry<void, nstd::observer_ptr<IEdict>, std::array<float, 3>>;
+
+    using ISetSizeHook = IHook<void, nstd::observer_ptr<IEdict>, std::array<float, 3>, std::array<float, 3>>;
+    using ISetSizeHookRegistry =
+        IHookRegistry<void, nstd::observer_ptr<IEdict>, std::array<float, 3>, std::array<float, 3>>;
 
     class IHooks
     {
@@ -311,5 +406,7 @@ namespace Anubis::Engine
         virtual nstd::observer_ptr<ITraceModelHookRegistry> traceModel() = 0;
         virtual nstd::observer_ptr<ITraceTextureHookRegistry> traceTexture() = 0;
         virtual nstd::observer_ptr<ITraceSphereHookRegistry> traceSphere() = 0;
+        virtual nstd::observer_ptr<ISetOriginHookRegistry> setOrigin() = 0;
+        virtual nstd::observer_ptr<ISetSizeHookRegistry> setSize() = 0;
     };
 } // namespace Anubis::Engine

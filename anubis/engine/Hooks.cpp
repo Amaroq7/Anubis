@@ -107,7 +107,9 @@ namespace Anubis::Engine
           m_traceHullHookRegistry(std::make_unique<TraceHullHookRegistry>()),
           m_traceModelHookRegistry(std::make_unique<TraceModelHookRegistry>()),
           m_traceTextureHookRegistry(std::make_unique<TraceTextureHookRegistry>()),
-          m_traceSphereHookRegistry(std::make_unique<TraceSphereHookRegistry>())
+          m_traceSphereHookRegistry(std::make_unique<TraceSphereHookRegistry>()),
+          m_setOriginHookRegistry(std::make_unique<SetOriginHookRegistry>()),
+          m_setSizeHookRegistry(std::make_unique<SetSizeHookRegistry>())
     {
     }
 
@@ -365,7 +367,7 @@ namespace Anubis::Engine
     {
         return m_strAllocRegistry;
     }
-    nstd::observer_ptr<IModelIndexHookRegistry> Hooks::modelIndex() 
+    nstd::observer_ptr<IModelIndexHookRegistry> Hooks::modelIndex()
     {
         return m_modelIndexHookRegistry;
     }
@@ -380,7 +382,7 @@ namespace Anubis::Engine
     nstd::observer_ptr<IClientPrintHookRegistry> Hooks::clientPrint()
     {
         return m_clientPrintHookRegistry;
-    } 
+    }
     nstd::observer_ptr<IEntIsOnFloorHookRegistry> Hooks::entIsOnFloor()
     {
         return m_entIsOnFloorHookRegistry;
@@ -424,5 +426,13 @@ namespace Anubis::Engine
     nstd::observer_ptr<ITraceSphereHookRegistry> Hooks::traceSphere()
     {
         return m_traceSphereHookRegistry;
+    }
+    nstd::observer_ptr<ISetOriginHookRegistry> Hooks::setOrigin()
+    {
+        return m_setOriginHookRegistry;
+    }
+    nstd::observer_ptr<ISetSizeHookRegistry> Hooks::setSize()
+    {
+        return m_setSizeHookRegistry;
     }
 } // namespace Anubis::Engine

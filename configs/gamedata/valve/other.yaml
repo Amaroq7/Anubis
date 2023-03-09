@@ -52,23 +52,11 @@ CBasePlayer:
   SwitchWeapon:
     linux: _ZN11CBasePlayer12SwitchWeaponEP15CBasePlayerItem
     windows:
-  DeathSound:
-    linux: _ZN11CBasePlayer10DeathSoundEv
-    windows:
-  AddPlayerItem:
-    linux: _ZN11CBasePlayer13AddPlayerItemEP15CBasePlayerItem
-    windows:
-  RemovePlayerItem:
-    linux: _ZN11CBasePlayer16RemovePlayerItemEP15CBasePlayerItem
-    windows:
   HasPlayerItem:
     linux: _ZN11CBasePlayer13HasPlayerItemEP15CBasePlayerItem
     windows:
   HasWeapons:
     linux: _ZN11CBasePlayer10HasWeaponsEv
-    windows:
-  GiveAmmo:
-    linux: _ZN11CBasePlayer8GiveAmmoEiPci
     windows:
 CBasePlayerAmmo:
   DefaultTouch:

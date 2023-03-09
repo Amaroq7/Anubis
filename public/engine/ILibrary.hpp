@@ -190,17 +190,73 @@ namespace Anubis::Engine
                                  std::string_view szMsg,
                                  FuncCallType callType) const = 0;
 
-        virtual bool entIsOnFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const = 0;
-	    virtual std::int8_t dropToFloor (nstd::observer_ptr<IEdict> e, FuncCallType callType) const = 0;
-        virtual void emitSound(nstd::observer_ptr<IEdict> entity, Channel channel, std::string_view sample, float volume, float attenuation, SoundFlags fFlags, Pitch pitch, FuncCallType callType) const = 0;
-        virtual void emitAmbientSound (nstd::observer_ptr<IEdict> entity, float *pos, std::string_view samp, float vol, float attenuation, SoundFlags fFlags, Pitch pitch, FuncCallType callType) const = 0;
-        virtual void traceLine (const float *v1, const float *v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const = 0;
-        virtual void traceToss (nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<IEdict> pentToIgnore, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const = 0;
-        virtual bool traceMonsterHull (nstd::observer_ptr<IEdict> pEdict, const float *v1, const float *v2, int fNoMonsters, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const = 0;
-        virtual void traceHull (const float *v1, const float *v2, int fNoMonsters, int hullNumber, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const = 0;
-        virtual void traceModel (const float *v1, const float *v2, int hullNumber, nstd::observer_ptr<IEdict> pent, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const = 0;
-        virtual std::string_view traceTexture (nstd::observer_ptr<IEdict> pTextureEntity, const float *v1, const float *v2, FuncCallType callType) const = 0;
-        virtual void traceSphere (const float *v1, const float *v2, int fNoMonsters, float radius, nstd::observer_ptr<IEdict> pentToSkip, nstd::observer_ptr<ITraceResult> ptr, FuncCallType callType) const = 0;
+        virtual bool entIsOnFloor(nstd::observer_ptr<IEdict> e, FuncCallType callType) const = 0;
+        virtual std::int8_t dropToFloor(nstd::observer_ptr<IEdict> e, FuncCallType callType) const = 0;
+        virtual void emitSound(nstd::observer_ptr<IEdict> entity,
+                               Channel channel,
+                               std::string_view sample,
+                               SndVolume volume,
+                               SndAttenuation attenuation,
+                               SoundFlags fFlags,
+                               Pitch pitch,
+                               FuncCallType callType) const = 0;
+        virtual void emitAmbientSound(nstd::observer_ptr<IEdict> entity,
+                                      std::array<float, 3> position,
+                                      std::string_view sample,
+                                      SndVolume volume,
+                                      SndAttenuation attenuation,
+                                      SoundFlags fFlags,
+                                      Pitch pitch,
+                                      FuncCallType callType) const = 0;
+        virtual void traceLine(std::array<float, 3> start,
+                               std::array<float, 3> end,
+                               TraceMonsters fNoMonsters,
+                               nstd::observer_ptr<IEdict> pentToSkip,
+                               nstd::observer_ptr<ITraceResult> ptr,
+                               FuncCallType callType) const = 0;
+        virtual void traceToss(nstd::observer_ptr<IEdict> pent,
+                               nstd::observer_ptr<IEdict> pentToIgnore,
+                               nstd::observer_ptr<ITraceResult> ptr,
+                               FuncCallType callType) const = 0;
+        virtual bool traceMonsterHull(nstd::observer_ptr<IEdict> pEdict,
+                                      std::array<float, 3> start,
+                                      std::array<float, 3> end,
+                                      TraceMonsters fNoMonsters,
+                                      nstd::observer_ptr<IEdict> pentToSkip,
+                                      nstd::observer_ptr<ITraceResult> ptr,
+                                      FuncCallType callType) const = 0;
+        virtual void traceHull(std::array<float, 3> start,
+                               std::array<float, 3> end,
+                               TraceMonsters fNoMonsters,
+                               HullNumber hullNumber,
+                               nstd::observer_ptr<IEdict> pentToSkip,
+                               nstd::observer_ptr<ITraceResult> ptr,
+                               FuncCallType callType) const = 0;
+        virtual void traceModel(std::array<float, 3> start,
+                                std::array<float, 3> end,
+                                HullNumber hullNumber,
+                                nstd::observer_ptr<IEdict> pent,
+                                nstd::observer_ptr<ITraceResult> ptr,
+                                FuncCallType callType) const = 0;
+        virtual std::string_view traceTexture(nstd::observer_ptr<IEdict> pTextureEntity,
+                                              std::array<float, 3> start,
+                                              std::array<float, 3> end,
+                                              FuncCallType callType) const = 0;
+        virtual void traceSphere(std::array<float, 3> start,
+                                 std::array<float, 3> end,
+                                 TraceMonsters fNoMonsters,
+                                 float radius,
+                                 nstd::observer_ptr<IEdict> pentToSkip,
+                                 nstd::observer_ptr<ITraceResult> ptr,
+                                 FuncCallType callType) const = 0;
+
+        virtual void
+            setOrigin(nstd::observer_ptr<IEdict> entity, std::array<float, 3> origin, FuncCallType callType) const = 0;
+
+        virtual void setSize(nstd::observer_ptr<IEdict> entity,
+                             std::array<float, 3> min,
+                             std::array<float, 3> max,
+                             FuncCallType callType) const = 0;
 
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const edict_t *edict) const = 0;
         [[nodiscard]] virtual nstd::observer_ptr<IEdict> getEdict(const entvars_t *vars) const = 0;

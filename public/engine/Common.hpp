@@ -104,6 +104,25 @@ namespace Anubis::Engine
         Spawning = (1 << 8)
     };
 
+    enum class TraceMonsters : std::uint16_t
+    {
+        Normal = 0,
+        No,
+        Missle,
+        IgnoreGlass = 0x100,
+        IgnoreGlassNormal = (Normal | 0x100),
+        IgnoreGlassNo = (No | 0x100),
+        IgnoreGlassMissle = (Missle | 0x100)
+    };
+
+    enum class HullNumber : std::uint8_t
+    {
+        Point = 0,
+        Human,
+        Large,
+        Head
+    };
+
     /**
      * Server command callback.
      */
@@ -120,4 +139,30 @@ namespace Anubis::Engine
     ANUBIS_STRONG_TYPEDEF(std::uint32_t, StringOffset)
     ANUBIS_STRONG_TYPEDEF(std::uint32_t, EntityOffset)
     ANUBIS_STRONG_TYPEDEF(std::uint16_t, ModelIndex)
+    ANUBIS_STRONG_TYPEDEF(float, SndAttenuation)
+    ANUBIS_STRONG_TYPEDEF(float, SndVolume)
+
+    constexpr inline SndAttenuation toSndAttenution(float attenution)
+    {
+        return SndAttenuation {attenution};
+    }
+
+    constexpr inline SndVolume toSndVolume(float volume)
+    {
+        return SndVolume {volume};
+    }
+
+    namespace Attenuation
+    {
+        constexpr SndAttenuation None = toSndAttenution(0.f);
+        constexpr SndAttenuation Norm = toSndAttenution(0.8f);
+        constexpr SndAttenuation Idle = toSndAttenution(2.f);
+        constexpr SndAttenuation Static = toSndAttenution(1.25f);
+    } // namespace Attenuation
+
+    namespace Volume
+    {
+        constexpr SndVolume Normal = toSndVolume(1.f);
+    } // namespace Volume
+
 } // namespace Anubis::Engine
