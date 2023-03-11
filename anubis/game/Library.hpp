@@ -133,7 +133,7 @@ namespace Anubis::Game
         std::unique_ptr<NEW_DLL_FUNCTIONS> m_gameLibNewDllFunctions;
         nstd::observer_ptr<IBasePlayerHooks> m_basePlayerHooks;
         nstd::observer_ptr<IEntityHolder> m_entityHolder;
-        Mod m_modType;
+        Mod m_modType = Mod::Unknown;
         std::filesystem::path m_gameDir;
         std::filesystem::path m_pathName;
         std::unique_ptr<Module> m_gameLibrary;

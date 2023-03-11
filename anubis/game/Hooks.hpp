@@ -79,6 +79,8 @@ namespace Anubis::Game
         Hooks();
         ~Hooks() final = default;
 
+        nstd::observer_ptr<CStrike::IHooks> CSHooks() final;
+
         nstd::observer_ptr<IGameInitHookRegistry> gameInit() final;
         nstd::observer_ptr<ISpawnHookRegistry> spawn() final;
         nstd::observer_ptr<IClientConnectHookRegistry> clientConnect() final;
@@ -92,6 +94,8 @@ namespace Anubis::Game
         nstd::observer_ptr<ICvarValueHookRegistry> cvarValue() final;
         nstd::observer_ptr<ICvarValue2HookRegistry> cvarValue2() final;
         nstd::observer_ptr<IClientDisconnectHookRegistry> clientDisconnect() final;
+
+        void initCSHooks(nstd::observer_ptr<CStrike::IHooks> hooks);
 
     private:
         std::unique_ptr<GameInitHookRegistry> m_gameInitRegistry;
@@ -107,5 +111,8 @@ namespace Anubis::Game
         std::unique_ptr<CvarValueHookRegistry> m_cvarValueRegistry;
         std::unique_ptr<CvarValue2HookRegistry> m_cvarValue2Registry;
         std::unique_ptr<ClientDisconnectHookRegistry> m_clientDisconnectHookRegistry;
+
+    private:
+        nstd::observer_ptr<CStrike::IHooks> m_CSHooks;
     };
 } // namespace Anubis::Game

@@ -63,6 +63,11 @@ namespace Anubis
             GameRules
         };
 
+        namespace CStrike
+        {
+            class IHooks;
+        }
+
     } // namespace Game
 
     namespace Engine
@@ -223,6 +228,11 @@ namespace Anubis
          *
          */
         ANUBIS_API void SetupHook(SetupHookType setupHookType, std::function<void(std::any)> hook);
+
+        namespace CStrike
+        {
+            ANUBIS_API nstd::observer_ptr<IHooks> GetHooks();
+        }
     } // namespace Game
     #endif
 #else
@@ -250,5 +260,11 @@ namespace Anubis
      * @brief Signature of Anubis::Game::SetupHook().
      */
     using fnSetupHook = void (*)(Game::SetupHookType setupHookType, std::function<void(std::any)> hook);
+
+    namespace Game::CStrike
+    {
+        using fnGetHooks = nstd::observer_ptr<IHooks> (*)();
+    }
+
 #endif
 } // namespace Anubis

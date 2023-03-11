@@ -554,7 +554,7 @@ namespace Anubis::Game
 
         try
         {
-            auto entityLib = std::make_unique<Module>(IPlugin::Type::EntityDLL, std::move(path));
+            auto entityLib = std::make_unique<Module>(IPlugin::Type::EntityDLL, std::move(path), m_modType);
 
             entityLib->setupHook(SetupHookType::EntityHolder,
                                  [this](std::any entHolder)
@@ -584,6 +584,7 @@ namespace Anubis::Game
             }
 
             entityLib->installVFHooks();
+            m_hooks->initCSHooks(entityLib->getCSHooks());
 
             m_entityLibrary = std::move(entityLib);
 

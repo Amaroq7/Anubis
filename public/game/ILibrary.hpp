@@ -47,11 +47,12 @@ namespace Anubis::Game
 
     enum class Mod : std::uint8_t
     {
-        Valve = 0, /**< Half-Life */
-        CStrike,   /**< Counter-Strike */
-        CZero,     /**< Counter-Strike: Condition Zero */
-        DoD,       /**< Day Of Defeat */
-        TFC        /**< Team Fortress Classic */
+        Unknown = 0,
+        Valve,   /**< Half-Life */
+        CStrike, /**< Counter-Strike */
+        CZero,   /**< Counter-Strike: Condition Zero */
+        DoD,     /**< Day Of Defeat */
+        TFC      /**< Team Fortress Classic */
     };
 
     class ILibrary

@@ -32,6 +32,11 @@ namespace Anubis::Engine
 
 namespace Anubis::Game
 {
+    namespace CStrike
+    {
+        class IHooks;
+    }
+
     using IGameInitHook = IHook<void>;
     using IGameInitHookRegistry = IHookRegistry<void>;
 
@@ -85,6 +90,8 @@ namespace Anubis::Game
     {
     public:
         virtual ~IHooks() = default;
+
+        virtual nstd::observer_ptr<CStrike::IHooks> CSHooks() = 0;
 
         virtual nstd::observer_ptr<IGameInitHookRegistry> gameInit() = 0;
         virtual nstd::observer_ptr<ISpawnHookRegistry> spawn() = 0;

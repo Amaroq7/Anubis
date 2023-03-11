@@ -65,7 +65,7 @@ namespace Anubis
         }
     }
 
-    Module::Module(IPlugin::Type type, const std::filesystem::path &path)
+    Module::Module(IPlugin::Type type, const std::filesystem::path &path, Game::Mod gameMod)
     {
         using namespace std::string_literals;
 
@@ -112,7 +112,7 @@ namespace Anubis
             throw std::runtime_error("Invalid plugin type");
         }
 
-        _findPluginFuncs();
+        _findPluginFuncs(gameMod);
     }
 
     std::string_view Module::_getError()
@@ -168,6 +168,11 @@ namespace Anubis
         return m_plAuthor;
     }
 
+    nstd::observer_ptr<Game::CStrike::IHooks> Module::getCSHooks() const
+    {
+        return m_CSHooksFn();
+    }
+
     void Module::_queryPlugin()
     {
         m_queryFn = getSymbol<fnQuery>(Module::FnQuerySgn);
@@ -219,12 +224,12 @@ namespace Anubis
         m_plVersion = plInfo->getVersion();
     }
 
-    bool Module::initPlugin(nstd::observer_ptr<IAnubis> api) const
+    bool Module::initPlugin(nstd::observer_ptr<IAnubis> api)
     {
         return m_initFn(api);
     }
 
-    void Module::_findPluginFuncs()
+    void Module::_findPluginFuncs(Game::Mod gameMod)
     {
         m_initFn = getSymbol<fnInit>(Module::FnInitSgn);
         if (!m_initFn)
@@ -239,7 +244,6 @@ namespace Anubis
         }
 
         m_installVFHooks = getSymbol<fnInstallVHooks>(Module::FnInstallVFHooksSgn);
-
         if (m_plType == IPlugin::Type::EntityDLL)
         {
             if (!m_installVFHooks)
@@ -251,6 +255,12 @@ namespace Anubis
             if (!m_setupHookFn)
             {
                 throw std::runtime_error("Anubis::Game::SetupHook function not found");
+            }
+
+            m_CSHooksFn = getSymbol<Game::CStrike::fnGetHooks>(Module::FnCSGetHooks);
+            if (!m_CSHooksFn && (gameMod == Game::Mod::CStrike || gameMod == Game::Mod::CZero))
+            {
+                throw std::runtime_error("Anubis::Game::CStrike::Hooks function not found");
             }
         }
     }

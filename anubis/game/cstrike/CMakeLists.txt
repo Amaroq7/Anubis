@@ -11,7 +11,8 @@ set(SRC_FILES
         Rules.cpp
         BasePlayerItem.cpp
         BasePlayerWeapon.cpp
-        BasePlayerAmmo.cpp)
+        BasePlayerAmmo.cpp
+        Hooks.cpp)
 
 add_library(${PROJECT_NAME} MODULE ${SRC_FILES})
 

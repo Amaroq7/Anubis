@@ -102,4 +102,15 @@ namespace Anubis::Game
     {
         return m_clientDisconnectHookRegistry;
     }
+
+    void Hooks::initCSHooks(nstd::observer_ptr<CStrike::IHooks> hooks)
+    {
+        m_CSHooks = hooks;
+    }
+
+    nstd::observer_ptr<CStrike::IHooks> Hooks::CSHooks()
+    {
+        return m_CSHooks;
+    }
+
 } // namespace Anubis::Game

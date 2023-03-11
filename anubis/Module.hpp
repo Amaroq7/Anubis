@@ -37,6 +37,11 @@
 
 namespace Anubis
 {
+    namespace Game::CStrike
+    {
+        class IHooks;
+    }
+
     class Module
     {
     public:
@@ -44,9 +49,9 @@ namespace Anubis
 
     public:
         explicit Module(const std::filesystem::path &path);
-        Module(IPlugin::Type type, const std::filesystem::path &path);
+        Module(IPlugin::Type type, const std::filesystem::path &path, Game::Mod gameMod);
 
-        [[nodiscard]] bool initPlugin(nstd::observer_ptr<IAnubis> api) const;
+        [[nodiscard]] bool initPlugin(nstd::observer_ptr<IAnubis> api);
         void installVFHooks() const;
         void deinitPlugin() const;
         void setupHook(Game::SetupHookType setupHookType, std::function<void(std::any)> hook) const;
@@ -56,6 +61,7 @@ namespace Anubis
         [[nodiscard]] std::string_view getDate() const;
         [[nodiscard]] std::string_view getUrl() const;
         [[nodiscard]] std::string_view getAuthor() const;
+        [[nodiscard]] nstd::observer_ptr<Game::CStrike::IHooks> getCSHooks() const;
         void setPath(std::filesystem::path &&path);
 
     public:
@@ -79,6 +85,8 @@ namespace Anubis
         static constexpr std::string_view FnInstallVFHooksSgn = "?InstallVHooks@Anubis@@YAXXZ";
         static constexpr std::string_view FnSetupHookSgn =
             "?SetupHook@Game@Anubis@@YAXW4SetupHookType@12@V?$function@$$A6AXVany@std@@@Z@std@@@Z";
+
+        static constexpr std::string_view FnCSGetHooks = "";
 #else
         static constexpr std::string_view FnQuerySgn = "_ZN6Anubis5QueryEv";
         static constexpr std::string_view FnInitSgn = "_ZN6Anubis4InitEN4nstd12observer_ptrINS_7IAnubisEEE";
@@ -86,13 +94,15 @@ namespace Anubis
         static constexpr std::string_view FnInstallVFHooksSgn = "_ZN6Anubis13InstallVHooksEv";
         static constexpr std::string_view FnSetupHookSgn =
             "_ZN6Anubis4Game9SetupHookENS0_13SetupHookTypeESt8functionIFvSt3anyEE";
+
+        static constexpr std::string_view FnCSGetHooks = "_ZN6Anubis4Game7CStrike8GetHooksEv";
 #endif
 
     private:
         static std::string_view _getError();
 
     private:
-        void _findPluginFuncs();
+        void _findPluginFuncs(Game::Mod gameMod);
         void _queryPlugin();
 
     private:
@@ -107,6 +117,7 @@ namespace Anubis
         std::function<void()> m_shutdownFn;
         std::function<void()> m_installVFHooks;
         std::function<void(Game::SetupHookType, std::function<void(std::any)>)> m_setupHookFn;
+        std::function<nstd::observer_ptr<Game::CStrike::IHooks>()> m_CSHooksFn;
         std::unique_ptr<void, std::function<void(SystemHandle)>> m_libHandle;
     };
 } // namespace Anubis

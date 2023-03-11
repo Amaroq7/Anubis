@@ -155,7 +155,7 @@ namespace Anubis
             std::unique_ptr<Module> pluginModule;
             try
             {
-                pluginModule = std::make_unique<Module>(IPlugin::Type::Extension, pluginPath);
+                pluginModule = std::make_unique<Module>(IPlugin::Type::Extension, pluginPath, Game::Mod::Unknown);
             }
             catch (const std::runtime_error &e)
             {

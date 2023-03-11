@@ -20,6 +20,7 @@
 #include "AnubisExports.hpp"
 #include "EntitiesHooks.hpp"
 #include "EntityHolder.hpp"
+#include "Hooks.hpp"
 
 #include <engine/IEdict.hpp>
 #include <utility>
@@ -135,6 +136,8 @@ namespace Anubis
             return false;
         }
 
+        gHooks = std::make_unique<Game::CStrike::Hooks>(gReGameAPI->GetHookchains());
+
         gPluginInfo->execHook(Game::SetupHookType::EntityHolder,
                               nstd::make_observer<Game::IEntityHolder>(Game::CStrike::getEntityHolder()));
 
@@ -160,5 +163,13 @@ namespace Anubis
         {
             return gPluginInfo->addHook(setupHookType, std::move(hook));
         }
-    } // namespace Game
+
+        namespace CStrike
+        {
+            nstd::observer_ptr<IHooks> GetHooks()
+            {
+                return gHooks;
+            }
+        } // namespace CStrike
+    }     // namespace Game
 } // namespace Anubis
