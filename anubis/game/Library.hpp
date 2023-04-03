@@ -106,8 +106,9 @@ namespace Anubis::Game
         void _initGameEntityDLL(std::filesystem::path &&path);
 
     private:
-        constexpr static inline std::size_t knownGamesNum = 5;
+        constexpr static inline std::size_t knownGamesNum = 6;
         constexpr static inline std::array<ModInfo, knownGamesNum> knownGames = {
+            ModInfo {       "",       "",        "",                  "",                ""},
             ModInfo {  "valve",  "hl.so",  "hl.dll",   "libvalve_api.so",   "valve_api.dll"},
             ModInfo {"cstrike",  "cs.so",  "mp.dll", "libcstrike_api.so", "cstrike_api.dll"},
             ModInfo {  "czero",  "cs.so",  "mp.dll", "libcstrike_api.so", "cstrike_api.dll"},
