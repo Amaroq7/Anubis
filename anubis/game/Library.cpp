@@ -584,7 +584,11 @@ namespace Anubis::Game
             }
 
             entityLib->installVFHooks();
-            m_hooks->initCSHooks(entityLib->getCSHooks());
+
+            if (m_modType == Mod::CStrike || m_modType == Mod::CZero)
+            {
+                m_hooks->initCSHooks(entityLib->getCSHooks());
+            }
 
             m_entityLibrary = std::move(entityLib);
 

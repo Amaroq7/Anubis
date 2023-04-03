@@ -418,83 +418,85 @@ namespace Anubis::Engine
         return static_cast<SpawnFlag>(m_edict->v.spawnflags);
     }
 
+    IEdict::RenderFx Edict::getRenderEffects() const
+    {
+        return static_cast<RenderFx>(m_edict->v.renderfx);
+    }
+
     void Edict::setVecProperty(VecProperty property, std::array<float, 3> value)
     {
-        auto getVec = [this, property, value]()
+        switch (property)
         {
-            switch (property)
-            {
-                case VecProperty::Origin:
-                    m_edict->v.origin = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::OldOrigin:
-                    m_edict->v.oldorigin = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::Velocity:
-                    m_edict->v.velocity = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::BaseVelocity:
-                    m_edict->v.basevelocity = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::ClBaseVelocity:
-                    m_edict->v.clbasevelocity = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::MoveDir:
-                    m_edict->v.movedir = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::Angles:
-                    m_edict->v.angles = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::AVelocity:
-                    m_edict->v.avelocity = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::PunchAngle:
-                    m_edict->v.punchangle = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::ViewingAngle:
-                    m_edict->v.v_angle = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::EndPos:
-                    m_edict->v.endpos = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::StartPos:
-                    m_edict->v.startpos = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::AbsMin:
-                    m_edict->v.absmin = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::AbsMax:
-                    m_edict->v.absmax = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::Mins:
-                    m_edict->v.mins = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::Maxs:
-                    m_edict->v.maxs = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::Size:
-                    m_edict->v.size = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::RenderColor:
-                    m_edict->v.rendercolor = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::ViewingOffset:
-                    m_edict->v.view_ofs = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::User1:
-                    m_edict->v.vuser1 = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::User2:
-                    m_edict->v.vuser2 = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::User3:
-                    m_edict->v.vuser3 = {value[0], value[1], value[2]};
-                    break;
-                case VecProperty::User4:
-                    m_edict->v.vuser4 = {value[0], value[1], value[2]};
-                    break;
-            }
-        };
+            case VecProperty::Origin:
+                m_edict->v.origin = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::OldOrigin:
+                m_edict->v.oldorigin = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::Velocity:
+                m_edict->v.velocity = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::BaseVelocity:
+                m_edict->v.basevelocity = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::ClBaseVelocity:
+                m_edict->v.clbasevelocity = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::MoveDir:
+                m_edict->v.movedir = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::Angles:
+                m_edict->v.angles = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::AVelocity:
+                m_edict->v.avelocity = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::PunchAngle:
+                m_edict->v.punchangle = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::ViewingAngle:
+                m_edict->v.v_angle = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::EndPos:
+                m_edict->v.endpos = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::StartPos:
+                m_edict->v.startpos = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::AbsMin:
+                m_edict->v.absmin = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::AbsMax:
+                m_edict->v.absmax = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::Mins:
+                m_edict->v.mins = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::Maxs:
+                m_edict->v.maxs = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::Size:
+                m_edict->v.size = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::RenderColor:
+                m_edict->v.rendercolor = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::ViewingOffset:
+                m_edict->v.view_ofs = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::User1:
+                m_edict->v.vuser1 = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::User2:
+                m_edict->v.vuser2 = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::User3:
+                m_edict->v.vuser3 = {value[0], value[1], value[2]};
+                break;
+            case VecProperty::User4:
+                m_edict->v.vuser4 = {value[0], value[1], value[2]};
+                break;
+        }
     }
 
     void Edict::setStrProperty(StrProperty property, StringOffset value)
@@ -847,6 +849,11 @@ namespace Anubis::Engine
     void Edict::setSpawnFlag(SpawnFlag spawnFlag)
     {
         m_edict->v.spawnflags = static_cast<int>(spawnFlag);
+    }
+
+    void Edict::setRenderEffects(RenderFx renderFx)
+    {
+        m_edict->v.renderfx = static_cast<decltype(m_edict->v.renderfx)>(renderFx);
     }
 
 } // namespace Anubis::Engine

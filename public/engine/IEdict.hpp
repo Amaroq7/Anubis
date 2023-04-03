@@ -361,6 +361,7 @@ namespace Anubis::Engine
         [[nodiscard]] virtual RenderMode getRenderMode() const = 0;
         [[nodiscard]] virtual DeadFlag getDeadFlag() const = 0;
         [[nodiscard]] virtual SpawnFlag getSpawnFlag() const = 0;
+        [[nodiscard]] virtual RenderFx getRenderEffects() const = 0;
 
         virtual void setFlags(Flag flags) = 0;
 
@@ -385,6 +386,7 @@ namespace Anubis::Engine
         virtual void setRenderMode(RenderMode renderMode) = 0;
         virtual void setDeadFlag(DeadFlag deadFlag) = 0;
         virtual void setSpawnFlag(SpawnFlag spawnFlag) = 0;
+        virtual void setRenderEffects(RenderFx renderFx) = 0;
 
         [[nodiscard]] virtual void *getPrivateData() const = 0;
         virtual explicit operator edict_t *() const = 0;

@@ -65,6 +65,7 @@ namespace Anubis::Engine
         [[nodiscard]] RenderMode getRenderMode() const final;
         [[nodiscard]] DeadFlag getDeadFlag() const final;
         [[nodiscard]] SpawnFlag getSpawnFlag() const final;
+        [[nodiscard]] RenderFx getRenderEffects() const final;
 
         void setFlags(Flag flags) final;
 
@@ -89,6 +90,7 @@ namespace Anubis::Engine
         void setRenderMode(RenderMode renderMode) final;
         void setDeadFlag(DeadFlag deadFlag) final;
         void setSpawnFlag(SpawnFlag spawnFlag) final;
+        void setRenderEffects(RenderFx renderFx) final;
 
         [[nodiscard]] void *getPrivateData() const final;
 
