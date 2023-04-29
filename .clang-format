@@ -1,5 +1,5 @@
 ---
-Language:        Cpp
+Language: Cpp
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignArrayOfStructures: Right
@@ -49,12 +49,12 @@ IndentCaseLabels: true
 IndentExternBlock: AfterExternBlock
 IndentGotoLabels: false
 IndentPPDirectives: BeforeHash
-IndentRequires: false
+IndentRequiresClause: false
 IndentWidth: 4
 IndentWrappedFunctionNames: true
+InsertBraces: true
 KeepEmptyLinesAtTheStartOfBlocks: false
 LambdaBodyIndentation: Signature
-Language: Cpp
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
 PackConstructorInitializers: CurrentLine
@@ -71,6 +71,7 @@ PointerAlignment: Right
 QualifierAlignment: Leave
 ReferenceAlignment: Pointer
 ReflowComments: true
+RequiresClausePosition: OwnLine
 ShortNamespaceLines: 1
 SortIncludes: Never
 SortUsingDeclarations: true

@@ -32,7 +32,7 @@ if (UNIX)
         target_compile_options(yaml-cpp PRIVATE -Wno-pedantic -stdlib=libc++)
 
         target_link_options(yaml-cpp PUBLIC -fuse-ld=${LLD} -stdlib=libc++ --rtlib=compiler-rt)
-        target_link_libraries(yaml-cpp PUBLIC c++ c++abi unwind)
+        target_link_libraries(yaml-cpp PUBLIC ${LLVM_LIBCPP_LIB} ${LLVM_LIBCPPABI_LIB} ${LLVM_UNWIND_LIB})
     else ()
         target_compile_options(yaml-cpp PRIVATE -Wno-effc++)
     endif ()
@@ -42,7 +42,6 @@ endif ()
 
 set(YAML_CPP_INCLUDE_DIR ${yamlcpp_SOURCE_DIR}/include)
 set(YAML_CPP_LIBRARIES yaml-cpp)
-set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB32_PATHS ON)
 
 set_target_properties(yaml-cpp
         PROPERTIES

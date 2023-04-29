@@ -35,6 +35,10 @@ else ()
         string(SUBSTRING ${CMAKE_CXX_COMPILER_VERSION} 0 ${FIRST_DOT} CLANG_MAJOR_VER)
         find_program(LLD NAMES lld-${CLANG_MAJOR_VER} lld REQUIRED)
         get_filename_component(LLD ${LLD} NAME)
+
+        find_library(LLVM_LIBCPP_LIB c++ REQUIRED)
+        find_library(LLVM_LIBCPPABI_LIB c++abi REQUIRED)
+        find_library(LLVM_UNWIND_LIB unwind REQUIRED)
     endif ()
 endif ()
 

@@ -35,7 +35,7 @@ namespace Anubis::Game::Valve
     {
     }
 
-    BaseEntity::BaseEntity(CBaseEntity *entity) : m_edict(gEngineLib->getEdict(m_entity->pev)), m_entity(entity) {}
+    BaseEntity::BaseEntity(CBaseEntity *entity) : m_edict(gEngineLib->getEdict(entity->pev)), m_entity(entity) {}
 
     nstd::observer_ptr<Engine::IEdict> BaseEntity::edict() const
     {

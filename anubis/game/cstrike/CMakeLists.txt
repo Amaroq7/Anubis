@@ -40,8 +40,8 @@ if (UNIX)
 
     if (IS_CLANG_COMPILER)
         target_compile_options(${PROJECT_NAME} PRIVATE -stdlib=libc++)
-        target_link_options(${PROJECT_NAME} PRIVATE -stdlib=libc++ --rtlib=compiler-rt -fuse-ld=${LLD} -Wl,--as-needed)
-        target_link_libraries(${PROJECT_NAME} PRIVATE c++ c++abi unwind m)
+        target_link_options(${PROJECT_NAME} PRIVATE -stdlib=libc++ --rtlib=compiler-rt -fuse-ld=${LLD})
+        target_link_libraries(${PROJECT_NAME} PRIVATE ${LLVM_LIBCPP_LIB} ${LLVM_LIBCPPABI_LIB} ${LLVM_UNWIND_LIB})
     endif ()
 else ()
     target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external

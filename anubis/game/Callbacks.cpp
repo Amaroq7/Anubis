@@ -71,7 +71,12 @@ namespace Anubis::Game::Callbacks::Engine
         if (!getGame()->pfnClientConnect(getEngine()->getEdict(pEntity), pszName, pszAddress, &rejectReason,
                                          FuncCallType::Hooks))
         {
+#if defined _WIN32
+            strncpy_s(szRejectReason, REASON_REJECT_MAX_LEN, rejectReason.c_str(), _TRUNCATE);
+#else
             std::strncpy(szRejectReason, rejectReason.c_str(), REASON_REJECT_MAX_LEN);
+#endif
+
             return FALSE;
         }
         return TRUE;

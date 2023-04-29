@@ -16,8 +16,7 @@ FetchContent_MakeAvailable(fmtlib)
 
 if (UNIX)
     target_compile_options(fmt PUBLIC -m32)
-    target_link_options(fmt PUBLIC -m32
-            PRIVATE -Wl,--disable-new-dtags)
+    target_link_options(fmt PUBLIC -m32)
 
     set_target_properties(fmt PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
